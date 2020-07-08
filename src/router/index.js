@@ -1,15 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { routes } from './routers'
+import {routes} from './routers'
 import store from '@/store'
 // import iView from 'iview'
 import ViewUI from 'view-design'
-import { getToken, setTitle, setToken } from '@/libs/util'
+import {getToken, setTitle, setToken} from '@/libs/util'
 
 Vue.use(Router)
 const router = new Router({
   routes,
-  mode: 'history'
+  mode: 'hash'
+  // mode: 'history'
 })
 // const LOGIN_PAGE_NAME = 'login'
 
@@ -22,23 +23,27 @@ router.beforeEach((to, from, next) => {
       store.dispatch('authorization').then(rules => {
         store.dispatch('concatRoutes', rules).then(routers => {
           router.addRoutes(routers)
-          next({ ...to, replace: true })
+          next({...to, replace: true})
         }).catch((err) => {
           // console.log(err)
           setToken('')
-          next({ name: 'login' })
+          next({name: 'login'})
         })
       }).catch((err1) => {
         // console.log(err1)
         setToken('')
-        next({ name: 'login' })
+        next({name: 'login'})
       })
     } else {
+      if (JSON.parse(sessionStorage.vuex).user.nickName === '') {
+        if (to.name === 'login') next()
+        else next({name: 'login'})
+      }
       next()
     }
   } else {
     if (to.name === 'login') next()
-    else next({ name: 'login' })
+    else next({name: 'login'})
   }
 })
 

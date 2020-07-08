@@ -45,21 +45,21 @@ export default {
     getters: {
         // menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
         // errorCount: state => state.errorList.length
-        getterAllResourceGroup: state => state.allResourceGroup,
-        getterResourceGroupDir: state => state.resourceGroupDir,
-        resourceGroupTAG: state => state.resourceGroupTAG,
+        // getterAllResourceGroup: state => state.allResourceGroup,
+        // getterResourceGroupDir: state => state.resourceGroupDir,
+        // resourceGroupTAG: state => state.resourceGroupTAG,
         // getterUserResource: state => state.userResourceGroup
     },
     mutations: {
-        setAllResourceGroup(state, dataList) {
-            state.allResourceGroup = dataList
-        },
-        setResourceDir(state, dataList) {
-            state.resourceGroupDir = dataList.filter(item => { return item.expand === 'yes' })
-        },
-        setResourceTAG(state, dataList) {
-            state.resourceGroupTAG = dataList.filter(item => { return item.expand === 'no' })
-        },
+        // setAllResourceGroup(state, dataList) {
+        //     state.allResourceGroup = dataList
+        // },
+        // setResourceDir(state, dataList) {
+        //     state.resourceGroupDir = dataList.filter(item => { return item.expand === 'yes' })
+        // },
+        // setResourceTAG(state, dataList) {
+        //     state.resourceGroupTAG = dataList.filter(item => { return item.expand === 'no' })
+        // },
         // setuserResource(state, dataList) {
         //     state.userResourceGroup = dataList
         // },
@@ -122,21 +122,21 @@ export default {
         }
     },
     actions: {
-        handleGetResourceList({ commit }, data) {
-            return new Promise((resolve, reject) => {
-                getResourceList().then(res => {
-                    const data = res.data
-                    if (data.code === 0) {
-                        commit('setAllResourceGroup', data.data)
-                        commit('setResourceDir', data.data)
-                        commit('setResourceTAG', data.data)
-                    }
-                    resolve(data)
-                }).catch(err => {
-                    reject(err)
-                })
-            })
-        },
+        // handleGetResourceList({ commit }, data) {
+        //     return new Promise((resolve, reject) => {
+        //         getResourceList().then(res => {
+        //             const data = res.data
+        //             if (data.code === 0) {
+        //                 commit('setAllResourceGroup', data.data)
+        //                 commit('setResourceDir', data.data)
+        //                 commit('setResourceTAG', data.data)
+        //             }
+        //             resolve(data)
+        //         }).catch(err => {
+        //             reject(err)
+        //         })
+        //     })
+        // },
         //
         addErrorLog({ commit, rootState }, info) {
             if (!window.location.href.includes('error_logger_page')) commit('setHasReadErrorLoggerStatus', false)

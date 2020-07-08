@@ -2,7 +2,7 @@
   <div class="user-avator-dropdown">
 
     <Dropdown @on-click="handleClick">
-      <Avatar :src="userAvator"/>{{ nickName }}
+      <Avatar :src="userAvator" style="margin-right: 5px"/>{{ nickName }}
       <!-- <p style="" >xxxx</p> -->
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list">

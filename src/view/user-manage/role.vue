@@ -474,7 +474,7 @@ export default {
             }
           })
       } else {
-        this.$Message.error('你在修改个锤子呀')
+        this.$Message.error('无法修改')
       }
     },
     filterMethod (data, query) {

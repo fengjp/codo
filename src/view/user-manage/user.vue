@@ -8,8 +8,8 @@
         <div slot="new_btn" class="search-con search-col">
           <Button v-if="rules.new_user_btn" type="info" class="search-btn"  @click="showModal">新建用户</Button>
           <Button v-if="rules.reset_pwd_btn" type="error" class="search-btn"  @click="handleResetPWD">重置密码</Button>
-          <Button v-if="rules.reset_mfa_btn" type="error" class="search-btn"  @click="handleResetMFA">重置MFA</Button>
-          <Button v-if="rules.get_token_btn" type="error" class="search-btn"  @click="handleToken">长期Token</Button>
+          <!--<Button v-if="rules.reset_mfa_btn" type="error" class="search-btn"  @click="handleResetMFA">重置MFA</Button>-->
+          <!--<Button v-if="rules.get_token_btn" type="error" class="search-btn"  @click="handleToken">长期Token</Button>-->
         </div>
       </tables>
       <div style="margin: 10px; overflow: hidden">
@@ -334,7 +334,7 @@ export default {
     },
     handleResetPWD () {
       if (!this.selectionList.length) {
-        this.$Message.error('你选中了个锤子')
+        this.$Message.error('没有选中')
       } else {
         if (confirm(`确定要重置选用户的密码`)) {
           resetPassword({ user_list: this.selectionList }).then(res => {
@@ -349,7 +349,7 @@ export default {
     },
     handleResetMFA () {
       if (!this.selectionList.length) {
-        this.$Message.error('你选中了个锤子')
+        this.$Message.error('没有选中')
       } else {
         if (confirm(`确定要重置选中用户的MFA`)) {
           resetMFA({ user_list: this.selectionList }).then(res => {

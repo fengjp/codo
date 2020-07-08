@@ -1,7 +1,7 @@
 <template>
   <div>
     <center> 
-     Copyright © 2019 CODO
+     Copyright © 2019 运维系统
     </center>
   </div>
 </template>

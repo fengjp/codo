@@ -7,9 +7,9 @@
           <Input v-model="formValidate.func_name" maxlength="50" type="text"  placeholder="请输入API名称..."></Input>
         </FormItem>
 
-        <FormItem label="所在应用" prop="app_code">
-          <Input v-model="formValidate.app_code" maxlength="30" type="text"  placeholder="请输入API名称..."></Input>
-        </FormItem>
+        <!--<FormItem label="所在应用" prop="app_code">-->
+          <!--<Input v-model="formValidate.app_code" maxlength="30" type="text"  placeholder="请输入API名称..."></Input>-->
+        <!--</FormItem>-->
 
         <FormItem label="请求方法" prop="method_type">
           <Select v-model="formValidate.method_type" placeholder="请求方法">
@@ -65,13 +65,13 @@ export default {
       formValidate: {
           func_name: '',
           method_type: '',
-          app_code: '',
+          // app_code: '',
           uri: '',
           parameters:'暂无',
       },
         ruleValidate: {
           func_name: [{ required: true, message: 'The  name cannot be empty', trigger: 'blur' }],
-          app_code: [{ required: true, message: '所在应用不能为空', trigger: 'blur' }],
+          // app_code: [{ required: true, message: '所在应用不能为空', trigger: 'blur' }],
           // uri: [{ required: true, message: 'URI不能为空', trigger: 'blur' }],
           method_type: [{ required: true, message: 'Cannot be empty', trigger: 'change' }],
           uri: [{ required: true, message: 'URI不能为空', trigger: 'blur' }]

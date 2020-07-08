@@ -1,12 +1,13 @@
 import { login, authorization, password, register } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
+import avatar from '@/assets/images/avatar.png'
 
 export default {
     state: {
         userName: '',
         nickName: '',
         userId: '',
-        avatorImgPath: 'https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png',
+        avatorImgPath: avatar,
         token: getToken(),
         access: '',
         rules: {},

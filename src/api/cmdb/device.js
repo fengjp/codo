@@ -3,7 +3,7 @@ import config from '@/config'
 
 export const operationDev = (data, meth) => {
   return axios.request({
-    url: '/cmdb2/v1/cmdb/dev/',
+    url: '/cmdb/v1/cmdb/dev/',
     method: meth,
     data
   })
@@ -11,7 +11,7 @@ export const operationDev = (data, meth) => {
 
 export const getDevList = (page, limit, key, value, date = ['', '']) => {
   return axios.request({
-    url: '/cmdb2/v1/cmdb/dev/',
+    url: '/cmdb/v1/cmdb/dev/',
     method: 'get',
     params: {
       page,

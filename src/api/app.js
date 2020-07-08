@@ -39,3 +39,37 @@ export const CheckSysconfig = (data) => {
     data
   })
 }
+
+// 字典配置
+export const operationDict = (data, meth) => {
+  return axios.request({
+    url: '/mg/v2/dictconfig/',
+    method: meth,
+    data
+  })
+}
+
+export const getDictList = (page, limit, key, value, date = ['', '']) => {
+  return axios.request({
+    url: '/mg/v2/dictconfig/',
+    method: 'get',
+    params: {
+      page,
+      limit,
+      key,
+      value,
+      start_date: date[0],
+      end_date: date.length > 1 ? date[1] : ''
+    }
+  })
+}
+
+export const getDictConfList = (key='') => {
+  return axios.request({
+    url: '/mg/v2/dictconfig/rd/',
+    method: 'get',
+    params: {
+      key
+    }
+  })
+}

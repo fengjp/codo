@@ -43,11 +43,11 @@ export default {
           width: 60,
           align: 'center'
         },
-        {
-          title: '所在应用',
-          key: 'app_code',
-          sortable: true
-        },
+        // {
+        //   title: '所在应用',
+        //   key: 'app_code',
+        //   sortable: true
+        // },
         {
           title: '权限名称',
           key: 'func_name',

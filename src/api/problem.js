@@ -3,7 +3,7 @@ import config from '@/config'
 const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 
 
-export const getCaseList = (page, limit, key, value, date = ['', '']) => {
+export const getCaseList = (page, limit,key, value, isExport=false) => {
     return axios.request({
         url: '/pb/v2/case/list/',
         method: 'get',
@@ -12,8 +12,7 @@ export const getCaseList = (page, limit, key, value, date = ['', '']) => {
             limit,
             key,
             value,
-            start_date: date[0],
-            end_date: date.length > 1 ? date[1] : ''
+            isExport
         }
     })
 }
@@ -52,6 +51,25 @@ export const getSoftList2 = (key,value) => {
         }
     });
 };
+export const caseDelete = (data) => {
+    return axios.request({
+        url: '/pb/v2/case/delete/',
+        method: 'delete',
+        data
+    })
+};
+
+export const getCaseFile = (startdate,enddate) => {
+    return axios.request({
+        url: '/pb/v2/case/getfile/',
+        method: 'get',
+        params: {
+            startdate,
+            enddate,
+        }
+    })
+};
+
 export const getSoftUpdateList2 = (key,value) => {
     return axios.request({
         url: '/pb/v2/case/username/',

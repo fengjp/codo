@@ -11,6 +11,6 @@
 
 <template>
   <div>
-    <center>2017-2019 © CODO</center>
+    <center>2017-2019 © 运维系统</center>
   </div>
 </template>

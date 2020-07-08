@@ -50,6 +50,7 @@ import './main.less'
 import copyRight from './components/footer/copyright'
 export default {
   name: 'Main',
+  inject: ["reload"],
   components: {
     SideMenu,
     HeaderBar,
@@ -106,7 +107,7 @@ export default {
     ]),
     ...mapActions([
       'handleLogin',
-       'handleGetResourceList'
+       // 'handleGetResourceList'
     ]),
     turnToPage (route) {
       let { name, params, query } = {}
@@ -144,13 +145,13 @@ export default {
     handleClick (item) {
       this.turnToPage(item)
     },
-    handleGetResource() {
-      this.handleGetResourceList().then(res => {
-        if (res.code != 0) {
-           this.$Message.error(`${res.msg}`)
-        }
-      })
-    },
+    // handleGetResource() {
+    //   this.handleGetResourceList().then(res => {
+    //     if (res.code != 0) {
+    //        this.$Message.error(`${res.msg}`)
+    //     }
+    //   })
+    // },
   },
   watch: {
     '$route' (newRoute) {
@@ -165,7 +166,7 @@ export default {
     }
   },
   mounted () {
-    this.handleGetResource()
+    // this.handleGetResource()
     /**
      * @description 初始化设置面包屑导航和标签导航
      */

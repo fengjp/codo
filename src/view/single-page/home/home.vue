@@ -8,33 +8,15 @@
       </i-col>
       <i-col :xs="12" :md="8" :lg="4" key="infor-2" style="height: 90px;padding-bottom: 10px;">
         <infor-card shadow color="#2d8cf0" icon="md-cube" :icon-size="36">
-          <h3><router-link :to="{name: 'asset_server'}" class="nav-link">资产管理</router-link></h3>
+          <h3><router-link :to="{name: 'appsys_mg'}" class="nav-link">资产管理</router-link></h3>
         </infor-card>
       </i-col>
-      <!--<i-col :xs="12" :md="8" :lg="4" key="infor-3" style="height: 90px;padding-bottom: 10px;">-->
-        <!--<infor-card shadow color="#19be6b" icon="ios-hammer" :icon-size="36">-->
-          <!--<h3><router-link :to="{name: 'confd_project'}" class="nav-link">配置中心</router-link></h3>-->
-        <!--</infor-card>-->
-      <!--</i-col>-->
-      <i-col :xs="12" :md="8" :lg="4" key="infor-4" style="height: 90px;padding-bottom: 10px;">
-        <infor-card shadow color="#9A66E4" icon="ios-alarm" :icon-size="36">
-          <h3><router-link :to="{name: 'cronjobs'}" class="nav-link">定时任务</router-link></h3>
+      <i-col :xs="12" :md="8" :lg="4" key="infor-3" style="height: 90px;padding-bottom: 10px;">
+        <infor-card shadow color="#19be6b" icon="md-apps" :icon-size="36">
+          <h3><router-link :to="{name: 'case_mg'}" class="nav-link">个案管理</router-link></h3>
         </infor-card>
       </i-col>
-      <i-col :xs="12" :md="8" :lg="4" key="infor-5" style="height: 90px;padding-bottom: 10px;">
-        <infor-card shadow color="#ff9900" icon="ios-alarm" :icon-size="36">
-          <h3><router-link :to="{name: 'paid_reminder'}" class="nav-link">提醒管理</router-link></h3>
-        </infor-card>
-      </i-col>
-      <!--<i-col :xs="12" :md="8" :lg="4" key="infor-6" style="height: 90px;padding-bottom: 10px;">-->
-        <!--<infor-card shadow color="#ed3f14" icon="md-warning" :icon-size="36">-->
-          <!--<h3><router-link :to="{name: 'prometheus_alert'}" class="nav-link">kubernetes告警</router-link></h3>-->
-        <!--</infor-card>-->
-      <!--</i-col>-->
     </Row>
-
-
-
 
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="14" style="margin-bottom: 10px;">
@@ -200,10 +182,10 @@ export default {
 
   },
   mounted () {
-    this.initPieCmdb()
-    this.initTaskInfo()
-    this.initPieTask()
-    this.GetZabbixLastissues()
+    // this.initPieCmdb()
+    // this.initTaskInfo()
+    // this.initPieTask()
+    // this.GetZabbixLastissues()
   },
   watch: {
     pieCmdbData: function () {
