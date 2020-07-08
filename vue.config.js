@@ -25,8 +25,8 @@ module.exports = {
   // tweak internal webpack configuration.
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   // 如果你不需要使用eslint，把lintOnSave设为false即可
-  lintOnSave: false,
-  // lintOnSave: process.env.NODE_ENV !== 'production',
+  // lintOnSave: true,
+  lintOnSave: process.env.NODE_ENV !== 'production',
   chainWebpack: config => {
     config.resolve.alias
       .set('@', resolve('src')) // key,value自行定义，比如.set('@@', resolve('src/components'))
@@ -39,5 +39,5 @@ module.exports = {
     // proxy: 'http://172.16.0.223:9800/'
     proxy: 'http://gw.opendevops.cn/api/'
   },
-  transpileDependencies:['socket.io-client','view-design','webpack-dev-server'],
+  transpileDependencies: ['socket.io-client', 'view-design', 'webpack-dev-server']
 }
