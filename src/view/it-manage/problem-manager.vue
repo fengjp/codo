@@ -159,7 +159,7 @@
         :columns="columns"
         :data="tableData"
       ></Table>
-      <Modal v-model="modalTable.tableVisible" :loading=true :footer-hide=true :title="modalTable.tableTitle">
+      <Modal v-model="modalTable.tableVisible" :loading=true :footer-hide=true>
         <div style="padding: 10px; text-align:center;">
           <!--<DatePicker type="datetime" :value="valueDate" @on-change="handleChange"-->
           <!--:options="optionsDate" placeholder="选择执行时间" show-week-numbers confirm style="width: 220px">-->
