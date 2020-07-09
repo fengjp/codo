@@ -20,23 +20,23 @@
                 <Button v-if="theTabName === 'SMS'" type="success" style="margin-left: 8px" :loading="btn_loading"
                         @click="handlerCheckTest(theTabName)">测试短信
                 </Button>
-                <Button v-if="theTabName === 'LDAP'" type="success" style="margin-left: 8px" :loading="btn_loading"
-                        @click="handlerCheckTest(theTabName)">测试LDAP
-                </Button>
+                <!--<Button v-if="theTabName === 'LDAP'" type="success" style="margin-left: 8px" :loading="btn_loading"-->
+                        <!--@click="handlerCheckTest(theTabName)">测试LDAP-->
+                <!--</Button>-->
               </slot>
             </form-group>
           </Col>
           <Col span="10" offset='1'>
             <Alert v-if="theTabName === 'WEBSITE'">
               <h4>建议正式环境使用SSL证书</h4><br>
-              <h5>API地址：默认为：gw.opendevops.cn/api/ 根据实际情况自己调整</h5><br>
+              <h5>API地址：根据实际情况自己调整</h5><br>
               <h5>默认邮箱：系统内默认发送邮件的地址</h5><br>
               <h5>登录超时时间：默认为一天，可以设置，单位为小时，前端暂定不能超过24小时，后续可能会更改</h5><br>
               <h5>二次认证：默认开启二次认证，且正式环境非常不建议关闭全局的二次认证</h5>
             </Alert>
-            <Alert v-if="theTabName === 'EMAIL'">
-              <a href="https://docs.opendevops.cn/zh/guide/more/faq/" target="_blank">参考文档</a>
-            </Alert>
+            <!--<Alert v-if="theTabName === 'EMAIL'">-->
+              <!--<a href="https://docs.opendevops.cn/zh/guide/more/faq/" target="_blank">参考文档</a>-->
+            <!--</Alert>-->
             <Alert v-if="theTabName === 'SMS'">
               <h5>这块主要配置短信接口信息，短信接口只支持阿里云阿里大鱼，后续平台所涉及到发短信会调用此接口</h5><br>
               <p>短信区域： cn-hangzhou 目前阿里官方给出必须是这个</p><br>
@@ -46,39 +46,39 @@
               <p>KEY_SECRET： 你的access_secret密钥，备注：这里需要必须有SMS的权限</p><br>
               <p>点击测试端口系统会向阿里大鱼进行发送查询接口，如果配置验证不通过则提示报错信息</p><br>
             </Alert>
-            <Alert v-if="theTabName === 'LDAP'">
-              <h5>LDAP地址 serverurl</h5><br>
-              <h5>LDAP端口 默认389 开启SSL 要使用 636</h5><br>
-              <h5> 绑定DN cn=Manager,DC=opendevops,DC=cn</h5>
-              <p>这里是设置认证用户的信息, 系统会使用这个用户去校验ldap的信息是否正确</p><br>
-              <h5>密码 # 上面认证用户的密码</h5><br>
+            <!--<Alert v-if="theTabName === 'LDAP'">-->
+              <!--<h5>LDAP地址 serverurl</h5><br>-->
+              <!--<h5>LDAP端口 默认389 开启SSL 要使用 636</h5><br>-->
+              <!--<h5> 绑定DN cn=Manager,DC=opendevops,DC=cn</h5>-->
+              <!--<p>这里是设置认证用户的信息, 系统会使用这个用户去校验ldap的信息是否正确</p><br>-->
+              <!--<h5>密码 # 上面认证用户的密码</h5><br>-->
 
-              <h5>用户OU ou=opendevops,dc=opendevops,dc=cn</h5>
-              <p>这里是设置用来登录codo的组织单元, 比如我要用某个ou的用户来登录codo</p><br>
+              <!--<h5>用户OU ou=opendevops,dc=opendevops,dc=cn</h5>-->
+              <!--<p>这里是设置用来登录codo的组织单元, 比如我要用某个ou的用户来登录codo</p><br>-->
 
-              <h5>用户过滤器 cn</h5>
-              <p>这里是设置认证用户的信息, 系统会使用这个用户去校验ldap的信息是否正确 一般使用cn 或者 sAMAccountName</p><br>
+              <!--<h5>用户过滤器 cn</h5>-->
+              <!--<p>这里是设置认证用户的信息, 系统会使用这个用户去校验ldap的信息是否正确 一般使用cn 或者 sAMAccountName</p><br>-->
 
-              <h5> LADP属性映射 {"username": "cn", "email": "mail"}或者{"username": "cn", "email": "email"}</h5>
-              <p> 系统用户名 usernmae 映射LDAP的cn。 系统用户邮箱映射LDAP的email或者mail属性，取存在的，强制关联，如果缺失报错</p>
-              <p> 这里的意思是, 把ldap用户的属性映射到系统上，如果都不存在的 认证无法通过，系统用户的email是必填项</p><br>
+              <!--<h5> LADP属性映射 {"username": "cn", "email": "mail"}或者{"username": "cn", "email": "email"}</h5>-->
+              <!--<p> 系统用户名 usernmae 映射LDAP的cn。 系统用户邮箱映射LDAP的email或者mail属性，取存在的，强制关联，如果缺失报错</p>-->
+              <!--<p> 这里的意思是, 把ldap用户的属性映射到系统上，如果都不存在的 认证无法通过，系统用户的email是必填项</p><br>-->
 
-              <h5> 启动LDAP认证</h5>
-              <p> 如果需要使用LDAP登录 codo, 则必选</p>
-            </Alert>
-            <Alert v-if="theTabName === 'EMAILLOGIN'">
-              <h5>这块主要是支持第三方邮箱登陆，当你想要使用邮箱登陆此平台时，你可以在此进行配置 比如我们企业邮箱是腾讯的,域名就是opendevops.cn，
-                SMTP就是腾讯的stmp.exmail.qq.com,这样配置完成后我就可以使用我yanghongfei@opendevops.cn邮箱+密码登陆此平台了。</h5><br>
-              <h5>邮箱SMTP： 这里输入你邮箱服务商的SMTP地址</h5><br>
-              <h5>邮箱域名：这里是你的邮箱后缀名字，系统会根据这个后缀来判断你是否在用邮箱登录</h5><br>
-            </Alert>
-            <Alert v-if="theTabName === 'STORAGE'">
-              <h5>这块主要是配置Bucket信息，目前只支持阿里云的OSS，这里目前主要用于将跳板日志审计的内容存放到OSS目录里面，若不配置此项则存本地数据库（可能会很大，建议配置OSS)</h5><br>
-              <h5>区域Region：阿里云的可用区域，如：cn-hangzhou</h5><br>
-              <h5>存储桶名称: Bucket名称</h5><br>
-              <h5>SecretID: 密钥ID，需要有OSS权限</h5><br>
-              <h5>Secret Key： 密钥Key，需要有OSS权限</h5><br>
-            </Alert>
+              <!--<h5> 启动LDAP认证</h5>-->
+              <!--<p> 如果需要使用LDAP登录 codo, 则必选</p>-->
+            <!--</Alert>-->
+            <!--<Alert v-if="theTabName === 'EMAILLOGIN'">-->
+              <!--<h5>这块主要是支持第三方邮箱登陆，当你想要使用邮箱登陆此平台时，你可以在此进行配置 比如我们企业邮箱是腾讯的,域名就是opendevops.cn，-->
+                <!--SMTP就是腾讯的stmp.exmail.qq.com,这样配置完成后我就可以使用我yanghongfei@opendevops.cn邮箱+密码登陆此平台了。</h5><br>-->
+              <!--<h5>邮箱SMTP： 这里输入你邮箱服务商的SMTP地址</h5><br>-->
+              <!--<h5>邮箱域名：这里是你的邮箱后缀名字，系统会根据这个后缀来判断你是否在用邮箱登录</h5><br>-->
+            <!--</Alert>-->
+            <!--<Alert v-if="theTabName === 'STORAGE'">-->
+              <!--<h5>这块主要是配置Bucket信息，目前只支持阿里云的OSS，这里目前主要用于将跳板日志审计的内容存放到OSS目录里面，若不配置此项则存本地数据库（可能会很大，建议配置OSS)</h5><br>-->
+              <!--<h5>区域Region：阿里云的可用区域，如：cn-hangzhou</h5><br>-->
+              <!--<h5>存储桶名称: Bucket名称</h5><br>-->
+              <!--<h5>SecretID: 密钥ID，需要有OSS权限</h5><br>-->
+              <!--<h5>Secret Key： 密钥Key，需要有OSS权限</h5><br>-->
+            <!--</Alert>-->
           </Col>
         </Row>
       </TabPane>
@@ -102,15 +102,15 @@
           {label: '系统设置', icon: 'logo-tux', name: 'WEBSITE'},
           {label: '邮件设置', icon: 'ios-mail', name: 'EMAIL'},
           {label: '短信接口', icon: 'ios-notifications', name: 'SMS'},
-          {label: 'LDAP设置', icon: 'ios-flag', name: 'LDAP', disabled: false},
-          {label: '邮箱登录', icon: 'md-mail', name: 'EMAILLOGIN'},
-          {label: '存储配置', icon: 'md-folder', name: 'STORAGE'},
-          {
-            label: '核心设置',
-            icon: 'ios-settings',
-            name: 'centerSetting',
-            disabled: true
-          }
+          // {label: 'LDAP设置', icon: 'ios-flag', name: 'LDAP', disabled: false},
+          // {label: '邮箱登录', icon: 'md-mail', name: 'EMAILLOGIN'},
+          // {label: '存储配置', icon: 'md-folder', name: 'STORAGE'},
+          // {
+          //   label: '核心设置',
+          //   icon: 'ios-settings',
+          //   name: 'centerSetting',
+          //   disabled: true
+          // }
         ],
         formList: [],
         CONFIG_DATA: {
@@ -167,8 +167,8 @@
         })
       },
       handleTabs(name) {
-        this.btn_loading = false
-        this.theTabName = name
+        this.btn_loading = false;
+        this.theTabName = name;
         switch (name) {
           case 'WEBSITE':
             this.formList = [
@@ -214,8 +214,8 @@
                 value: this.CONFIG_DATA.MFA_GLOBAL === '1',
                 label: '禁用二次认证'
               }
-            ]
-            break
+            ];
+            break;
           case 'EMAIL':
             this.formList = [
               {
@@ -292,8 +292,8 @@
                 value: this.CONFIG_DATA.EMAIL_USE_TLS === '1',
                 label: '启用TLS'
               }
-            ]
-            break
+            ];
+            break;
           case 'SMS':
             this.formList = [
               {
@@ -369,8 +369,8 @@
                   }
                 ]
               }
-            ]
-            break
+            ];
+            break;
           case 'LDAP':
             this.formList = [
               {
@@ -466,8 +466,8 @@
                 value: this.CONFIG_DATA.LDAP_ENABLE === '1',
                 label: '启用LDAP认证'
               },
-            ]
-            break
+            ];
+            break;
           case 'STORAGE':
             this.formList = [
               {
@@ -527,8 +527,8 @@
                   }
                 ]
               }
-            ]
-            break
+            ];
+            break;
           case 'EMAILLOGIN':
             this.formList = [
               {
@@ -556,10 +556,10 @@
                 placeholder:
                   '${EMAILLOGIN_DOMAIN} 请输入登录邮箱的后缀名称，例如：qq.com'
               }
-            ]
-            break
+            ];
+            break;
           case 'centerSetting':
-            this.formList = []
+            this.formList = [];
             break
         }
       },
@@ -568,13 +568,13 @@
         setTimeout(() => {
           operationSysconfig(value.data).then(res => {
             if (res.data.code === 0) {
-              this.$Message.info(`${res.data.msg}`)
+              this.$Message.info(`${res.data.msg}`);
               // 重新获取数据
               this.getSttings('all')
             } else {
               this.$Message.error(`${res.data.msg}`)
             }
-          })
+          });
           this.btn_loading = false;
         }, 1000)
       },
@@ -587,19 +587,19 @@
             } else {
               this.$Message.error(`${res.data.msg}`)
             }
-          })
+          });
           this.btn_loading = false;
         }, 3000)
       }
     },
     mounted() {
-      this.getSttings('all')
+      this.getSttings('all');
       setTimeout(() => {
         this.handleTabs('WEBSITE')
       }, 500)
     },
     created() {
-      this.getSttings('all')
+      this.getSttings('all');
       setTimeout(() => {
         this.handleTabs('WEBSITE')
       }, 500)
