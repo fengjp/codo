@@ -2,6 +2,7 @@ import axios from '@/libs/api.request'
 import config from '@/config'
 const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 export const UploadUrl = baseUrl + '/cmdb/v1/cmdb/sys/upload/'
+export const viewUrl = config.onlinePreviewUrl
 
 export const operationSys = (data, meth) => {
   return axios.request({
@@ -25,7 +26,6 @@ export const getSysList = (page, limit, key, value, date = ['', '']) => {
     }
   })
 }
-
 
 export const operationSysUpdate = (data, meth) => {
   return axios.request({

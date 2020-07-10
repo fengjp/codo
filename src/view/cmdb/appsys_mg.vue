@@ -2,7 +2,7 @@
   <div>
     <Row :gutter="20">
       <Col>
-        <Card>
+        <Card :bordered="false">
           <div class="search-con search-con-top">
             <Select v-model="searchKey" class="search-col">
               <!--<Option v-for="item in columns"-->
@@ -31,7 +31,7 @@
         </Card>
       </Col>
       <Col style="margin-top: 10px">
-        <Card>
+        <Card :bordered="false">
           <p slot="title">系统组件列表</p>
           <tables ref="selection1"
                   v-model="tableData1"
@@ -42,7 +42,7 @@
         </Card>
       </Col>
       <Col style="margin-top: 10px">
-        <Card>
+        <Card :bordered="false">
           <p slot="title">系统升级历史</p>
           <div class="search-con search-con-top">
             <Select v-model="searchSysValue" class="search-col" clearable placeholder="系统名称">
@@ -64,7 +64,7 @@
            :mask-closable=false>
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" inline label-colon=":">
         <FormItem style="width: 970px;">
-          <Card>
+          <Card :bordered="false">
             <p slot="title">基本信息</p>
             <FormItem label="系统名称" prop="sys_name" style="width: 48%; margin-right: 20px; margin-bottom: 20px;">
               <Input v-model="formValidate.sys_name" :maxlength="50" placeholder="请填写系统名称"></Input>
@@ -129,7 +129,7 @@
               </Upload>
             </FormItem>
           </Card>
-          <Card style="margin-top: 10px">
+          <Card style="margin-top: 10px" :bordered="false">
             <p slot="title">负责人列表</p>
             <tables ref="selection4"
                     v-model="formValidate.sys_manager_list"
@@ -141,7 +141,7 @@
               <i class="ivu-icon ivu-icon-md-add"></i> <span>新增</span>
             </button>
           </Card>
-          <Card style="margin-top: 10px">
+          <Card style="margin-top: 10px" :bordered="false">
             <p slot="title">组件列表</p>
             <tables ref="selection3"
                     v-model="formValidate.soft_list"
@@ -223,54 +223,787 @@
       <img :src="imgUrl" v-if="visible" style="width: 100%">
     </Modal>
 
+    <Modal v-model="modalTable.tableVisible" :loading=true :footer-hide=true :title="modalTable.tableTitle">
+      <div style="padding: 10px; text-align:center;">
+        <tables ref="tables1"
+                v-model="tableDetail"
+                :columns="columnsUpDetail"
+                :show-header="false"
+                v-if="isUpDetail"
+        >
+        </tables>
+        <tables ref="tables1"
+                v-model="tableDetail"
+                :columns="columnsDetail"
+                :show-header="false"
+                v-else
+        >
+        </tables>
+      </div>
+    </Modal>
+
   </div>
 </template>
 <script>
-  import Icons from "_c/icons";
-  import Tables from "_c/tables";
-  import FormGroup from "_c/form-group";
-  import {
-    operationSys,
-    getSysList,
-    operationSysUpdate,
-    getSysUpdateList,
-    UploadUrl,
-  } from '@/api/cmdb/sys.js'
+import Icons from '_c/icons'
+import Tables from '_c/tables'
+import FormGroup from '_c/form-group'
+import {
+  operationSys,
+  getSysList,
+  operationSysUpdate,
+  getSysUpdateList,
+  UploadUrl,
+  viewUrl
+} from '@/api/cmdb/sys.js'
 
-  import {getSoftList, getSoftTpye} from '@/api/cmdb/software.js'
+import { getSoftList, getSoftTpye } from '@/api/cmdb/software.js'
 
-  export default {
-    components: {
-      Icons,
-      Tables,
-      FormGroup
+export default {
+  components: {
+    Icons,
+    Tables,
+    FormGroup
+  },
+  data () {
+    return {
+      isDisable: false,
+      UploadUrl: '',
+      // 分页
+      ruleLoading: false,
+      ruleModal: false,
+      pageTotal: 0, // 数据总数
+      pageNum: 1, // 当前页码
+      pageSize: 15, // 每页条数
+      searchVal: '',
+      modalMap: {
+        modalVisible: false,
+        modalTitle: '添加系统'
+      },
+      modalMap2: {
+        modalVisible: false,
+        modalTitle: '添加升级记录'
+      },
+      editModalData: null,
+      searchKey: 'sys_name',
+      searchValue: '',
+
+      tableData: [],
+      tableSelectIdList: [],
+      formValidate: {
+        id: null,
+        sys_name: '',
+        sys_version: '',
+        online_time: '',
+        development: '',
+        development_contact: '',
+        development_phone: '',
+        sys_info: '',
+        soft_list: [],
+        sys_manager_list: [],
+        sys_report: '',
+        uploadList: [],
+        sys_docx_list: []
+      },
+
+      ruleValidate: {
+        sys_name: [{ required: true, message: '系统名称不能为空', trigger: 'blur' }],
+        online_time: [{ required: true, message: '请填写上线时间', trigger: 'blur' }]
+      },
+
+      columns: [
+        // {type: 'selection', key: 'id', width: 80, align: 'center'},
+        // {title: '编号', key: 'id', align: 'center',},
+        { title: '系统名称', key: 'sys_name', align: 'center' },
+        { title: '版本号', key: 'sys_version', align: 'center' },
+        { title: '上线时间', key: 'online_time', width: 100, align: 'center' },
+        { title: '开发单位', key: 'development', align: 'center' },
+        { title: '开发单位联系人', key: 'development_contact', align: 'center' },
+        { title: '开发单位联系电话', key: 'development_phone', align: 'center' },
+        {
+          title: '系统负责人',
+          key: 'sys_manager_list',
+          align: 'center',
+          render: (h, params) => {
+            return h('a', {
+              on: {
+                click: () => {
+                  this.handleDetail(params.row.sys_manager_list)
+                }
+              }
+            }, '查看信息'
+            )
+          }
+        },
+        {
+          title: '文档',
+          key: 'sys_docx_list',
+          align: 'center',
+          render: (h, params) => {
+            return h('a', {
+              on: {
+                click: () => {
+                  this.handleDocxDetail(params.row.sys_docx_list)
+                }
+              }
+            }, '查看文档'
+            )
+          }
+        },
+        {
+          title: '附件',
+          key: 'uploadList',
+          align: 'center',
+          render: (h, params) => {
+            return h('a', {
+              on: {
+                click: () => {
+                  this.handleUpDetail(params.row.uploadList)
+                }
+              }
+            }, '查看附件'
+            )
+          }
+        },
+        {
+          title: '操作',
+          key: 'handle',
+          width: 185,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '2px'
+                  },
+                  on: {
+                    click: () => {
+                      this.handlerSysUpdate(params.row, 'post', '升级记录')
+                    }
+                  }
+                }, '升级'
+              ),
+              h('Button',
+                {
+                  props: {
+                    type: 'info',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '2px'
+                  },
+                  on: {
+                    click: () => {
+                      this.handlerSys(params.row, 'put', '编辑')
+                    }
+                  }
+                }, '编辑'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.handlerDeleteSys(params)
+                    }
+                  }
+                }, '删除'
+              )
+            ])
+          }
+        }
+      ],
+
+      // 涉及的应用列表
+      tableData1: [],
+      columns1: [
+        { title: '类型', key: 'soft_type', align: 'center' },
+        { title: '软件名称', key: 'soft_name', align: 'center' },
+        { title: '版本号', key: 'soft_version', align: 'center' },
+        { title: 'IP', key: 'soft_ip', align: 'center' },
+        { title: '用途', key: 'soft_usage', align: 'center' },
+        { title: '操作', key: 'handle1', width: 80, align: 'center' }
+      ],
+
+      soft_type: {
+        1: '操作系统',
+        2: '虚拟化',
+        3: '数据库',
+        4: '服务',
+        5: '中间件',
+        6: '应用服务',
+        7: 'Web服务',
+        8: '其他'
+      },
+      soft_list: [],
+
+      columns3: [
+        {
+          title: '软件名称',
+          key: 'soft_name',
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              // console.log(params.row.soft_type_name)
+              return h('Cascader',
+                {
+                  props: {
+                    data: this.soft_list,
+                    trigger: 'hover',
+                    filterable: true,
+                    transfer: true,
+                    value: params.row.soft_type_name
+                  },
+                  style: {},
+                  on: {
+                    'on-change': val => {
+                      this.formValidate.soft_list[params.index].soft_type_name = val
+                    }
+                  }
+                })
+            } else {
+              return h('span', params.row.soft_name)
+            }
+          }
+        },
+        {
+          title: '版本号',
+          key: 'soft_version',
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              return h('Input',
+                {
+                  props: {
+                    type: 'text',
+                    placeholder: '版本号',
+                    value: params.row.soft_version,
+                    clearable: true
+                  },
+                  style: {
+                    width: '100px'
+                  },
+                  on: {
+                    input: val => {
+                      this.formValidate.soft_list[params.index].soft_version = val
+                    }
+                  }
+                })
+            } else {
+              return h('span', params.row.soft_version)
+            }
+          }
+        },
+        {
+          title: 'IP',
+          key: 'soft_ip',
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              return h('Input',
+                {
+                  props: {
+                    type: 'text',
+                    placeholder: 'IP',
+                    value: params.row.soft_ip,
+                    clearable: true
+                  },
+                  style: {
+                    width: '100px'
+                  },
+                  on: {
+                    input: val => {
+                      this.formValidate.soft_list[params.index].soft_ip = val
+                    }
+                  }
+                })
+            } else {
+              return h('span', params.row.soft_ip)
+            }
+          }
+        },
+        {
+          title: '用途',
+          key: 'soft_usage',
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              return h('Input',
+                {
+                  props: {
+                    type: 'text',
+                    placeholder: '用途',
+                    value: params.row.soft_usage,
+                    clearable: true
+                  },
+                  style: {
+                    width: '150px'
+                  },
+                  on: {
+                    input: val => {
+                      this.formValidate.soft_list[params.index].soft_usage = val
+                    }
+                  }
+                })
+            } else {
+              return h('span', params.row.soft_usage)
+            }
+          }
+        },
+        {
+          title: '操作',
+          key: 'handle1',
+          width: 80,
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              return h('div', [
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'error',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.formValidate.soft_list.splice(params.index, 1)
+                      }
+                    }
+                  },
+                  '删除'
+                )
+              ])
+            }
+          }
+        }
+      ],
+
+      columns4: [
+        {
+          title: '系统负责人',
+          key: 'sys_manager_name',
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              return h('Input',
+                {
+                  props: {
+                    type: 'text',
+                    placeholder: '系统负责人',
+                    value: params.row.sys_manager_name,
+                    clearable: true
+                  },
+                  style: {
+                    width: '120px'
+                  },
+                  on: {
+                    input: val => {
+                      this.formValidate.sys_manager_list[params.index].sys_manager_name = val
+                    }
+                  }
+                })
+            } else {
+              return h('span', params.row.sys_manager_name)
+            }
+          }
+        },
+        {
+          title: '角色',
+          key: 'sys_manager_role',
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              return h('Input',
+                {
+                  props: {
+                    type: 'text',
+                    placeholder: '角色',
+                    value: params.row.sys_manager_role,
+                    clearable: true
+                  },
+                  style: {
+                    width: '120px'
+                  },
+                  on: {
+                    input: val => {
+                      this.formValidate.sys_manager_list[params.index].sys_manager_role = val
+                    }
+                  }
+                })
+            } else {
+              return h('span', params.row.sys_manager_role)
+            }
+          }
+        },
+        {
+          title: '系统负责人电话',
+          key: 'sys_manager_phone',
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              return h('Input',
+                {
+                  props: {
+                    type: 'text',
+                    placeholder: '系统负责人电话',
+                    value: params.row.sys_manager_phone,
+                    clearable: true
+                  },
+                  style: {
+                    width: '120px'
+                  },
+                  on: {
+                    input: val => {
+                      this.formValidate.sys_manager_list[params.index].sys_manager_phone = val
+                    }
+                  }
+                })
+            } else {
+              return h('span', params.row.sys_manager_phone)
+            }
+          }
+        },
+        {
+          title: '操作',
+          key: 'sysmg_handle',
+          width: 80,
+          align: 'center',
+          render: (h, params) => {
+            if (this.formValidate._editing) {
+              return h('div', [
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'error',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.formValidate.sys_manager_list.splice(params.index, 1)
+                      }
+                    }
+                  },
+                  '删除'
+                )
+              ])
+            }
+          }
+        }
+      ],
+
+      // 升级记录
+      formValidate2: {
+        id: null,
+        sys_name: '',
+        sys_version: '',
+        up_content: '',
+        up_stime: '',
+        up_etime: '',
+        issued_time: '',
+        isPilot: '',
+        pilot_unit: '',
+        up_real_time: '',
+        isAffect: ''
+      },
+
+      ruleValidate2: {
+        sys_name: [{ required: true, message: '系统名称不能为空', trigger: 'blur' }],
+        sys_version: [{ required: true, message: '版本号不能为空', trigger: 'blur' }],
+        up_content: [{ required: true, message: '升级内容不能为空', trigger: 'blur' }]
+      },
+
+      sysNameList: [],
+      searchSysValue: '',
+      tableData2: [],
+      columns2: [
+        { title: '系统名称', key: 'sys_name', align: 'center' },
+        { title: '版本号', key: 'sys_version', align: 'center' },
+        {
+          title: '升级内容',
+          key: 'up_content',
+          align: 'center',
+          render: (h, params) => {
+            const roleTitle = params.row.up_content;
+            return h('div', [
+              h('span', {
+                style: {
+                  display: 'inline-block',
+                  width: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                },
+                domProps: {
+                  title: roleTitle
+                }
+              }, roleTitle)
+            ])
+          }
+        },
+        { title: '开始时间', key: 'up_stime', width: 100, align: 'center' },
+        { title: '结束时间', key: 'up_etime', width: 100, align: 'center' },
+        { title: '下发时间', key: 'issued_time', width: 100, align: 'center' },
+        { title: '实际完成时间', key: 'up_real_time', width: 100, align: 'center' },
+        { title: '是否试点', key: 'isPilot', align: 'center' },
+        { title: '试点单位', key: 'pilot_unit', align: 'center' },
+        { title: '是否影响业务', key: 'isAffect', align: 'center' },
+        {
+          title: '操作',
+          key: 'handle2',
+          width: 80,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Button',
+                {
+                  props: {
+                    type: 'info',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '2px'
+                  },
+                  on: {
+                    click: () => {
+                      this.handlerSysUpdate(params.row, 'put', '编辑')
+                    }
+                  }
+                }, '编辑'
+              )
+            ])
+          }
+        }
+      ],
+      imgUrl: '',
+      visible: false,
+      uploadList: [],
+      modalTable: {
+        tableVisible: false,
+        tableTitle: ''
+      },
+      isUpDetail: true,
+      tableDetail: [],
+      columnsDetail: [
+        { title: '负责人名称', key: 'sys_manager_name', align: 'center' },
+        { title: '角色', key: 'sys_manager_role', align: 'center' },
+        { title: '电话', key: 'sys_manager_phone', align: 'center' }
+      ],
+      columnsUpDetail: [
+        {
+          title: '名称',
+          key: 'name',
+          align: 'center',
+          render: (h, params) => {
+            return h('a', {
+              on: {
+                click: () => {
+                  this.openUrl(params.row.url)
+                }
+              }
+            }, params.row.name
+            )
+          }
+        }
+      ]
+    }
+  },
+  methods: {
+    openUrl (url) {
+      window.open(viewUrl + encodeURIComponent(url))
     },
-    data() {
-      return {
-        isDisable: false,
-        UploadUrl: '',
-        // 分页
-        ruleLoading: false,
-        ruleModal: false,
-        pageTotal: 0, // 数据总数
-        pageNum: 1, // 当前页码
-        pageSize: 15, // 每页条数
-        searchVal: '',
-        modalMap: {
-          modalVisible: false,
-          modalTitle: '添加系统',
-        },
-        modalMap2: {
-          modalVisible: false,
-          modalTitle: '添加升级记录',
-        },
-        editModalData: null,
-        searchKey: "sys_name",
-        searchValue: "",
+    handleUpDetail (upload_list) {
+      this.isUpDetail = true;
+      this.modalTable.tableVisible = true;
+      this.modalTable.tableTitle = '查看附件';
+      this.tableDetail = upload_list
+    },
+    handleDocxDetail (sys_docx_list) {
+      this.isUpDetail = true;
+      this.modalTable.tableVisible = true;
+      this.modalTable.tableTitle = '查看文档';
+      this.tableDetail = sys_docx_list
+    },
+    handleDetail (sys_mg_list) {
+      this.isUpDetail = false;
+      this.modalTable.tableVisible = true;
+      this.modalTable.tableTitle = '查看系统负责人';
+      this.tableDetail = sys_mg_list
+    },
+    handleView (url) {
+      this.imgUrl = url;
+      this.visible = true
+    },
+    handleRemove (file) {
+      const fileList = this.$refs.upload.fileList;
+      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+      this.formValidate.uploadList = this.$refs.upload.fileList
+    },
+    handleBeforeUpload (file) {
+      this.file = file;
+      this.formValidate.sys_report = this.file.name;
+      const check = this.uploadList.length < 5;
+      if (!check) {
+        this.$Notice.warning({
+          title: '最多上传5个'
+        })
+      }
+      return check
+    },
+    handleMaxSize (file) {
+      this.$Notice.warning({
+        title: '文件大小超限',
+        desc: '文件  ' + file.name + ' 太大，上传文件大小不能超过5M.'
+      })
+    },
+    handleFormatError (file) {
+      this.$Notice.warning({
+        title: '文件格式不正确',
+        desc: '文件:' + file.name + ' 格式不正确，请选择：jpg,jpeg,png,md,pptx,ppt,docx,doc,pdf等格式类型 '
+      })
+    },
+    handleSuccess (res, file) {
+      if (res.code === 0) {
+        file.url = file.response.url;
+        file.isShow = false;
+        const na_ty = file.name.split('.');
+        const ty = na_ty[na_ty.length - 1];
+        const ty_li = ['jpg', 'jpeg', 'png'];
+        for (var i = 0; i < ty_li.length; i++) {
+          if (ty === ty_li[i]) {
+            file.isShow = true
+          }
+        }
+        this.formValidate.uploadList = this.$refs.upload.fileList;
+        this.$Message.success(`${res.msg}`)
+      } else {
+        this.$Message.error(`${res.msg}`)
+      }
+    },
+    getSoftTpye () {
+      getSoftTpye().then(res => {
+        if (res.data.code === 0) {
+          this.soft_type = res.data.data
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    // 获取软件列表
+    getSoftList (key, value) {
+      getSoftList(this.pageNum, 999, key, value).then(res => {
+        if (res.data.code === 0) {
+          const sl = [];
+          for (var ty = 1; ty <= 8; ty++) {
+            const soft_obj = {
+              value: ty,
+              label: this.soft_type[ty],
+              children: []
+            };
 
-        tableData: [],
-        tableSelectIdList: [],
-        formValidate: {
+            for (var i = 0; i < res.data.data[ty].length; i++) {
+              const child = {
+                value: res.data.data[ty][i].soft_name,
+                label: res.data.data[ty][i].soft_name
+              };
+              soft_obj.children.push(child)
+            }
+            sl.push(soft_obj)
+          }
+          this.soft_list = sl
+          // console.log(res.data.data)
+          // console.log(sl)
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    // 获取系统列表
+    getSysList (key, value) {
+      getSysList(this.pageNum, 999, key, value).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`);
+          this.tableData = res.data.data;
+          this.tableData1 = [];
+          this.tableData2 = [];
+          this.sysNameList = [];
+          for (var i = 0; i < this.tableData.length; i++) {
+            const obj = {};
+            obj.id = this.tableData[i].id;
+            obj.sys_name = this.tableData[i].sys_name;
+            this.sysNameList.push(obj)
+          }
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    // 获取升级历史列表
+    getSysUpdateList (key, value) {
+      getSysUpdateList(this.pageNum, 999, key, value).then(res => {
+        if (res.data.code === 0) {
+          this.tableData2 = res.data.data
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    // 增加一行应用软件
+    addSoftTr () {
+      const add_obj = {
+        soft_type_name: [],
+        soft_version: '',
+        soft_ip: '',
+        soft_usage: ''
+      };
+      this.formValidate._editing = true;
+      this.formValidate.soft_list.push(add_obj)
+    },
+    // 增加一行系统联系人
+    addSysMgTr () {
+      const add_obj = {
+        sys_manager_name: '',
+        sys_manager_role: '',
+        sys_manager_phone: ''
+      };
+      this.formValidate._editing = true;
+      this.formValidate.sys_manager_list.push(add_obj)
+    },
+    // 添加系统
+    handlerSys (paramsRow, meth, mtitle) {
+      this.$refs.upload.clearFiles();
+      this.modalMap.modalVisible = true;
+      this.modalMap.modalTitle = mtitle;
+      this.editModalData = meth;
+      this.getSoftList();
+      if (paramsRow && paramsRow.id) {
+        this.$refs.upload.fileList = paramsRow.uploadList;
+        this.formValidate = {
+          id: paramsRow.id,
+          sys_name: paramsRow.sys_name,
+          sys_version: paramsRow.sys_version,
+          online_time: paramsRow.online_time,
+          development: paramsRow.development,
+          development_contact: paramsRow.development_contact,
+          development_phone: paramsRow.development_phone,
+          sys_info: paramsRow.sys_info,
+          soft_list: paramsRow.soft_list,
+          sys_manager_list: paramsRow.sys_manager_list,
+          uploadList: paramsRow.uploadList,
+          _editing: true
+        }
+      } else {
+        this.formValidate = {
           id: null,
           sys_name: '',
           sys_version: '',
@@ -281,384 +1014,41 @@
           sys_info: '',
           soft_list: [],
           sys_manager_list: [],
-          sys_report: '',
           uploadList: []
-        },
-
-        ruleValidate: {
-          sys_name: [{required: true, message: "系统名称不能为空", trigger: "blur"}],
-          online_time: [{required: true, message: "请填写上线时间", trigger: "blur"}],
-        },
-
-        columns: [
-          // {type: 'selection', key: 'id', width: 80, align: 'center'},
-          // {title: '编号', key: 'id', align: 'center',},
-          {title: '系统名称', key: 'sys_name', align: 'center'},
-          {title: '版本号', key: 'sys_version', align: 'center'},
-          {title: '上线时间', key: 'online_time', width: 100, align: 'center'},
-          {title: '开发单位', key: 'development', align: 'center'},
-          {title: '开发单位联系人', key: 'development_contact', align: 'center'},
-          {title: '开发单位联系电话', key: 'development_phone', align: 'center'},
-          {
-            title: '系统负责人', key: 'sys_manager_list', align: 'center',
-            render: (h, params) => {
-              return h('a', {
-                  on: {
-                    click: () => {
-                      this.handleDetail(params.row.sys_manager_list)
-                    }
-                  }
-                }, '查看信息'
-              )
-            }
-          },
-          // {title: '系统简介', key: 'sys_info', align: 'center'},
-          {
-            title: '附件', key: 'uploadList', align: 'center',
-            render: (h, params) => {
-              return h('a', {
-                  on: {
-                    click: () => {
-                      this.handleUpDetail(params.row.uploadList)
-                    }
-                  }
-                }, '查看附件'
-              )
-            }
-            // render: (h, params) => {
-            //   let a_list = [];
-            //   for (var i = 0; i < params.row.uploadList.length; i++) {
-            //     let url = params.row.uploadList[i]['url'];
-            //     let a_h = h('a', {
-            //       attrs: {
-            //         href: url,
-            //         target: '_black',
-            //       },
-            //       style: {
-            //         display: 'block'
-            //       },
-            //     }, params.row.uploadList[i]['name']);
-            //     a_list.push(a_h)
-            //   }
-            //   return h('div', a_list)
-            // }
-          },
-          {
-            title: '操作', key: 'handle', width: 185, align: 'center',
-            render: (h, params) => {
-              return h('div', [
-                h('Button',
-                  {
-                    props: {
-                      type: 'success',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerSysUpdate(params.row, 'post', '升级记录')
-                      }
-                    }
-                  }, '升级'
-                ),
-                h('Button',
-                  {
-                    props: {
-                      type: 'info',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerSys(params.row, 'put', '编辑')
-                      }
-                    }
-                  }, '编辑'
-                ),
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'error',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerDeleteSys(params)
-                      }
-                    }
-                  }, '删除'
-                )
-              ])
-            }
+        }
+      }
+    },
+    // 添加升级记录
+    handlerSysUpdate (paramsRow, meth, mtitle) {
+      this.modalMap2.modalVisible = true;
+      this.modalMap2.modalTitle = mtitle;
+      this.editModalData = meth;
+      if (paramsRow && paramsRow.id) {
+        if (meth === 'post') {
+          this.formValidate2 = {
+            id: paramsRow.id,
+            sys_name: paramsRow.sys_name,
+            sys_version: paramsRow.sys_version,
+            isPilot: '否',
+            isAffect: '否'
           }
-        ],
-
-        //涉及的应用列表
-        tableData1: [],
-        columns1: [
-          {title: '类型', key: 'soft_type', align: 'center',},
-          {title: '软件名称', key: 'soft_name', align: 'center',},
-          {title: '版本号', key: 'soft_version', align: 'center',},
-          {title: 'IP', key: 'soft_ip', align: 'center',},
-          {title: '用途', key: 'soft_usage', align: 'center',},
-          {title: '操作', key: 'handle1', width: 80, align: 'center',}
-        ],
-
-        soft_type: {
-          1: '操作系统',
-          2: '虚拟化',
-          3: '数据库',
-          4: '服务',
-          5: '中间件',
-          6: '应用服务',
-          7: 'Web服务',
-          8: '其他',
-        },
-        soft_list: [],
-
-        columns3: [
-          {
-            title: '软件名称', key: 'soft_name', align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                // console.log(params.row.soft_type_name)
-                return h('Cascader',
-                  {
-                    props: {
-                      data: this.soft_list,
-                      trigger: 'hover',
-                      filterable: true,
-                      transfer: true,
-                      value: params.row.soft_type_name,
-                    },
-                    style: {},
-                    on: {
-                      'on-change': val => {
-                        this.formValidate.soft_list[params.index].soft_type_name = val
-                      },
-                    },
-                  })
-              } else {
-                return h('span', params.row.soft_name)
-              }
-            }
-          },
-          {
-            title: '版本号', key: 'soft_version', align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                return h('Input',
-                  {
-                    props: {
-                      type: 'text',
-                      placeholder: '版本号',
-                      value: params.row.soft_version,
-                      clearable: true,
-                    },
-                    style: {
-                      width: '100px',
-                    },
-                    on: {
-                      'input': val => {
-                        this.formValidate.soft_list[params.index].soft_version = val
-                      },
-                    },
-                  })
-              } else {
-                return h('span', params.row.soft_version)
-              }
-            }
-          },
-          {
-            title: 'IP', key: 'soft_ip', align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                return h('Input',
-                  {
-                    props: {
-                      type: 'text',
-                      placeholder: 'IP',
-                      value: params.row.soft_ip,
-                      clearable: true,
-                    },
-                    style: {
-                      width: '100px',
-                    },
-                    on: {
-                      'input': val => {
-                        this.formValidate.soft_list[params.index].soft_ip = val
-                      },
-                    },
-                  })
-              } else {
-                return h('span', params.row.soft_ip)
-              }
-            }
-          },
-          {
-            title: '用途', key: 'soft_usage', align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                return h('Input',
-                  {
-                    props: {
-                      type: 'text',
-                      placeholder: '用途',
-                      value: params.row.soft_usage,
-                      clearable: true,
-                    },
-                    style: {
-                      width: '150px',
-                    },
-                    on: {
-                      'input': val => {
-                        this.formValidate.soft_list[params.index].soft_usage = val
-                      },
-                    },
-                  })
-              } else {
-                return h('span', params.row.soft_usage)
-              }
-            }
-          },
-          {
-            title: '操作', key: 'handle1', width: 80, align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                return h('div', [
-                  h(
-                    'Button',
-                    {
-                      props: {
-                        type: 'error',
-                        size: 'small'
-                      },
-                      on: {
-                        click: () => {
-                          this.formValidate.soft_list.splice(params.index, 1)
-                        }
-                      }
-                    },
-                    '删除'
-                  )
-                ])
-              }
-            }
+        } else {
+          this.formValidate2 = {
+            id: paramsRow.id,
+            sys_name: paramsRow.sys_name,
+            sys_version: paramsRow.sys_version,
+            up_content: paramsRow.up_content,
+            up_stime: paramsRow.up_stime,
+            up_etime: paramsRow.up_etime,
+            issued_time: paramsRow.issued_time,
+            isPilot: paramsRow.isPilot,
+            pilot_unit: paramsRow.pilot_unit,
+            up_real_time: paramsRow.up_real_time,
+            isAffect: paramsRow.isAffect
           }
-        ],
-
-        columns4: [
-          {
-            title: '系统负责人', key: 'sys_manager_name', align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                return h('Input',
-                  {
-                    props: {
-                      type: 'text',
-                      placeholder: '系统负责人',
-                      value: params.row.sys_manager_name,
-                      clearable: true,
-                    },
-                    style: {
-                      width: '120px',
-                    },
-                    on: {
-                      'input': val => {
-                        this.formValidate.sys_manager_list[params.index].sys_manager_name = val
-                      },
-                    },
-                  })
-              } else {
-                return h('span', params.row.sys_manager_name)
-              }
-            }
-          },
-          {
-            title: '角色', key: 'sys_manager_role', align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                return h('Input',
-                  {
-                    props: {
-                      type: 'text',
-                      placeholder: '角色',
-                      value: params.row.sys_manager_role,
-                      clearable: true,
-                    },
-                    style: {
-                      width: '120px',
-                    },
-                    on: {
-                      'input': val => {
-                        this.formValidate.sys_manager_list[params.index].sys_manager_role = val
-                      },
-                    },
-                  })
-              } else {
-                return h('span', params.row.sys_manager_role)
-              }
-            }
-          },
-          {
-            title: '系统负责人电话', key: 'sys_manager_phone', align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                return h('Input',
-                  {
-                    props: {
-                      type: 'text',
-                      placeholder: '系统负责人电话',
-                      value: params.row.sys_manager_phone,
-                      clearable: true,
-                    },
-                    style: {
-                      width: '120px',
-                    },
-                    on: {
-                      'input': val => {
-                        this.formValidate.sys_manager_list[params.index].sys_manager_phone = val
-                      },
-                    },
-                  })
-              } else {
-                return h('span', params.row.sys_manager_phone)
-              }
-            }
-          },
-          {
-            title: '操作', key: 'sysmg_handle', width: 80, align: 'center',
-            render: (h, params) => {
-              if (this.formValidate._editing) {
-                return h('div', [
-                  h(
-                    'Button',
-                    {
-                      props: {
-                        type: 'error',
-                        size: 'small'
-                      },
-                      on: {
-                        click: () => {
-                          this.formValidate.sys_manager_list.splice(params.index, 1)
-                        }
-                      }
-                    },
-                    '删除'
-                  )
-                ])
-              }
-            }
-          }
-        ],
-
-        //升级记录
-        formValidate2: {
+        }
+      } else {
+        this.formValidate2 = {
           id: null,
           sys_name: '',
           sys_version: '',
@@ -669,437 +1059,119 @@
           isPilot: '',
           pilot_unit: '',
           up_real_time: '',
-          isAffect: '',
-        },
-
-        ruleValidate2: {
-          sys_name: [{required: true, message: "系统名称不能为空", trigger: "blur"}],
-          sys_version: [{required: true, message: "版本号不能为空", trigger: "blur"}],
-          up_content: [{required: true, message: "升级内容不能为空", trigger: "blur"}],
-        },
-
-        sysNameList: [],
-        searchSysValue: '',
-        tableData2: [],
-        columns2: [
-          {title: '系统名称', key: 'sys_name', align: 'center',},
-          {title: '版本号', key: 'sys_version', align: 'center',},
-          {
-            title: '升级内容', key: 'up_content', align: 'center',
-            render: (h, params) => {
-              let roleTitle = params.row.up_content
-              return h('div', [
-                h('span', {
-                  style: {
-                    display: 'inline-block',
-                    width: '100%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  },
-                  domProps: {
-                    title: roleTitle
-                  }
-                }, roleTitle)
-              ])
-            }
-          },
-          {title: '开始时间', key: 'up_stime', width: 100, align: 'center'},
-          {title: '结束时间', key: 'up_etime', width: 100, align: 'center'},
-          {title: '下发时间', key: 'issued_time', width: 100, align: 'center'},
-          {title: '实际完成时间', key: 'up_real_time', width: 100, align: 'center'},
-          {title: '是否试点', key: 'isPilot', align: 'center'},
-          {title: '试点单位', key: 'pilot_unit', align: 'center'},
-          {title: '是否影响业务', key: 'isAffect', align: 'center'},
-          {
-            title: '操作', key: 'handle2', width: 80, align: 'center',
-            render: (h, params) => {
-              return h('div', [
-                h('Button',
-                  {
-                    props: {
-                      type: 'info',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerSysUpdate(params.row, 'put', '编辑')
-                      }
-                    }
-                  }, '编辑'
-                ),
-              ])
-            }
-          }
-        ],
-        imgUrl: '',
-        visible: false,
-        uploadList: [],
+          isAffect: ''
+        }
       }
     },
-    methods: {
-      handleUpDetail(upload_list) {
-        let content = ''
-        for (let i = 0; i < upload_list.length; i++) {
-          let _con = `<a href="${upload_list[i].url}" target="_black" style="display: block;height: 25px;">
-                        ${upload_list[i].name}</a>`
-          content = content + _con
-        }
-        this.$Modal.info({
-          title: '附件信息',
-          content: content
-        })
-      },
-      handleDetail(sys_mg_list) {
-        let content = ''
-        for (let i = 0; i < sys_mg_list.length; i++) {
-          let _con = `<Row style="display:block;height: 25px;">
-            <span>${sys_mg_list[i].sys_manager_name}</span>
-            <span style="margin-left: 40px;">${sys_mg_list[i].sys_manager_role}</span>
-            <span style="margin-left: 40px;">${sys_mg_list[i].sys_manager_phone}</span>
-            </Row>`
-          content = content + _con
-        }
-        this.$Modal.info({
-          title: '系统负责人信息',
-          content: content
-        })
-      },
-      handleView(url) {
-        this.imgUrl = url;
-        this.visible = true;
-      },
-      handleRemove(file) {
-        const fileList = this.$refs.upload.fileList;
-        this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-        this.formValidate.uploadList = this.$refs.upload.fileList;
-      },
-      handleBeforeUpload(file) {
-        this.file = file
-        this.formValidate.sys_report = this.file.name
-        const check = this.uploadList.length < 5;
-        if (!check) {
-          this.$Notice.warning({
-            title: '最多上传5个'
-          });
-        }
-        return check;
-      },
-      handleMaxSize(file) {
-        this.$Notice.warning({
-          title: '文件大小超限',
-          desc: '文件  ' + file.name + ' 太大，上传文件大小不能超过5M.'
-        });
-      },
-      handleFormatError(file) {
-        this.$Notice.warning({
-          title: '文件格式不正确',
-          desc: '文件:' + file.name + ' 格式不正确，请选择：jpg,jpeg,png,md,pptx,ppt,docx,doc,pdf等格式类型 '
-        });
-      },
-      handleSuccess(res, file) {
-        if (res.code === 0) {
-          file.url = file.response.url
-          file.isShow = false
-          let na_ty = file.name.split(".")
-          let ty = na_ty[na_ty.length - 1]
-          let ty_li = ["jpg", "jpeg", "png"]
-          for (var i = 0; i < ty_li.length; i++) {
-            if (ty === ty_li[i]) {
-              file.isShow = true
-            }
-          }
-          this.formValidate.uploadList = this.$refs.upload.fileList;
-          this.$Message.success(`${res.msg}`)
-        } else {
-          this.$Message.error(`${res.msg}`)
-        }
-      },
-      getSoftTpye() {
-        getSoftTpye().then(res => {
-          if (res.data.code === 0) {
-            this.soft_type = res.data.data
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      // 获取软件列表
-      getSoftList(key, value) {
-        getSoftList(this.pageNum, 999, key, value).then(res => {
-          if (res.data.code === 0) {
-            let sl = []
-            for (var ty = 1; ty <= 8; ty++) {
-              let soft_obj = {
-                value: ty,
-                label: this.soft_type[ty],
-                children: [],
-              }
-
-              for (var i = 0; i < res.data.data[ty].length; i++) {
-                let child = {
-                  value: res.data.data[ty][i].soft_name,
-                  label: res.data.data[ty][i].soft_name
+    showList (data) {
+      // console.log(data)
+      this.tableData1 = data.soft_list;
+      this.getSysUpdateList('sys_id', data.id);
+      this.searchSysValue = data.id
+    },
+    //
+    handleSubmitSys (value) {
+      this.$refs[value].validate((valid) => {
+        if (valid) {
+          this.isDisable = true;
+          setTimeout(() => {
+            operationSys(this.formValidate, this.editModalData).then(
+              res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`);
+                  this.getSysList('id', this.searchVal);
+                  this.tableData1 = this.formValidate.soft_list;
+                  this.modalMap.modalVisible = false
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
                 }
-                soft_obj.children.push(child)
               }
-              sl.push(soft_obj)
-            }
-            this.soft_list = sl
-            // console.log(res.data.data)
-            // console.log(sl)
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      // 获取系统列表
-      getSysList(key, value) {
-        getSysList(this.pageNum, 999, key, value).then(res => {
-          if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
-            this.tableData = res.data.data
-            this.tableData1 = []
-            this.tableData2 = []
-            this.sysNameList = []
-            for (var i = 0; i < this.tableData.length; i++) {
-              let obj = {}
-              obj['id'] = this.tableData[i].id
-              obj['sys_name'] = this.tableData[i].sys_name
-              this.sysNameList.push(obj)
-            }
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      // 获取升级历史列表
-      getSysUpdateList(key, value) {
-        getSysUpdateList(this.pageNum, 999, key, value).then(res => {
-          if (res.data.code === 0) {
-            this.tableData2 = res.data.data
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      // 增加一行应用软件
-      addSoftTr() {
-        let add_obj = {
-          soft_type_name: [],
-          soft_version: '',
-          soft_ip: '',
-          soft_usage: '',
-        }
-        this.formValidate._editing = true
-        this.formValidate.soft_list.push(add_obj)
-      },
-      // 增加一行系统联系人
-      addSysMgTr() {
-        let add_obj = {
-          sys_manager_name: '',
-          sys_manager_role: '',
-          sys_manager_phone: '',
-        }
-        this.formValidate._editing = true
-        this.formValidate.sys_manager_list.push(add_obj)
-      },
-      // 添加系统
-      handlerSys(paramsRow, meth, mtitle) {
-        this.$refs.upload.clearFiles();
-        this.modalMap.modalVisible = true
-        this.modalMap.modalTitle = mtitle
-        this.editModalData = meth
-        this.getSoftList()
-        if (paramsRow && paramsRow.id) {
-          this.$refs.upload.fileList = paramsRow.uploadList;
-          this.formValidate = {
-            id: paramsRow.id,
-            sys_name: paramsRow.sys_name,
-            sys_version: paramsRow.sys_version,
-            online_time: paramsRow.online_time,
-            development: paramsRow.development,
-            development_contact: paramsRow.development_contact,
-            development_phone: paramsRow.development_phone,
-            sys_info: paramsRow.sys_info,
-            soft_list: paramsRow.soft_list,
-            sys_manager_list: paramsRow.sys_manager_list,
-            uploadList: paramsRow.uploadList,
-            _editing: true
-          }
+            );
+            this.isDisable = false
+          }, 1000)
         } else {
-          this.formValidate = {
-            id: null,
-            sys_name: '',
-            sys_version: '',
-            online_time: '',
-            development: '',
-            development_contact: '',
-            development_phone: '',
-            sys_info: '',
-            soft_list: [],
-            sys_manager_list: [],
-            uploadList: [],
-          }
+          this.$Message.error('表单校验错误')
         }
-      },
-      // 添加升级记录
-      handlerSysUpdate(paramsRow, meth, mtitle) {
-        this.modalMap2.modalVisible = true
-        this.modalMap2.modalTitle = mtitle
-        this.editModalData = meth
-        if (paramsRow && paramsRow.id) {
-          if (meth === 'post') {
-            this.formValidate2 = {
-              id: paramsRow.id,
-              sys_name: paramsRow.sys_name,
-              sys_version: paramsRow.sys_version,
-              isPilot: '否',
-              isAffect: '否',
-            }
-          } else {
-            this.formValidate2 = {
-              id: paramsRow.id,
-              sys_name: paramsRow.sys_name,
-              sys_version: paramsRow.sys_version,
-              up_content: paramsRow.up_content,
-              up_stime: paramsRow.up_stime,
-              up_etime: paramsRow.up_etime,
-              issued_time: paramsRow.issued_time,
-              isPilot: paramsRow.isPilot,
-              pilot_unit: paramsRow.pilot_unit,
-              up_real_time: paramsRow.up_real_time,
-              isAffect: paramsRow.isAffect,
-            }
-          }
-        } else {
-          this.formValidate2 = {
-            id: null,
-            sys_name: '',
-            sys_version: '',
-            up_content: '',
-            up_stime: '',
-            up_etime: '',
-            issued_time: '',
-            isPilot: '',
-            pilot_unit: '',
-            up_real_time: '',
-            isAffect: '',
-          }
-        }
-      },
-      showList(data) {
-        // console.log(data)
-        this.tableData1 = data.soft_list
-        this.getSysUpdateList('sys_id', data.id)
-        this.searchSysValue = data.id
-      },
-      //
-      handleSubmitSys(value) {
-        this.$refs[value].validate((valid) => {
-          if (valid) {
-            this.isDisable=true;
-            setTimeout(() => {
-              operationSys(this.formValidate, this.editModalData).then(
-                res => {
-                  if (res.data.code === 0) {
-                    this.$Message.success(`${res.data.msg}`);
-                    this.getSysList('id', this.searchVal);
-                    this.tableData1 = this.formValidate.soft_list
-                    this.modalMap.modalVisible = false;
-                  } else {
-                    this.$Message.error(`${res.data.msg}`);
-                  }
-                }
-              );
-              this.isDisable=false;
-            }, 1000);
-          } else {
-            this.$Message.error('表单校验错误');
-          }
-        })
-      },
+      })
+    },
 
-      handleSubmitSysUpdate(value) {
-        this.$refs[value].validate((valid) => {
-          if (valid) {
-            this.isDisable=true;
-            setTimeout(() => {
-              operationSysUpdate(this.formValidate2, this.editModalData).then(
-                res => {
-                  if (res.data.code === 0) {
-                    this.$Message.success(`${res.data.msg}`);
-                    this.getSysList();
-                    this.getSysUpdateList('sys_id', this.searchSysValue);
-                    this.modalMap2.modalVisible = false;
-                  } else {
-                    this.$Message.error(`${res.data.msg}`);
-                  }
+    handleSubmitSysUpdate (value) {
+      this.$refs[value].validate((valid) => {
+        if (valid) {
+          this.isDisable = true;
+          setTimeout(() => {
+            operationSysUpdate(this.formValidate2, this.editModalData).then(
+              res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`);
+                  this.getSysList();
+                  this.getSysUpdateList('sys_id', this.searchSysValue);
+                  this.modalMap2.modalVisible = false
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
                 }
-              );
-              this.isDisable=false;
-            }, 1000);
-          } else {
-            this.$Message.error('表单校验错误');
-          }
-        })
-      },
-
-      handlerDeleteSys(params) {
-        if (confirm('确定要删除吗')) {
-          operationSys({id: params.row.id}, 'delete').then(
-            res => {
-              if (res.data.code === 0) {
-                this.$Message.success(`${res.data.msg}`)
-                this.getSysList('id', this.searchVal);
-              } else {
-                this.$Message.error(`${res.data.msg}`)
               }
-            })
+            );
+            this.isDisable = false
+          }, 1000)
+        } else {
+          this.$Message.error('表单校验错误')
         }
-      },
-      handleReset(name) {
-        this.$refs[name].resetFields();
-      },
-      handlerCheck() {
-        this.$Message.error(`待完善`)
-      },
-      handleClear(e) {
-        if (e.target.value === "") this.tableData = this.value;
-      },
-      handleSearch() {
-        this.getSysList(this.searchKey, this.searchValue);
-      },
-      handleSearchSysUpgrade() {
-        this.getSysUpdateList('sys_id', this.searchSysValue)
+      })
+    },
+
+    handlerDeleteSys (params) {
+      if (confirm('确定要删除吗')) {
+        operationSys({ id: params.row.id }, 'delete').then(
+          res => {
+            if (res.data.code === 0) {
+              this.$Message.success(`${res.data.msg}`);
+              this.getSysList('id', this.searchVal)
+            } else {
+              this.$Message.error(`${res.data.msg}`)
+            }
+          })
       }
     },
-    watch: {
-      // searchVal (val) {
-      //   this.searchVal = val
-      //   if(this.selectTwo === 'tag'){
-      //     this.getTagList("tag_name", this.searchVal)
-      //   }else if(this.selectTwo === 'DB'){
-      //     this.getDBList(this.searchVal)
-      //   }else if(this.selectTwo === 'server'){
-      //     this.getServerList(this.searchVal)
-      //   }
-      // }
+    handleReset (name) {
+      this.$refs[name].resetFields()
     },
-    created() {
-      // this.searchSysValue =
-      //this.handleSelect(this.checkData.env)
+    handlerCheck () {
+      this.$Message.error('待完善')
     },
-    mounted() {
-      this.getSysList();
-      this.getSoftList();
-      this.UploadUrl = UploadUrl
-      this.uploadList = this.$refs.upload.fileList;
+    handleClear (e) {
+      if (e.target.value === '') this.tableData = this.value
+    },
+    handleSearch () {
+      this.getSysList(this.searchKey, this.searchValue)
+    },
+    handleSearchSysUpgrade () {
+      this.getSysUpdateList('sys_id', this.searchSysValue)
     }
+  },
+  watch: {
+    // searchVal (val) {
+    //   this.searchVal = val
+    //   if(this.selectTwo === 'tag'){
+    //     this.getTagList("tag_name", this.searchVal)
+    //   }else if(this.selectTwo === 'DB'){
+    //     this.getDBList(this.searchVal)
+    //   }else if(this.selectTwo === 'server'){
+    //     this.getServerList(this.searchVal)
+    //   }
+    // }
+  },
+  created () {
+    // this.searchSysValue =
+    // this.handleSelect(this.checkData.env)
+  },
+  mounted () {
+    this.getSysList();
+    this.getSoftList();
+    this.UploadUrl = UploadUrl;
+    this.uploadList = this.$refs.upload.fileList
   }
+}
 </script>
 <style lang="less" scoped>
   .search-con {
