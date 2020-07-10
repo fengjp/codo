@@ -1,7 +1,7 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
-const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
-export const UploadUrl = baseUrl + '/pb/v1/pb/doc/upload/'
+const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro;
+export const UploadUrl = baseUrl + '/pb/v1/pb/doc/upload/';
 
 export const getDocList = (page, limit, key, value, date = ['', '']) => {
   return axios.request({
@@ -16,7 +16,7 @@ export const getDocList = (page, limit, key, value, date = ['', '']) => {
       end_date: date.length > 1 ? date[1] : ''
     }
   })
-}
+};
 
 export const operationDoc = (data, meth) => {
   return axios.request({
@@ -24,4 +24,4 @@ export const operationDoc = (data, meth) => {
     method: meth,
     data
   })
-}
+};

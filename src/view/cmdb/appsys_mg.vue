@@ -254,7 +254,6 @@ import {
   operationSysUpdate,
   getSysUpdateList,
   UploadUrl,
-  viewUrl
 } from '@/api/cmdb/sys.js'
 
 import { getSoftList, getSoftTpye } from '@/api/cmdb/software.js'
@@ -734,7 +733,7 @@ export default {
           key: 'up_content',
           align: 'center',
           render: (h, params) => {
-            const roleTitle = params.row.up_content;
+            const roleTitle = params.row.up_content
             return h('div', [
               h('span', {
                 style: {
@@ -820,39 +819,39 @@ export default {
   },
   methods: {
     openUrl (url) {
-      window.open(viewUrl + encodeURIComponent(url))
+      window.open(url)
     },
     handleUpDetail (upload_list) {
-      this.isUpDetail = true;
-      this.modalTable.tableVisible = true;
-      this.modalTable.tableTitle = '查看附件';
+      this.isUpDetail = true
+      this.modalTable.tableVisible = true
+      this.modalTable.tableTitle = '查看附件'
       this.tableDetail = upload_list
     },
     handleDocxDetail (sys_docx_list) {
-      this.isUpDetail = true;
-      this.modalTable.tableVisible = true;
-      this.modalTable.tableTitle = '查看文档';
+      this.isUpDetail = true
+      this.modalTable.tableVisible = true
+      this.modalTable.tableTitle = '查看文档'
       this.tableDetail = sys_docx_list
     },
     handleDetail (sys_mg_list) {
-      this.isUpDetail = false;
-      this.modalTable.tableVisible = true;
-      this.modalTable.tableTitle = '查看系统负责人';
+      this.isUpDetail = false
+      this.modalTable.tableVisible = true
+      this.modalTable.tableTitle = '查看系统负责人'
       this.tableDetail = sys_mg_list
     },
     handleView (url) {
-      this.imgUrl = url;
+      this.imgUrl = url
       this.visible = true
     },
     handleRemove (file) {
-      const fileList = this.$refs.upload.fileList;
-      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+      const fileList = this.$refs.upload.fileList
+      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
       this.formValidate.uploadList = this.$refs.upload.fileList
     },
     handleBeforeUpload (file) {
-      this.file = file;
-      this.formValidate.sys_report = this.file.name;
-      const check = this.uploadList.length < 5;
+      this.file = file
+      this.formValidate.sys_report = this.file.name
+      const check = this.uploadList.length < 5
       if (!check) {
         this.$Notice.warning({
           title: '最多上传5个'
@@ -874,17 +873,17 @@ export default {
     },
     handleSuccess (res, file) {
       if (res.code === 0) {
-        file.url = file.response.url;
-        file.isShow = false;
-        const na_ty = file.name.split('.');
-        const ty = na_ty[na_ty.length - 1];
-        const ty_li = ['jpg', 'jpeg', 'png'];
+        file.url = file.response.url
+        file.isShow = false
+        const na_ty = file.name.split('.')
+        const ty = na_ty[na_ty.length - 1]
+        const ty_li = ['jpg', 'jpeg', 'png']
         for (var i = 0; i < ty_li.length; i++) {
           if (ty === ty_li[i]) {
             file.isShow = true
           }
         }
-        this.formValidate.uploadList = this.$refs.upload.fileList;
+        this.formValidate.uploadList = this.$refs.upload.fileList
         this.$Message.success(`${res.msg}`)
       } else {
         this.$Message.error(`${res.msg}`)
@@ -903,19 +902,19 @@ export default {
     getSoftList (key, value) {
       getSoftList(this.pageNum, 999, key, value).then(res => {
         if (res.data.code === 0) {
-          const sl = [];
+          const sl = []
           for (var ty = 1; ty <= 8; ty++) {
             const soft_obj = {
               value: ty,
               label: this.soft_type[ty],
               children: []
-            };
+            }
 
             for (var i = 0; i < res.data.data[ty].length; i++) {
               const child = {
                 value: res.data.data[ty][i].soft_name,
                 label: res.data.data[ty][i].soft_name
-              };
+              }
               soft_obj.children.push(child)
             }
             sl.push(soft_obj)
@@ -932,15 +931,15 @@ export default {
     getSysList (key, value) {
       getSysList(this.pageNum, 999, key, value).then(res => {
         if (res.data.code === 0) {
-          this.$Message.success(`${res.data.msg}`);
-          this.tableData = res.data.data;
-          this.tableData1 = [];
-          this.tableData2 = [];
-          this.sysNameList = [];
+          this.$Message.success(`${res.data.msg}`)
+          this.tableData = res.data.data
+          this.tableData1 = []
+          this.tableData2 = []
+          this.sysNameList = []
           for (var i = 0; i < this.tableData.length; i++) {
-            const obj = {};
-            obj.id = this.tableData[i].id;
-            obj.sys_name = this.tableData[i].sys_name;
+            const obj = {}
+            obj.id = this.tableData[i].id
+            obj.sys_name = this.tableData[i].sys_name
             this.sysNameList.push(obj)
           }
         } else {
@@ -965,8 +964,8 @@ export default {
         soft_version: '',
         soft_ip: '',
         soft_usage: ''
-      };
-      this.formValidate._editing = true;
+      }
+      this.formValidate._editing = true
       this.formValidate.soft_list.push(add_obj)
     },
     // 增加一行系统联系人
@@ -975,19 +974,19 @@ export default {
         sys_manager_name: '',
         sys_manager_role: '',
         sys_manager_phone: ''
-      };
-      this.formValidate._editing = true;
+      }
+      this.formValidate._editing = true
       this.formValidate.sys_manager_list.push(add_obj)
     },
     // 添加系统
     handlerSys (paramsRow, meth, mtitle) {
-      this.$refs.upload.clearFiles();
-      this.modalMap.modalVisible = true;
-      this.modalMap.modalTitle = mtitle;
-      this.editModalData = meth;
-      this.getSoftList();
+      this.$refs.upload.clearFiles()
+      this.modalMap.modalVisible = true
+      this.modalMap.modalTitle = mtitle
+      this.editModalData = meth
+      this.getSoftList()
       if (paramsRow && paramsRow.id) {
-        this.$refs.upload.fileList = paramsRow.uploadList;
+        this.$refs.upload.fileList = paramsRow.uploadList
         this.formValidate = {
           id: paramsRow.id,
           sys_name: paramsRow.sys_name,
@@ -1020,9 +1019,9 @@ export default {
     },
     // 添加升级记录
     handlerSysUpdate (paramsRow, meth, mtitle) {
-      this.modalMap2.modalVisible = true;
-      this.modalMap2.modalTitle = mtitle;
-      this.editModalData = meth;
+      this.modalMap2.modalVisible = true
+      this.modalMap2.modalTitle = mtitle
+      this.editModalData = meth
       if (paramsRow && paramsRow.id) {
         if (meth === 'post') {
           this.formValidate2 = {
@@ -1065,28 +1064,28 @@ export default {
     },
     showList (data) {
       // console.log(data)
-      this.tableData1 = data.soft_list;
-      this.getSysUpdateList('sys_id', data.id);
+      this.tableData1 = data.soft_list
+      this.getSysUpdateList('sys_id', data.id)
       this.searchSysValue = data.id
     },
     //
     handleSubmitSys (value) {
       this.$refs[value].validate((valid) => {
         if (valid) {
-          this.isDisable = true;
+          this.isDisable = true
           setTimeout(() => {
             operationSys(this.formValidate, this.editModalData).then(
               res => {
                 if (res.data.code === 0) {
-                  this.$Message.success(`${res.data.msg}`);
-                  this.getSysList('id', this.searchVal);
-                  this.tableData1 = this.formValidate.soft_list;
+                  this.$Message.success(`${res.data.msg}`)
+                  this.getSysList('id', this.searchVal)
+                  this.tableData1 = this.formValidate.soft_list
                   this.modalMap.modalVisible = false
                 } else {
                   this.$Message.error(`${res.data.msg}`)
                 }
               }
-            );
+            )
             this.isDisable = false
           }, 1000)
         } else {
@@ -1098,20 +1097,20 @@ export default {
     handleSubmitSysUpdate (value) {
       this.$refs[value].validate((valid) => {
         if (valid) {
-          this.isDisable = true;
+          this.isDisable = true
           setTimeout(() => {
             operationSysUpdate(this.formValidate2, this.editModalData).then(
               res => {
                 if (res.data.code === 0) {
-                  this.$Message.success(`${res.data.msg}`);
-                  this.getSysList();
-                  this.getSysUpdateList('sys_id', this.searchSysValue);
+                  this.$Message.success(`${res.data.msg}`)
+                  this.getSysList()
+                  this.getSysUpdateList('sys_id', this.searchSysValue)
                   this.modalMap2.modalVisible = false
                 } else {
                   this.$Message.error(`${res.data.msg}`)
                 }
               }
-            );
+            )
             this.isDisable = false
           }, 1000)
         } else {
@@ -1125,7 +1124,7 @@ export default {
         operationSys({ id: params.row.id }, 'delete').then(
           res => {
             if (res.data.code === 0) {
-              this.$Message.success(`${res.data.msg}`);
+              this.$Message.success(`${res.data.msg}`)
               this.getSysList('id', this.searchVal)
             } else {
               this.$Message.error(`${res.data.msg}`)
@@ -1166,9 +1165,9 @@ export default {
     // this.handleSelect(this.checkData.env)
   },
   mounted () {
-    this.getSysList();
-    this.getSoftList();
-    this.UploadUrl = UploadUrl;
+    this.getSysList()
+    this.getSoftList()
+    this.UploadUrl = UploadUrl
     this.uploadList = this.$refs.upload.fileList
   }
 }

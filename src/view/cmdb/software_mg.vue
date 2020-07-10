@@ -280,51 +280,51 @@ export default {
       const add_obj = {
         soft_name: '',
         soft_type: 8
-      };
+      }
       if (value === 'tables1') {
-        add_obj.soft_type = 1;
-        this.tableData1.push(add_obj);
+        add_obj.soft_type = 1
+        this.tableData1.push(add_obj)
         this.tableData1.isEditing = true
       }
       if (value === 'tables2') {
-        add_obj.soft_type = 2;
-        this.tableData2.push(add_obj);
+        add_obj.soft_type = 2
+        this.tableData2.push(add_obj)
         this.tableData2.isEditing = true
       }
       if (value === 'tables3') {
-        add_obj.soft_type = 3;
-        this.tableData3.push(add_obj);
+        add_obj.soft_type = 3
+        this.tableData3.push(add_obj)
         this.tableData3.isEditing = true
       }
       if (value === 'tables4') {
-        add_obj.soft_type = 4;
-        this.tableData4.push(add_obj);
+        add_obj.soft_type = 4
+        this.tableData4.push(add_obj)
         this.tableData4.isEditing = true
       }
       if (value === 'tables5') {
-        add_obj.soft_type = 5;
-        this.tableData5.push(add_obj);
+        add_obj.soft_type = 5
+        this.tableData5.push(add_obj)
         this.tableData5.isEditing = true
       }
       if (value === 'tables6') {
-        add_obj.soft_type = 6;
-        this.tableData6.push(add_obj);
+        add_obj.soft_type = 6
+        this.tableData6.push(add_obj)
         this.tableData6.isEditing = true
       }
       if (value === 'tables7') {
-        add_obj.soft_type = 7;
-        this.tableData7.push(add_obj);
+        add_obj.soft_type = 7
+        this.tableData7.push(add_obj)
         this.tableData7.isEditing = true
       }
       if (value === 'tables8') {
-        add_obj.soft_type = 8;
-        this.tableData8.push(add_obj);
+        add_obj.soft_type = 8
+        this.tableData8.push(add_obj)
         this.tableData8.isEditing = true
       }
     },
 
     soft_save (value) {
-      let postdata = {};
+      let postdata = {}
       if (value === 'tableData1') {
         postdata = this.tableData1
       }
@@ -352,8 +352,8 @@ export default {
       operationSoft(postdata, 'post').then(
         res => {
           if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`);
-            this.$set(postdata, 'isEditing', false);
+            this.$Message.success(`${res.data.msg}`)
+            this.$set(postdata, 'isEditing', false)
             this.getSoftList()
           } else {
             this.$Message.error(`${res.data.msg}`)
@@ -365,13 +365,13 @@ export default {
     getSoftList (key, value) {
       getSoftList(this.pageNum, 999, key, value).then(res => {
         if (res.data.code === 0) {
-          this.tableData1 = res.data.data[1];
-          this.tableData2 = res.data.data[2];
-          this.tableData3 = res.data.data[3];
-          this.tableData4 = res.data.data[4];
-          this.tableData5 = res.data.data[5];
-          this.tableData6 = res.data.data[6];
-          this.tableData7 = res.data.data[7];
+          this.tableData1 = res.data.data[1]
+          this.tableData2 = res.data.data[2]
+          this.tableData3 = res.data.data[3]
+          this.tableData4 = res.data.data[4]
+          this.tableData5 = res.data.data[5]
+          this.tableData6 = res.data.data[6]
+          this.tableData7 = res.data.data[7]
           this.tableData8 = res.data.data[8]
         } else {
           this.$Message.error(`${res.data.msg}`)
@@ -382,14 +382,14 @@ export default {
     getSoftTpye () {
       getSoftTpye().then(res => {
         if (res.data.code === 0) {
-          this.soft_type = res.data.data;
-          this.pt1 = this.soft_type[1];
-          this.pt2 = this.soft_type[2];
-          this.pt3 = this.soft_type[3];
-          this.pt4 = this.soft_type[4];
-          this.pt5 = this.soft_type[5];
-          this.pt6 = this.soft_type[6];
-          this.pt7 = this.soft_type[7];
+          this.soft_type = res.data.data
+          this.pt1 = this.soft_type[1]
+          this.pt2 = this.soft_type[2]
+          this.pt3 = this.soft_type[3]
+          this.pt4 = this.soft_type[4]
+          this.pt5 = this.soft_type[5]
+          this.pt6 = this.soft_type[6]
+          this.pt7 = this.soft_type[7]
           this.pt8 = this.soft_type[8]
         } else {
           this.$Message.error(`${res.data.msg}`)
@@ -423,7 +423,7 @@ export default {
     // }
   },
   mounted () {
-    this.getSoftTpye();
+    this.getSoftTpye()
     this.getSoftList()
   }
 }

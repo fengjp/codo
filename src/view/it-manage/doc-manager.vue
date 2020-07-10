@@ -88,257 +88,257 @@
 </template>
 
 <script>
-import {
-  UploadUrl,
-  getDocList,
-  operationDoc
-} from '@/api/doc'
+  import {
+    UploadUrl,
+    getDocList,
+    operationDoc
+  } from '@/api/doc'
 
-import {
-  getSysList
-} from '@/api/cmdb/sys.js'
+  import {
+    getSysList,
+  } from '@/api/cmdb/sys.js'
 
-export default {
-  data () {
-    return {
-      keyword: '',
-      UploadUrl: '',
-      data: [
-        {
-          title: '',
-          content: ''
-        }
-      ],
-      allSysList: [{ id: 0, type_name: '不关联' }],
-      modalTable: {
-        tableVisible: false,
-        tableTitle: '上传文档'
-      },
-      formValidate: {
-        sysID: 0,
-        uploadList: []
-      },
-      tableData: [],
-      pageTotal: 0, // 数据总数
-      pageNum: 1, // 当前页码
-      pageSize: 10, // 每页条数
-      //
-      searchKey: '',
-      searchValue: '',
-      isDisable: false,
-      allSysTag: [],
-      tagChecked: {}
-    }
-  },
-  methods: {
-    handleChange (checked, name) {
-      this.tagChecked[name] = checked;
-      if (name === 0) {
-        for (const key in this.tagChecked) {
-          this.tagChecked[key] = checked
-        }
-      } else {
-        this.tagChecked[0] = false;
-        let isAllTrue = 1;
-        for (const key in this.tagChecked) {
-          if (key != 0 && this.tagChecked[key] === false) {
-            isAllTrue = 0
+  export default {
+    data() {
+      return {
+        keyword: '',
+        UploadUrl: '',
+        data: [
+          {
+            title: '',
+            content: ''
           }
-        }
-        if (isAllTrue === 1) {
-          this.tagChecked[0] = true
-        }
+        ],
+        allSysList: [{"id": 0, "type_name": "不关联"}],
+        modalTable: {
+          tableVisible: false,
+          tableTitle: '上传文档'
+        },
+        formValidate: {
+          sysID: 0,
+          uploadList: []
+        },
+        tableData: [],
+        pageTotal: 0, // 数据总数
+        pageNum: 1, // 当前页码
+        pageSize: 10, // 每页条数
+        //
+        searchKey: '',
+        searchValue: '',
+        isDisable: false,
+        allSysTag: [],
+        tagChecked: {},
       }
-      this.$forceUpdate()
-      // console.log(this.tagChecked)
     },
-    // 获取系统分类
-    getSysTag (key, value) {
-      getSysList(this.pageNum, 999, key, value).then(res => {
-        if (res.data.code === 0) {
-          this.tableData = res.data.data;
-          this.allSysTag = [{ id: 0, name: '全部' }];
-          this.tagChecked[0] = true;
-          for (var i = 0; i < this.tableData.length; i++) {
-            const obj = {};
-            obj.id = this.tableData[i].id;
-            obj.name = this.tableData[i].sys_name;
-            this.allSysTag.push(obj);
-            this.tagChecked[this.tableData[i].id] = true
-          }
-          this.allSysTag.push({ id: -1, name: '其他' });
-          this.tagChecked[-1] = true
-        } else {
-          this.$Message.error(`${res.data.msg}`)
-        }
-      })
-    },
-    // 获取系统列表
-    getSysList (key, value) {
-      getSysList(this.pageNum, 999, key, value).then(res => {
-        if (res.data.code === 0) {
-          this.tableData = res.data.data;
-          this.allSysList = [{ id: 0, type_name: '不关联' }];
-          for (var i = 0; i < this.tableData.length; i++) {
-            const obj = {};
-            obj.id = this.tableData[i].id;
-            obj.type_name = this.tableData[i].sys_name;
-            this.allSysList.push(obj)
+    methods: {
+      handleChange(checked, name){
+        this.tagChecked[name] = checked;
+        if (name === 0){
+          for (let key in this.tagChecked){
+            this.tagChecked[key] = checked
           }
         } else {
-          this.$Message.error(`${res.data.msg}`)
-        }
-      })
-    },
-    handleSave (value) {
-      this.isDisable = true;
-      setTimeout(() => {
-        operationDoc(this.formValidate, 'post').then(
-          res => {
-            if (res.data.code === 0) {
-              this.$Message.success(`${res.data.msg}`);
-              this.modalTable.tableVisible = false
-            } else {
-              this.$Message.error(`${res.data.msg}`)
+          this.tagChecked[0] = false;
+          let isAllTrue = 1;
+          for (let key in this.tagChecked){
+            if (key != 0 && this.tagChecked[key] === false){
+              isAllTrue = 0
             }
           }
-        );
-        this.isDisable = false
-      }, 500)
-    },
-    handleRemove (file) {
-      const fileList = this.$refs.upload.fileList;
-      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-      this.formValidate.uploadList = this.$refs.upload.fileList
-    },
-    // handleBeforeUpload(file) {
-    //   this.file = file
-    //   this.formValidate.sys_report = this.file.name
-    //   const check = this.uploadList.length < 5;
-    //   if (!check) {
-    //     this.$Notice.warning({
-    //       title: '最多上传5个'
-    //     });
-    //   }
-    //   return check;
-    // },
-    handleMaxSize (file) {
-      this.$Notice.warning({
-        title: '文件大小超限',
-        desc: '文件  ' + file.name + ' 太大，上传文件大小不能超过20M.'
-      })
-    },
-    handleFormatError (file) {
-      this.$Notice.warning({
-        title: '文件格式不正确',
-        desc: '文件:' + file.name + ' 格式不正确，请选择：docx 等格式类型 '
-      })
-    },
-    handleSuccess (res, file) {
-      if (res.code === 0) {
-        file.url = file.response.url;
-        file.isShow = false;
+          if (isAllTrue === 1){
+            this.tagChecked[0] = true
+          }
+        }
+        this.$forceUpdate()
+        // console.log(this.tagChecked)
+      },
+      // 获取系统分类
+      getSysTag(key, value) {
+        getSysList(this.pageNum, 999, key, value).then(res => {
+          if (res.data.code === 0) {
+            this.tableData = res.data.data;
+            this.allSysTag = [{"id": 0, "name": "全部"}];
+            this.tagChecked[0] = true;
+            for (var i = 0; i < this.tableData.length; i++) {
+              let obj = {};
+              obj['id'] = this.tableData[i].id;
+              obj['name'] = this.tableData[i].sys_name;
+              this.allSysTag.push(obj);
+              this.tagChecked[this.tableData[i].id] = true
+            }
+            this.allSysTag.push({"id": -1, "name": "其他"});
+            this.tagChecked[-1] = true
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
+      // 获取系统列表
+      getSysList(key, value) {
+        getSysList(this.pageNum, 999, key, value).then(res => {
+          if (res.data.code === 0) {
+            this.tableData = res.data.data;
+            this.allSysList = [{"id": 0, "type_name": "不关联"}];
+            for (var i = 0; i < this.tableData.length; i++) {
+              let obj = {};
+              obj['id'] = this.tableData[i].id;
+              obj['type_name'] = this.tableData[i].sys_name;
+              this.allSysList.push(obj)
+            }
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
+      handleSave(value) {
+        this.isDisable = true;
+        setTimeout(() => {
+          operationDoc(this.formValidate, 'post').then(
+            res => {
+              if (res.data.code === 0) {
+                this.$Message.success(`${res.data.msg}`);
+                this.modalTable.tableVisible = false;
+              } else {
+                this.$Message.error(`${res.data.msg}`);
+              }
+            }
+          );
+          this.isDisable = false
+        }, 500)
+      },
+      handleRemove(file) {
+        const fileList = this.$refs.upload.fileList;
+        this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
         this.formValidate.uploadList = this.$refs.upload.fileList;
-        this.$Message.success(`${res.msg}`)
-      } else {
-        this.$Message.error(`${res.msg}`)
-      }
-    },
-    editModaltable () {
-      this.modalTable.tableVisible = true;
-      this.getSysList();
-      this.formValidate = {
-        sysID: 0,
-        uploadList: []
-      }
-    },
-    openUrl (url) {
-      window.open(url)
-    },
-    brightenKeyword (val, keyword) {
-      if (keyword) {
-        const Reg = new RegExp(keyword, 'gi');
-        if (val) {
-          const res = val.replace(Reg, `<span style="color: #f7d008;">${keyword}</span>`);
-          // console.log(res);
-          return res
-        }
-      } else {
-        return val
-      }
-    },
-    getDocList (page, limit, key, value, dateValue) {
-      getDocList(page, limit, key, value, dateValue).then(res => {
-        if (res.data.code === 0) {
-          this.$Message.success(`${res.data.msg}`);
-          this.data = res.data.data;
-          this.pageTotal = res.data.count
+      },
+      // handleBeforeUpload(file) {
+      //   this.file = file
+      //   this.formValidate.sys_report = this.file.name
+      //   const check = this.uploadList.length < 5;
+      //   if (!check) {
+      //     this.$Notice.warning({
+      //       title: '最多上传5个'
+      //     });
+      //   }
+      //   return check;
+      // },
+      handleMaxSize(file) {
+        this.$Notice.warning({
+          title: '文件大小超限',
+          desc: '文件  ' + file.name + ' 太大，上传文件大小不能超过20M.'
+        });
+      },
+      handleFormatError(file) {
+        this.$Notice.warning({
+          title: '文件格式不正确',
+          desc: '文件:' + file.name + ' 格式不正确，请选择：docx 等格式类型 '
+        });
+      },
+      handleSuccess(res, file) {
+        if (res.code === 0) {
+          file.url = file.response.url;
+          file.isShow = false;
+          this.formValidate.uploadList = this.$refs.upload.fileList;
+          this.$Message.success(`${res.msg}`)
         } else {
-          this.$Message.error(`${res.data.msg}`)
+          this.$Message.error(`${res.msg}`)
         }
-      })
-    },
+      },
+      editModaltable() {
+        this.modalTable.tableVisible = true;
+        this.getSysList();
+        this.formValidate = {
+          sysID: 0,
+          uploadList: []
+        }
+      },
+      openUrl(url) {
+        window.open(url)
+      },
+      brightenKeyword(val, keyword) {
+        if (keyword) {
+          const Reg = new RegExp(keyword, 'gi');
+          if (val) {
+            const res = val.replace(Reg, `<span style="color: #f7d008;">${keyword}</span>`);
+            // console.log(res);
+            return res
+          }
+        } else {
+          return val
+        }
+      },
+      getDocList(page, limit, key, value, dateValue) {
+        getDocList(page, limit, key, value, dateValue).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`);
+            this.data = res.data.data;
+            this.pageTotal = res.data.count
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
 
-    changePage (value) {
-      this.pageNum = value;
-      this.getDocList(
-        this.pageNum,
-        this.pageSize,
-        this.getTagList(),
-        this.searchValue
-      )
-    },
-    // 每页条数
-    handlePageSize (value) {
-      this.pageSize = value;
-      this.getDocList(
-        1,
-        this.pageSize,
-        this.getTagList(),
-        this.searchValue
-      )
-    },
-    handleReset (name) {
-      this.$refs[name].resetFields()
-    },
-    handleClear (e) {
-      if (e.target.value === '') this.tableData = this.value
-    },
-    handleSearch () {
-      const tagList = [];
-      for (const i in this.tagChecked) {
-        if (this.tagChecked[i] === true) {
-          tagList.push(i)
+      changePage(value) {
+        this.pageNum = value;
+        this.getDocList(
+          this.pageNum,
+          this.pageSize,
+          this.getTagList(),
+          this.searchValue
+        )
+      },
+      // 每页条数
+      handlePageSize(value) {
+        this.pageSize = value;
+        this.getDocList(
+          1,
+          this.pageSize,
+          this.getTagList(),
+          this.searchValue
+        )
+      },
+      handleReset(name) {
+        this.$refs[name].resetFields()
+      },
+      handleClear(e) {
+        if (e.target.value === '') this.tableData = this.value
+      },
+      handleSearch() {
+        let tagList = [];
+        for (let i in this.tagChecked){
+          if (this.tagChecked[i] === true){
+            tagList.push(i)
+          }
         }
-      }
-      this.getDocList(
-        this.pageNum,
-        this.pageSize,
-        this.getTagList(),
-        this.searchValue
-      )
-    },
-    getTagList () {
-      const tagList = [];
-      for (const i in this.tagChecked) {
-        if (this.tagChecked[i] === true) {
-          tagList.push(i)
+        this.getDocList(
+          this.pageNum,
+          this.pageSize,
+          this.getTagList(),
+          this.searchValue
+        )
+      },
+      getTagList(){
+        let tagList = [];
+        for (let i in this.tagChecked){
+          if (this.tagChecked[i] === true){
+            tagList.push(i)
+          }
         }
+        return JSON.stringify(tagList)
       }
-      return JSON.stringify(tagList)
+    },
+    watch: {
+      // value(val) {
+      //   this.handleSearch()
+      // }
+    },
+    mounted() {
+      this.UploadUrl = UploadUrl;
+      this.getSysTag();
+      this.getDocList(this.pageNum, this.pageSize, '["0"]')
     }
-  },
-  watch: {
-    // value(val) {
-    //   this.handleSearch()
-    // }
-  },
-  mounted () {
-    this.UploadUrl = UploadUrl;
-    this.getSysTag();
-    this.getDocList(this.pageNum, this.pageSize, '["0"]')
   }
-}
 </script>
 
 <style lang="less" scoped>
