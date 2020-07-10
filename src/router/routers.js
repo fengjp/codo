@@ -42,50 +42,59 @@ export const routerMap = [
         component: () =>
           import ('@/view/cmdb/software_mg.vue')
       },
+      {
+        path: 'asset_server',
+        name: 'asset_server',
+        meta: {
+          icon: 'ios-cube',
+          title: '主机管理'
+        },
+        component: () =>
+          import ('@/view/cmdb2/server_mg.vue')
+      },
+      {
+        path: 'asset_db',
+        name: 'asset_db',
+        meta: {
+          icon: 'ios-cube',
+          title: 'DB管理'
+        },
+        component: () =>
+          import ('@/view/cmdb2/db_mg.vue')
+      },
+      {
+        path: 'tag_mg',
+        name: 'tag_mg',
+        meta: {
+          icon: 'ios-pricetag',
+          title: '标签管理'
+        },
+        component: () =>
+          import ('@/view/cmdb2/tag_mg.vue')
+      },
+      {
+        path: 'admin_user',
+        name: 'admin_user',
+        meta: {
+          icon: 'ios-ribbon',
+          title: '管理用户'
+        },
+        component: () =>
+          import ('@/view/cmdb2/admin_user.vue')
+      },
     ]
   },
-  // {
-  //     path: '/web_ssh',
-  //     name: 'web_ssh',
-  //     meta: {
-  //         icon: 'ios-stats',
-  //         title: 'Web终端',
-  //         hideInMenu: true
-  //     },
-  //     component: () =>
-  //         import ('@/view/cmdb2/webssh/web-ssh.vue')
-  // },
-  // {
-  //     path: '/cron',
-  //     name: 'cron',
-  //     meta: {
-  //         icon: 'ios-alarm',
-  //         title: '定时任务',
-  //         hideInMenu: true
-  //     },
-  //     component: Main,
-  //     children: [{
-  //             path: 'cronjobs',
-  //             name: 'cronjobs',
-  //             meta: {
-  //                 icon: 'md-alarm',
-  //                 title: '定时列表'
-  //             },
-  //             component: () =>
-  //                 import ('@/view/cron/cron-jobs.vue')
-  //         },
-  //         {
-  //             path: 'cronlogs',
-  //             name: 'cronlogs',
-  //             meta: {
-  //                 icon: 'ios-list-box-outline',
-  //                 title: '任务日志'
-  //             },
-  //             component: () =>
-  //                 import ('@/view/cron/cron-logs.vue')
-  //         }
-  //     ]
-  // },
+  {
+    path: '/web_ssh',
+    name: 'web_ssh',
+    meta: {
+      icon: 'ios-stats',
+      title: 'Web终端',
+      hideInMenu: true
+    },
+    component: () =>
+      import ('@/view/cmdb2/webssh/web-ssh.vue')
+  },
   {
     path: '/itmanage',
     name: 'itmanage',

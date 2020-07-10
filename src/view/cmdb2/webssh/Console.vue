@@ -4,7 +4,7 @@
 <script>
 // import { checkAuthServer } from '@/api/cmdb/server_auth'
 import Terminal from './Xterm'
-import { webSocketUrl } from '@/api/cmdb/server'
+import { webSocketUrl } from '@/api/cmdb2/server'
 export default {
   name: 'Console',
   props: {
