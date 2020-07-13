@@ -22,10 +22,9 @@ export default {
   methods: {
     resize () {
       this.dom.resize()
-    }
-  },
-  mounted () {
-    this.$nextTick(() => {
+    },
+    initBar(){
+      this.$nextTick(() => {
       let xAxisData = Object.keys(this.value)
       let seriesData = Object.values(this.value)
       let option = {
@@ -50,6 +49,10 @@ export default {
       this.dom.setOption(option)
       on(window, 'resize', this.resize)
     })
+    }
+  },
+  mounted () {
+    this.initBar()
   },
   beforeDestroy () {
     off(window, 'resize', this.resize)

@@ -2,13 +2,17 @@ import axios from '@/libs/api.request'
 import config from '@/config'
 
 
-// 获取Tag，Home仪表盘拼图展示
-//export const getTagList = () => {
-//  return axios.request({
-//    url: '/cmdb2/v1/cmdb/tag/',
-//    method: 'get',
-//  })
-//}
+// 获取柱状图展示
+export const getCaseBarList = (startdate,enddate) => {
+ return axios.request({
+        url: '/pb/v2/case/getbar/',
+        method: 'get',
+        params: {
+            startdate,
+            enddate,
+        }
+    })
+}
 
 // 任务订单
 // export const getTaskOrderlist = () => {

@@ -82,6 +82,7 @@ export default {
     device_mg: '设备管理',
     itmanage: 'ITSM',
     case_mg: '个案管理',
+    plan_mg: '计划工作',
     software_mg: '软件管理',
     asset_server: '主机管理',
     log_audit: '日志审计',

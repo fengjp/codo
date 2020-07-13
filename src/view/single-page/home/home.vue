@@ -21,40 +21,31 @@
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="14" style="margin-bottom: 10px;">
         <Card shadow>
+          <Row>
+        <Col span="24">
+            <DatePicker :value="value2" format="yyyy-MM-dd" type="daterange" placement="bottom-end"
+                        placeholder="请选择日期范围"
+                        @on-change="initBarCase"
+                        style="width: 200px;margin-left:660px" >
+
+            </DatePicker>
+        </Col>
+        </Row>
           <!-- <IssuesInfo :data="IssuesInfoData"></IssuesInfo> -->
-          <chart-bar style="height: 340px;" :value="barTaskData" text="告警预留位"/>
+          <chart-bar ref="childCaseBar" style="height: 340px;"  :value="barCaseData" text="个案柱状图"/>
         </Card>
       </i-col>
 
       <i-col :md="24" :lg="10" style="margin-bottom: 10px;">
-        <Card shadow>
-          <chart-pie ref="childCmdb" style="height: 339px;" :value="pieCmdbData" text="主机分类"></chart-pie>
+        <Card shadow style="height:405px">
+          <Row>
+          <Col span="24">
+          </Col>
+          </Row>
+          <chart-pie ref="childCasePie" style="height: 339px;" :value="pieCaseData" text="个案比例图"></chart-pie>
         </Card>
       </i-col>
     </Row>
-
-    <Row :gutter="20" style="margin-top: 10px;">
-      <i-col :md="24" :lg="14" style="margin-bottom:10px;">
-        <Card shadow>
-          <chart-pie ref="childTask" style="height: 339px;" :value="pieTaskData" ></chart-pie>
-        </Card>
-      </i-col>
-      <i-col :md="24" :lg="10" style="margin-bottom: 10px;">
-        <Card shadow>
-          <TaskInfo :data="taskInfoData"></TaskInfo>
-        </Card>
-      </i-col>
-    </Row>
-
-      <!--<Row :gutter="20" style="margin-top: 10px;">-->
-      <!--<i-col :md="24" :lg="24" style="margin-bottom: 10px;">-->
-        <!--<Card shadow>-->
-          <!--&lt;!&ndash;<IssuesInfo :data="IssuesInfoData"></IssuesInfo>&ndash;&gt;-->
-          <!--&lt;!&ndash; <chart-bar style="height: 340px;" :value="barTaskData" text="告警预留位"/> &ndash;&gt;-->
-        <!--</Card>-->
-      <!--</i-col>-->
-    <!--</Row>-->
-
   </div>
 </template>
 
@@ -63,7 +54,7 @@ import InforCard from '_c/info-card'
 import CountTo from '_c/count-to'
 import { ChartPie, ChartBar } from '_c/charts'
 import Example from './example.vue'
-import { getTagList, getTaskOrderlist, getTaskStatementlist } from '@/api/dashboard/home.js'
+import { getCaseBarList, getTaskOrderlist, getTaskStatementlist } from '@/api/dashboard/home.js'
 import { getZabbixLastissues } from "@/api/devops-tools";
 
 import TaskInfo from './taskinfo'
@@ -83,35 +74,12 @@ export default {
   },
   data () {
     return {
-      // cardData: {
-      //   users: 0,
-      //   cmdb: 0,
-      //   project: 0,
-      //   alarm: 0,
-      //   remind: 0,
-      //   crontab: 0
-      // },
-      pieCmdbData: [],
+      value2: [new Date(),new Date()],
+      pieCaseData: [],//[{"name":"来文", "value": 1},{"name":"应用升级","value": 1},{"name":"故障","value": 1},{"name":"重要工作","value": 2},{"name":"其他","value": 2}],
       pieTaskData: [],
-      taskInfoData: [
-      ],
-      // IssuesInfoData: [{
-      //   "host": "samonitor",
-      //   "issue": "Zabbix agent on us_samonitor is unreachable for 5 minutes",
-      //   "last_change": "2019-07-08 13:46:51",
-      //   "level": '3',
-      // }
-      // ],
+      taskInfoData: [],
       IssuesInfoData: [],
-      barTaskData: {
-        Mon: 9,
-        Tue: 2,
-        Wed: 45,
-        Thu: 32,
-        Fri: 5,
-        Sat: 30,
-        Sun: 7
-      }
+      barCaseData: {}, // {来文: 1,应用升级: 1,故障: 1,重要工作: 2,其他: 2},
     }
   },
   methods: {
@@ -146,21 +114,14 @@ export default {
       })
     },
 
-    // 初始化 CMDB Tag饼图数据
-    initPieCmdb () {
-      getTagList().then(res => {
+    // 初始化个案饼图数据
+    initBarCase (date) {
+      getCaseBarList(date[0],date[1]).then(res => {
         if (res.data.code === 0) {
-            const data = res.data.data
-            // 切割下列表，历史任务可能有很多，做个限制
-            const slice_data = data.slice(0,36)
-            for (var item in slice_data) {
-              this.pieCmdbData.push({
-                value: data[item].server_len,
-                name: data[item].tag_name
-              })
-            }
+            this.barCaseData = res.data.data[0]
+            this.pieCaseData = res.data.list[0]
         } else {
-          // this.$Message.error(`${res.data.msg}`)
+           this.$Message.error(`${res.data.msg}`)
         }
       })
     },
@@ -182,18 +143,23 @@ export default {
 
   },
   mounted () {
-    // this.initPieCmdb()
+    var now = new Date();
+    var year = now.getFullYear(); //得到年份
+    var month = now.getMonth()+1;//得到月份
+    var date = now.getDate();//得到日期
+    var todate =  year + '-' + month + '-' + date
+    this.initBarCase([todate, todate])
     // this.initTaskInfo()
     // this.initPieTask()
     // this.GetZabbixLastissues()
   },
   watch: {
-    pieCmdbData: function () {
-      this.$refs.childCmdb.initPie()
+    barCaseData: function () {
+      this.$refs.childCaseBar.initBar()
     },
-    pieTaskData: function () {
-      this.$refs.childTask.initPie()
-    }
+    pieCaseData: function () {
+      this.$refs.childCasePie.initPie()
+    },
   }
 }
 </script>

@@ -115,6 +115,25 @@ export const routerMap = [
     },
     ]
   },
+    {
+    path: '/plan',
+    name: 'plan',
+    meta: {
+      icon: 'md-plan',
+      title: 'PLAN'
+    },
+    component: Main,
+    children: [{
+      path: 'plan_mg',
+      name: 'plan_mg',
+      meta: {
+        icon: 'ios-paper',
+        title: '计划工作'
+      },
+      component: () =>
+        import ('@/view/it-manage/plan-manager.vue')
+    },]
+  },
   {
     path: '/doc',
     name: 'doc',

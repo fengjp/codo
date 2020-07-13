@@ -272,21 +272,8 @@
               </Col>
               <Col span="6">
                 <FormItem
-                  label="需求单位"
-                  prop="demand_unit" style="width:220px;margin-left:15px"
-                >
-                  <Input
-                    v-model="formValidate.demand_unit"
-                    :autosize="{minRows: 2,maxRows: 5}"
-                    :maxlength="200"
-                    placeholder="需求单位"
-                  ></Input>
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem
                   label="需求人"
-                  prop="demander" style="width:140px;margin-left:80px"
+                  prop="demander" style="width:150px;margin-right:30px"
                 >
                   <Input
                     v-model="formValidate.demander"
@@ -296,7 +283,19 @@
                   ></Input>
                 </FormItem>
               </Col>
-
+              <Col span="6">
+                <FormItem
+                  label="需求单位"
+                  prop="demand_unit" style="width:220px;margin-right:30px"
+                >
+                  <Input
+                    v-model="formValidate.demand_unit"
+                    :autosize="{minRows: 2,maxRows: 5}"
+                    :maxlength="200"
+                    placeholder="需求单位"
+                  ></Input>
+                </FormItem>
+              </Col>
             </Row>
             <Row :gutter="10" style="margin-bottom: 5px">
               <Col span="10">
@@ -693,9 +692,9 @@
         allTypeList: [
           {'id': 0, 'type_name': '咨询'},
           {'id': 1, 'type_name': '故障'},
-          {'id': 2, 'type_name': '协作'},
-          {'id': 3, 'type_name': '统计'},
-          {'id': 4, 'type_name': '优化'},
+          {'id': 2, 'type_name': '统计'},
+          {'id': 3, 'type_name': '优化'},
+          {'id': 4, 'type_name': '协作'},
           {'id': 5, 'type_name': '监控巡检'},
           {'id': 6, 'type_name': '会议'},
           {'id': 7, 'type_name': '报备审批'},
