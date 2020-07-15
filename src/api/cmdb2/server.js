@@ -59,7 +59,7 @@ export const syncServerToTagTree = () => {
 //获取ErrorLog信息提示
 export const getErrorLog = (key, value) => {
 	return axios.request({
-		url: '/cmdb2//v1/cmdb/error_log/',
+		url: '/cmdb2/v1/cmdb/error_log/',
 		method: 'get',
 		params: {
 			key,
@@ -71,7 +71,7 @@ export const getErrorLog = (key, value) => {
 //获取CMDB里面Tag Tree
 export const getTagtree = (key, value) => {
 	return axios.request({
-		url: '/cmdb2//v1/cmdb/tree/',
+		url: '/cmdb2/v1/cmdb/tree/',
 		method: 'get',
 		params: {
 			key,

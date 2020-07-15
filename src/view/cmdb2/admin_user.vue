@@ -1,6 +1,6 @@
 <template>
   <Card>
-    <Alert>管理用户是用来可以登陆你的主机的用户，如：AWS提供的ec2-user的密钥,或者aliyun/qcloud等自己创建的密钥，管理用户默认限制15个，一般来说运维管理用户不会有多个</Alert>
+    <Alert>管理用户是用来可以登陆你的主机的用户，管理用户默认限制15个，一般来说运维管理用户不会有多个</Alert>
     <div class="search-con search-con-top">
       <Select
         v-model="searchKey"

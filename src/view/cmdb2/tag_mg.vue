@@ -7,7 +7,7 @@
       </Card>
     </i-col>
     <i-col :md="24" :lg="19" style="margin-bottom: 20px;"> -->
-      <Card shadow>
+      <Card :bordered="false">
         <div class="search-con search-con-top">
             <Select
                 v-model="searchKey"
@@ -37,7 +37,7 @@
             class="search-btn"
             >添加标签</Button></slot>
             <Button type="error" class="search-btn"  @click="handlerDelete">批量删除</Button>
-            <Button type="info" class="search-btn"  @click="handleTagRule">标签规则管理</Button>
+            <!--<Button type="info" class="search-btn"  @click="handleTagRule">标签规则管理</Button>-->
         </div>
 
         <Table
@@ -60,7 +60,7 @@
   </Row>
     <Modal v-model="modalMap2.modalVisible"  :title="modalMap2.modalTitle" :loading=true :footer-hide=true width="540" :mask-closable=false>
       <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate2" :label-width="85">
-        <alert>温馨提示：若是机器数量较多,你可以尝试使用标签规则来自动分配你的资产信息</alert>
+        <!--<alert>温馨提示：若是机器数量较多,你可以尝试使用标签规则来自动分配你的资产信息</alert>-->
         <FormItem label="标签名称" prop="tag_name">
           <div  v-if="formValidate2.id">
             <Input v-model="formValidate2.tag_name" :maxlength="20" disabled placeholder='请输入标签名称'></Input>
@@ -370,11 +370,11 @@
         
         
         //添加Tagrule
-        handleTagRule () {
-          this.ruleModal = true
-          this.getTagRuleList()
-          this.getAllTagList()
-        },
+        // handleTagRule () {
+        //   this.ruleModal = true
+        //   this.getTagRuleList()
+        //   this.getAllTagList()
+        // },
         //获取所有tag规则
         getTagRuleList (key, value) {
           getTagRulelist(this.pageNum, this.pageSize, key, value).then(res => {
@@ -545,7 +545,7 @@
               }
             }
           }else {
-            this.$Message.info(`你总要选中点什么吧`)
+            this.$Message.info(`没有选中`)
           }
         },
         //
