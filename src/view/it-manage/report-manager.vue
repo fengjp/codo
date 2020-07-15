@@ -1,14 +1,6 @@
 <template>
   <div>
     <Card style="height: 100%">
-
-<!--          <Button-->
-<!--            type="primary"-->
-<!--            @click="editModaltable()"-->
-<!--            style=""-->
-<!--          >生成报表-->
-<!--          </Button>-->
-
 <!--      <Modal v-model="modalTable.tableVisible" :loading=true :footer-hide=true :title="modalTable.tablelTitle">-->
         <div style="padding: 10px; text-align:center;">
           <DatePicker type="daterange" :options="options2" confirm
