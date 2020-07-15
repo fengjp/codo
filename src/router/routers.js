@@ -135,6 +135,25 @@ export const routerMap = [
     },]
   },
   {
+    path: '/report',
+    name: 'report',
+    meta: {
+      icon: 'md-report',
+      title: 'REPOT'
+    },
+    component: Main,
+    children: [{
+      path: 'report_mg',
+      name: 'report_mg',
+      meta: {
+        icon: 'ios-paper',
+        title: '报表'
+      },
+      component: () =>
+        import ('@/view/it-manage/report-manager.vue')
+    },]
+  },
+  {
     path: '/doc',
     name: 'doc',
     meta: {

@@ -32,17 +32,19 @@
         </Col>
         </Row>
           <!-- <IssuesInfo :data="IssuesInfoData"></IssuesInfo> -->
-          <chart-bar ref="childCaseBar" style="height: 340px;"  :value="barCaseData" text="个案柱状图"/>
+          <chart-bar  ref="childCaseBar" style="height: 340px;"  :value="barCaseData" text="个案柱状图"/>
+<!--          <Col span="24" v-show="isShow2" style="margin-left:390px;margin-top:-222px;" >暂无数据</Col>-->
         </Card>
       </i-col>
 
       <i-col :md="24" :lg="10" style="margin-bottom: 10px;">
-        <Card shadow style="height:405px">
+        <Card shadow style="height:405px" >
           <Row>
           <Col span="24">
           </Col>
           </Row>
-          <chart-pie ref="childCasePie" style="height: 339px;" :value="pieCaseData" text="个案比例图"></chart-pie>
+          <chart-pie  ref="childCasePie" style="height: 339px;" :value="pieCaseData" text="个案比例图"></chart-pie>
+<!--          <Col span="24" v-show="isShow2" style="margin-left:260px;margin-top:-110px;" >暂无数据</Col>-->
         </Card>
       </i-col>
     </Row>
@@ -80,6 +82,8 @@ export default {
       taskInfoData: [],
       IssuesInfoData: [],
       barCaseData: {}, // {来文: 1,应用升级: 1,故障: 1,重要工作: 2,其他: 2},
+      isShow:false,
+      isShow2:true,//false,
     }
   },
   methods: {
@@ -118,9 +122,13 @@ export default {
     initBarCase (date) {
       getCaseBarList(date[0],date[1]).then(res => {
         if (res.data.code === 0) {
+            this.isShow = true
+            this.isShow2 = false
             this.barCaseData = res.data.data[0]
             this.pieCaseData = res.data.list[0]
         } else {
+            this.barCaseData = {}
+            this.pieCaseData = []
            this.$Message.error(`${res.data.msg}`)
         }
       })
@@ -147,7 +155,9 @@ export default {
     var year = now.getFullYear(); //得到年份
     var month = now.getMonth()+1;//得到月份
     var date = now.getDate();//得到日期
-    var todate =  year + '-' + month + '-' + date
+    var todate =  year + '-' + month + '-' + date;
+    // starttime = todate + " 00:00:00";
+    // endtime = todate + " 23:59:59";
     this.initBarCase([todate, todate])
     // this.initTaskInfo()
     // this.initPieTask()

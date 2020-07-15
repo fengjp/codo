@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <Form autocomplete="off" label-colon=":" class="case-form" ref="formValidate2" :model="formValidate2">
+      <Form autocomplete="off" label-colon=":" class="plan-form" ref="formValidate2" :model="formValidate2">
         <!--<a @click="changeShow()" v-text="btnText"></a>-->
         <a class="ivu-ml-8" style="font-size: 14px;" @click="changeShow()" v-if="isShow">
           收起
@@ -14,30 +14,30 @@
         <Row :gutter="1" type="flex" justify="start"
              style="margin-top: -10px;margin-bottom: -25px">
           <Col span="6">
-            <FormItem label="个案" prop="case_name" :label-width="100">
+            <FormItem label="计划" prop="plan_name" :label-width="100">
               <Input
-                v-model="formValidate2.case_name"
-                placeholder="请输入个案名称"
+                v-model="formValidate2.plan_name"
+                placeholder="请输入计划名称"
               ></Input>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="类型" prop="case_type" :label-width="100">
-              <Select v-model="formValidate2.case_type">
+            <FormItem label="类型" prop="plan_type" :label-width="100">
+              <Select v-model="formValidate2.plan_type">
                 <Option v-for="item in allTypeList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="状态" prop="case_status" :label-width="100">
-              <Select v-model="formValidate2.case_status">
+            <FormItem label="状态" prop="plan_status" :label-width="100">
+              <Select v-model="formValidate2.plan_status">
                 <Option v-for="item in allstatusList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="项目" prop="case_obj" :label-width="100">
-              <Select v-model="formValidate2.case_obj" placeholder="项目">
+            <FormItem label="项目" prop="plan_obj" :label-width="100">
+              <Select v-model="formValidate2.plan_obj" placeholder="项目">
                 <Option v-for="item in allobjecList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
               </Select>
             </FormItem>
@@ -45,16 +45,16 @@
         </Row>
         <Row :gutter="1" style="margin-top: 23px" v-show="isShow">
           <Col span="6">
-            <FormItem label="优先级" prop="case_priority" :label-width="100">
-              <Select v-model="formValidate2.case_priority" placeholder="优先级">
+            <FormItem label="优先级" prop="plan_priority" :label-width="100">
+              <Select v-model="formValidate2.plan_priority" placeholder="优先级">
                 <Option v-for="item in allpriorityList" :value="item.type_name" :key="item.id">{{item.type_name}}
                 </Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="来源" prop="case_source" :label-width="100">
-              <Select v-model="formValidate2.case_source" placeholder="来源">
+            <FormItem label="来源" prop="plan_source" :label-width="100">
+              <Select v-model="formValidate2.plan_source" placeholder="来源">
                 <Option v-for="item in allsourceList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
               </Select>
             </FormItem>
@@ -80,34 +80,34 @@
         </Row>
         <Row :gutter="1" v-show="isShow" style="margin-bottom: -25px">
           <Col span="6">
-            <FormItem label="详情描述" prop="case_details" :label-width="100">
+            <FormItem label="详情描述" prop="plan_details" :label-width="100">
               <Input
-                v-model="formValidate2.case_details"
+                v-model="formValidate2.plan_details"
                 placeholder="详细描述"
               ></Input>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="时长" prop="case_ltime" :label-width="100">
+            <FormItem label="时长" prop="plan_ltime" :label-width="100">
               <Input
-                v-model="formValidate2.case_ltime"
+                v-model="formValidate2.plan_ltime"
                 placeholder="时长"
               ></Input>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="开始时间" prop="case_stime" :label-width="100">
+            <FormItem label="开始时间" prop="plan_stime" :label-width="100">
               <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
-                          :value="formValidate2.case_stime" @on-change="formValidate2.case_stime=$event"
+                          :value="formValidate2.plan_stime" @on-change="formValidate2.plan_stime=$event"
                           placeholder="记录开始时间" :options="optionsDate">
 
               </DatePicker>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="结束时间" prop="case_etime" :label-width="100">
+            <FormItem label="结束时间" prop="plan_etime" :label-width="100">
               <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
-                          :value="formValidate2.case_etime" @on-change="formValidate2.case_etime=$event"
+                          :value="formValidate2.plan_etime" @on-change="formValidate2.plan_etime=$event"
                           placeholder="记录结束时间"
                           :options="optionsDate">
 
@@ -121,35 +121,35 @@
       <Row>
         <Col span="10" offset="14" style="text-align: right; margin-bottom: 5px">
           <Button
-            @click="handleSearch" class="case-btn"
+            @click="handleSearch" class="plan-btn"
             type="info"
             style=""
           >搜索
           </Button>
           <Button
-            @click="handleReset('formValidate2')" class="case-btn"
+            @click="handleReset('formValidate2')" class="plan-btn"
             style=""
           >重置
           </Button>
           <slot name="new_btn">
             <Button
               type="primary"
-              @click="editModal('', 'post', '新建个案')" class="case-btn"
+              @click="editModal('', 'post', '新建计划')" class="plan-btn"
               style=""
-            >新建个案
+            >新建计划
             </Button>
           </slot>
-          <Button type="success" @click="exportDateALL()" class="case-btn"
+          <Button type="success" @click="exportDateALL()" class="plan-btn"
                   style="">
             <Icon type="ios-download-outline"></Icon>
             导出数据
           </Button>
-          <Button
-            type="primary"
-            @click="editModaltable()"
-            style=""
-          >生成报表
-          </Button>
+<!--          <Button-->
+<!--            type="primary"-->
+<!--            @click="editModaltable()"-->
+<!--            style=""-->
+<!--          >生成报表-->
+<!--          </Button>-->
         </Col>
       </Row>
       <Table
@@ -187,44 +187,44 @@
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
           <Card style="width:100%">
             <div v-if="editModalData && editModalData == 'put'">
-              <FormItem label="个案" prop="case_name" style="width:350px;margin-right:20px">
+              <FormItem label="计划" prop="plan_name" style="width:350px;margin-right:20px">
                 <Input
-                  v-model="formValidate.case_name"
+                  v-model="formValidate.plan_name"
                   disabled
                   :maxlength="45"
-                  placeholder="请输入个案名称"
+                  placeholder="请输入计划名称"
                 ></Input>
               </FormItem>
             </div>
             <div v-else>
-              <FormItem label="个案" prop="case_name" style="width:350px;margin-right:20px">
+              <FormItem label="计划" prop="plan_name" style="width:350px;margin-right:20px">
                 <Input
-                  v-model="formValidate.case_name"
+                  v-model="formValidate.plan_name"
                   :maxlength="45"
-                  placeholder="请输入个案名称"
+                  placeholder="请输入计划名称"
                 ></Input>
               </FormItem>
             </div>
             <Row :gutter="10" style="margin-bottom: 5px">
               <Col span="6">
-                <FormItem label="类型" prop="case_type" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_type" placeholder="类型">
+                <FormItem label="类型" prop="plan_type" style="width:150px;margin-right:30px">
+                  <Select v-model="formValidate.plan_type" placeholder="类型">
                     <Option v-for="item in allTypeList" :value="item.type_name" :key="item.id">{{item.type_name}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
               <Col span="6">
-                <FormItem label="状态" prop="case_status" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_status" placeholder="状态">
+                <FormItem label="状态" prop="plan_status" style="width:150px;margin-right:30px">
+                  <Select v-model="formValidate.plan_status" placeholder="状态">
                     <Option v-for="item in allstatusList" :value="item.type_name" :key="item.id">{{item.type_name}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
               <Col span="6">
-                <FormItem label="项目" prop="case_obj" style="width:220px;margin-right:30px">
-                  <Select v-model="formValidate.case_obj" placeholder="项目">
+                <FormItem label="项目" prop="plan_obj" style="width:220px;margin-right:30px">
+                  <Select v-model="formValidate.plan_obj" placeholder="项目">
                     <Option v-for="item in allobjecList" :value="item.type_name" :key="item.id">{{item.type_name}}
                     </Option>
                   </Select>
@@ -233,16 +233,16 @@
             </Row>
             <Row :gutter="10" style="margin-bottom: 5px">
               <Col span="6">
-                <FormItem label="优先级" prop="case_priority" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_priority" placeholder="优先级">
+                <FormItem label="优先级" prop="plan_priority" style="width:150px;margin-right:30px">
+                  <Select v-model="formValidate.plan_priority" placeholder="优先级">
                     <Option v-for="item in allpriorityList" :value="item.type_name" :key="item.id">{{item.type_name}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
               <Col span="6">
-                <FormItem label="来源" prop="case_source" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_source" placeholder="来源">
+                <FormItem label="来源" prop="plan_source" style="width:150px;margin-right:30px">
+                  <Select v-model="formValidate.plan_source" placeholder="来源">
                     <Option v-for="item in allsourceList" :value="item.type_name" :key="item.id">{{item.type_name}}
                     </Option>
                   </Select>
@@ -251,10 +251,10 @@
               <Col span="6">
                 <FormItem
                   label="新建人"
-                  prop="case_creator" style="width:220px;margin-right:30px"
+                  prop="plan_creator" style="width:220px;margin-right:30px"
                 >
                   <Input
-                    v-model="formValidate.case_creator"
+                    v-model="formValidate.plan_creator"
                     disabled
                     placeholder="新建人"
                   ></Input>
@@ -263,8 +263,8 @@
             </Row>
             <Row :gutter="10" style="margin-bottom: 5px">
               <Col span="6">
-                <FormItem label="处理人" prop="case_executor" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_executor" placeholder="处理人，接手人，参与人">
+                <FormItem label="处理人" prop="plan_executor" style="width:150px;margin-right:30px">
+                  <Select v-model="formValidate.plan_executor" placeholder="处理人，接手人，参与人">
                     <Option v-for="item in allNameList" :value="item.nickname" :key="item.user_id">{{ item.nickname }}
                     </Option>
                   </Select>
@@ -301,10 +301,10 @@
               <Col span="10">
                 <FormItem
                   label="开始时间"
-                  prop="case_stime" style="width:240px;margin-right:50px"
+                  prop="plan_stime" style="width:240px;margin-right:50px"
                 >
                   <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
-                              :value="formValidate.case_stime" @on-change="formValidate.case_stime=$event"
+                              :value="formValidate.plan_stime" @on-change="formValidate.plan_stime=$event"
                               placeholder="记录开始时间"
                               :options="optionsDate">
 
@@ -314,10 +314,10 @@
               <Col span="6">
                 <FormItem
                   label="结束时间"
-                  prop="case_etime" style="width:240px;margin-right:50px"
+                  prop="plan_etime" style="width:240px;margin-right:50px"
                 >
                   <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
-                              :value="formValidate.case_etime" @on-change="formValidate.case_etime=$event"
+                              :value="formValidate.plan_etime" @on-change="formValidate.plan_etime=$event"
                               placeholder="记录结束时间"
                               :options="optionsDate">
 
@@ -329,10 +329,10 @@
               <Col span="8">
                 <FormItem
                   label="时长"
-                  prop="case_ltime" style="width:240px;margin-right:30px"
+                  prop="plan_ltime" style="width:240px;margin-right:30px"
                 >
                   <Input
-                    v-model="formValidate.case_ltime"
+                    v-model="formValidate.plan_ltime"
                     :autosize="{minRows: 2,maxRows: 10}"
                     :maxlength="200"
                     placeholder="时长(单位:分钟)"
@@ -343,10 +343,10 @@
             <div>
               <FormItem
                 label="详情描述"
-                prop="case_details" style="width:500px;margin-right:500px"
+                prop="plan_details" style="width:500px;margin-right:500px"
               >
                 <Input
-                  v-model="formValidate.case_details"
+                  v-model="formValidate.plan_details"
                   type="textarea"
                   :rows="4"
                   placeholder="详细描述"
@@ -384,7 +384,7 @@
   import XLSX from 'xlsx'
   import FileSaver from 'file-saver'
 
-  import {CaseAdd, getCase, getCaseList, getname, caseDelete, getCaseFile} from "@/api/problem"
+  import {PlanAdd, getPlan, getPlanList, getname, planDelete, getPlanFile} from "@/api/plan"
   import {getuserlist} from '@/api/user'
   import {getDate} from '@/libs/tools'
   import excel from '@/libs/excel'
@@ -449,78 +449,78 @@
         },
 
         formValidate: {
-          case_name: '',
-          case_priority: "",
-          case_type: '',
-          case_status: "",
-          case_executor: '',
+          plan_name: '',
+          plan_priority: "",
+          plan_type: '',
+          plan_status: "",
+          plan_executor: '',
           fault_report: '',
-          case_stime: '',
-          case_etime: '',
-          case_ltime: '',
-          case_details: '',
+          plan_stime: '',
+          plan_etime: '',
+          plan_ltime: '',
+          plan_details: '',
           fault_summary: '',
-          case_obj: '',
-          case_source: '',
+          plan_obj: '',
+          plan_source: '',
           demand_unit: '',
           demander: '',
-          case_id: 0,
-          case_creator: '',
+          plan_id: 0,
+          plan_creator: '',
         },
         formValidate2: {
-          case_name: '',
-          case_priority: "",
-          case_type: '',
-          case_status: "",
-          case_executor: '',
+          plan_name: '',
+          plan_priority: "",
+          plan_type: '',
+          plan_status: "",
+          plan_executor: '',
           fault_report: '',
-          case_stime: '',
-          case_etime: '',
-          case_ltime: '',
-          case_details: '',
+          plan_stime: '',
+          plan_etime: '',
+          plan_ltime: '',
+          plan_details: '',
           fault_summary: '',
-          case_obj: '',
-          case_source: '',
+          plan_obj: '',
+          plan_source: '',
           demand_unit: '',
           demander: '',
-          case_id: 0,
-          case_creator: '',
+          plan_id: 0,
+          plan_creator: '',
         },
         todate: [],
         ruleValidate: {
-          case_name: [
+          plan_name: [
             {
               required: true,
-              message: "请输入个案名称",
+              message: "请输入计划名称",
               trigger: "blur"
             }
           ],
-          case_priority: [
+          plan_priority: [
             {
               required: true,
               message: "请选择一个级别",
               trigger: "blur"
             }
           ],
-          case_type: [
+          plan_type: [
             {
               message: "请选择一个类型",
               trigger: "blur"
             }
           ],
-          case_source: [
+          plan_source: [
             {
               message: "请选择一个来源",
               trigger: "blur"
             }
           ],
-          case_executor: [
+          plan_executor: [
             {
               message: "处理人",
               trigger: "blur"
             },
           ],
-          case_obj: [
+          plan_obj: [
             {
               required: true,
               message: "请选择一个项目",
@@ -533,26 +533,26 @@
               trigger: "blur"
             }
           ],
-          case_status: [
+          plan_status: [
             {
               message: "请选择一个状态",
               trigger: "blur"
             }
           ],
-          case_stime: [
+          plan_stime: [
             {
               required: true,
               message: "请选择开始时间",
               trigger: "blur"
             }
           ],
-          case_ltime: [
+          plan_ltime: [
             {
               message: "时长",
               trigger: "blur"
             }
           ],
-          case_creator: [
+          plan_creator: [
             {
               message: "新建人",
               trigger: "blur"
@@ -569,14 +569,14 @@
           ],
         },
         columns2: [{
-          title: "个案",
-          key: "case_name",
+          title: "计划",
+          key: "plan_name",
           align: "center",
         },],
         columns: [
           {
-            title: "个案",
-            key: "case_name",
+            title: "计划工作",
+            key: "plan_name",
             align: "center",
             width: 150,
             render: (h, params) => {
@@ -587,21 +587,21 @@
                       this.handleDetail(params.index)
                     }
                   }
-                }, params.row.case_name
+                }, params.row.plan_name
               )
             }
           },
-          {title: "类型", key: "case_type", align: "center",},
-          {title: "状态", key: "case_status", align: "center",},
-          {title: "项目", key: "case_obj", align: "center",},
-          {title: "优先级", key: "case_priority", align: "center",},
-          {title: "新建人", key: "case_creator", align: "center",},
+          {title: "类型", key: "plan_type", align: "center",},
+          {title: "状态", key: "plan_status", align: "center",},
+          {title: "项目", key: "plan_obj", align: "center",},
+          {title: "优先级", key: "plan_priority", align: "center",},
+          {title: "新建人", key: "plan_creator", align: "center",},
           {title: "需求人", key: "demander", align: "center",},
-          {title: "处理人", key: "case_executor", align: "center",},
+          {title: "处理人", key: "plan_executor", align: "center",},
           {
-            title: "描述", key: "case_details", width: 150, align: "center",
+            title: "描述", key: "plan_details", width: 150, align: "center",
             render: (h, params) => {
-              let roleTitle = params.row.case_details
+              let roleTitle = params.row.plan_details
               return h('div', [
                 h('span', {
                   style: {
@@ -618,8 +618,8 @@
               ])
             }
           },
-          {title: "开始时间", key: "case_stime", width: 100, align: "center",},
-          {title: "结束时间", key: "case_etime", width: 100, align: "center",},
+          {title: "开始时间", key: "plan_stime", width: 100, align: "center",},
+          {title: "结束时间", key: "plan_etime", width: 100, align: "center",},
           {
             title: "操作", key: "handle", align: "center",
             render: (h, params) => {
@@ -636,7 +636,7 @@
                     },
                     on: {
                       click: () => {
-                        this.editModal(params.row, "put", "编辑个案");
+                        this.editModal(params.row, "put", "编辑计划工作");
                       }
                     }
                   },
@@ -685,7 +685,7 @@
         tokey: '',
         tovalue: '',
         //
-        searchKey: "case_name",
+        searchKey: "plan_name",
         searchValue: "",
         UploadUrl: "",
         allNameList: [],
@@ -739,7 +739,7 @@
       // 导出数据、支持分页、过滤、搜索、排序后导出
       exportDateALL() {
         // 查询所有数据
-        getCaseList(this.pageNum, this.pageSize, this.tokey, this.tovalue, true).then(res => {
+        getPlanList(this.pageNum, this.pageSize, this.tokey, this.tovalue, true).then(res => {
           if (res.data.code === 0) {
             this.tableDataALL = res.data.data
             this.exportData()
@@ -753,11 +753,11 @@
         if (this.tableDataALL.length) {
           // this.exportLoading = true
           const params = {
-            title: ['个案', '类型', '状态', '项目', '优先级', '来源', '需求人', '处理人', '描述', '开始时间', '结束时间'],
-            key: ['case_name', 'case_type', 'case_status', 'case_obj', 'case_priority', 'case_source', 'demander', 'case_executor', 'case_details', 'case_stime', 'case_etime'],
+            title: ['计划工作', '类型', '状态', '项目', '优先级', '来源', '需求人', '处理人', '描述', '开始时间', '结束时间'],
+            key: ['plan_name', 'plan_type', 'plan_status', 'plan_obj', 'plan_priority', 'plan_source', 'demander', 'plan_executor', 'plan_details', 'plan_stime', 'plan_etime'],
             data: this.tableDataALL,
             autoWidth: true,
-            filename: '个案列表'
+            filename: '计划工作列表'
           }
           excel.export_array_to_excel(params)
           // this.exportLoading = false
@@ -767,11 +767,11 @@
       },
       // //输入触发事件方法
       // inputfunction() {
-      //   if (!this.formValidate.case_executor) {
+      //   if (!this.formValidate.plan_executor) {
       //     return true
       //   }
-      //   //this.$Message.error(this.formValidate.case_executor);
-      //   getCase(this.formValidate.case_executor).then(res => {
+      //   //this.$Message.error(this.formValidate.plan_executor);
+      //   getCase(this.formValidate.plan_executor).then(res => {
       //     if (res.data.code === 0) {
       //       this.tomsg = res.data.msg
       //       this.$Message.success(`${res.data.msg}`)
@@ -791,8 +791,8 @@
           }
         })
       },
-      getCaseFile(startdate, enddate) {
-        getCaseFile(startdate, enddate).then(res => {
+      getPlanFile(startdate, enddate) {
+        getPlanFile(startdate, enddate).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
             this.surl = res.data.data
@@ -806,21 +806,22 @@
 
         })
       },
-      getCaseList(page, limit, key, value) {
-        getCaseList(page, limit, key, value).then(res => {
+      getPlanList(page, limit, key, value) {
+        getPlanList(page, limit, key, value).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
             this.tableData = res.data.data
           } else {
+            this.tableData =  []
             this.$Message.error(`${res.data.msg}`)
           }
         })
       },
       handleDetail(index) {
         this.$Modal.info({
-          title: '个案信息',
-          content: `个案名称：${this.tableData[index].case_name}<br>类型：${this.tableData[index].case_type}<br>状态：${this.tableData[index].case_status}<br>项目：${this.tableData[index].case_obj}<br>优先等级：${this.tableData[index].case_priority}<br>来源：${this.tableData[index].case_source}<br>新建人：${this.tableData[index].case_creator}<br>需求单位：${this.tableData[index].demand_unit}<br>需求人：${this.tableData[index].demander}<br>处理人：${this.tableData[index].case_executor}<br>开始时间：${this.tableData[index].case_stime}<br>结束时间：${this.tableData[index].case_etime}<br>时长：${this.tableData[index].case_ltime}<br>详情描述：${this.tableData[index].case_details}`
+          title: '计划工作信息',
+          content: `计划工作名称：${this.tableData[index].plan_name}<br>类型：${this.tableData[index].plan_type}<br>状态：${this.tableData[index].plan_status}<br>项目：${this.tableData[index].plan_obj}<br>优先等级：${this.tableData[index].plan_priority}<br>来源：${this.tableData[index].plan_source}<br>新建人：${this.tableData[index].plan_creator}<br>需求单位：${this.tableData[index].demand_unit}<br>需求人：${this.tableData[index].demander}<br>处理人：${this.tableData[index].plan_executor}<br>开始时间：${this.tableData[index].plan_stime}<br>结束时间：${this.tableData[index].plan_etime}<br>时长：${this.tableData[index].plan_ltime}<br>详情描述：${this.tableData[index].plan_details}`
         })
       },
       // 选择类型
@@ -849,37 +850,37 @@
         if (paramsRow && paramsRow.id) {
           // put
           this.formValidate = {
-            case_num: paramsRow.case_num,
-            case_id: paramsRow.id,
-            case_name: paramsRow.case_name,
-            case_priority: paramsRow.case_priority,
-            case_status: paramsRow.case_status,
-            case_executor: paramsRow.case_executor,
-            case_stime: paramsRow.case_stime,
-            case_etime: paramsRow.case_etime,
-            case_details: paramsRow.case_details,
-            case_type: paramsRow.case_type,
-            case_creator: paramsRow.case_creator,
-            case_obj: paramsRow.case_obj,
-            case_source: paramsRow.case_source,
+            plan_num: paramsRow.plan_num,
+            plan_id: paramsRow.id,
+            plan_name: paramsRow.plan_name,
+            plan_priority: paramsRow.plan_priority,
+            plan_status: paramsRow.plan_status,
+            plan_executor: paramsRow.plan_executor,
+            plan_stime: paramsRow.plan_stime,
+            plan_etime: paramsRow.plan_etime,
+            plan_details: paramsRow.plan_details,
+            plan_type: paramsRow.plan_type,
+            plan_creator: paramsRow.plan_creator,
+            plan_obj: paramsRow.plan_obj,
+            plan_source: paramsRow.plan_source,
             demand_unit: paramsRow.demand_unit,
             demander: paramsRow.demander,
-            case_ltime: paramsRow.case_ltime,
+            plan_ltime: paramsRow.plan_ltime,
           }
         } else {
           // post
           this.formValidate = {
-            case_name: '',
-            case_priority: "一般",
-            case_status: "已完成",
-            case_type: '咨询',
-            case_source: '微信',
-            case_obj: '综合应用平台',
-            case_executor: loginUser,
-            case_creator: loginUser,
-            case_stime: getDate(new Date().getTime() / 1000, 'year'),
-            case_etime: '',
-            case_details: "",
+            plan_name: '',
+            plan_priority: "一般",
+            plan_status: "处理中",
+            plan_type: '咨询',
+            plan_source: '微信',
+            plan_obj: '综合应用平台',
+            plan_executor: loginUser,
+            plan_creator: loginUser,
+            plan_stime: getDate(new Date().getTime() / 1000, 'year'),
+            plan_etime: getDate(new Date().getTime() / 1000, 'year'),
+            plan_details: "",
             demander: '',
           }
         }
@@ -889,7 +890,7 @@
         if (this.todate.length) {
           if (this.todate[0].length) {
             console.log(this.todate)
-            this.getCaseFile(this.todate[0], this.todate[1])
+            this.getPlanFile(this.todate[0], this.todate[1])
             this.modalTable.tableVisible = false
           } else {
             this.$Message.error('缺少必要参数');
@@ -903,10 +904,10 @@
           if (valid) {
             this.isDisable = true
             setTimeout(() => {
-              CaseAdd(this.formValidate, this.editModalData).then(res => {
+              PlanAdd(this.formValidate, this.editModalData).then(res => {
                 if (res.data.code === 0) {
                   this.$Message.success(`${res.data.msg}`)
-                  this.getCaseList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
+                  this.getPlanList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
                   this.modalMap.modalVisible = false
                 } else {
                   this.$Message.error(`${res.data.msg}`)
@@ -924,8 +925,8 @@
       },
       // 删除
       delData(params) {
-        if (confirm(`确定要删除 ${params.row.case_name}`)) {
-          caseDelete(
+        if (confirm(`确定要删除 ${params.row.plan_name}`)) {
+          planDelete(
             {
               id: params.row.id
             }
@@ -933,7 +934,7 @@
             if (res.data.code === 0) {
               this.$Message.success(`${res.data.msg}`)
               this.tableData.splice(params.index, 1)
-              this.getCaseList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
+              this.getPlanList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
             } else {
               this.$Message.error(`${res.data.msg}`)
             }
@@ -946,12 +947,12 @@
       },
       handleSearch() {
         this.tovalue = this.formValidate2
-        this.getCaseList(this.pageNum, this.pageSize, this.tokey, this.tovalue);
+        this.getPlanList(this.pageNum, this.pageSize, this.tokey, this.tovalue);
       },
       changePage(value) {
 
         this.pageNum = value
-        this.getCaseList(
+        this.getPlanList(
           this.pageNum,
           this.pageSize,
           this.tokey,
@@ -961,7 +962,7 @@
       // 每页条数
       handlePageSize(value) {
         this.pageSize = value
-        this.getCaseList(1, this.pageSize, this.tokey, this.tovalue)
+        this.getListPlan(1, this.pageSize, this.tokey, this.tovalue)
       },
       getDictConfList() {
         getDictConfList().then(res => {
@@ -996,14 +997,14 @@
     },
 
     mounted() {
-      this.getCaseList(this.pageNum, this.pageSize, this.tokey, this.tovalue);
+      this.getPlanList(this.pageNum, this.pageSize, this.tokey, this.tovalue);
       this.getDictConfList()
     }
   };
 </script>
 
 <style lang="less" scoped>
-  .case-btn {
+  .plan-btn {
     margin-right: 5px
   }
 </style>

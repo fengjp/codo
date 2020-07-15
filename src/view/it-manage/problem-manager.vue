@@ -879,7 +879,7 @@
             case_executor: loginUser,
             case_creator: loginUser,
             case_stime: getDate(new Date().getTime() / 1000, 'year'),
-            case_etime: '',
+            case_etime: getDate(new Date().getTime() / 1000, 'year'),
             case_details: "",
             demander: '',
           }
