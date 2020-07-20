@@ -3,7 +3,7 @@
     <Col span="11" style="margin: 10px;" v-for="(item, index) in queryObjList">
       <Card :bordered="false">
         <p slot="title" v-text="item.title"></p>
-        <Table :columns="item.columns" :data="item.tableData"></Table>
+        <Table :columns="item.columns" :data="item.tableData" size="small" height="250"></Table>
       </Card>
     </Col>
   </div>
@@ -56,8 +56,7 @@
         do_sql('id', query_id).then(
           res => {
             if (res.data.code === 0) {
-              // console.log(res.data.data)
-              this.queryObjList[index].tableData = [{case_creator: "超级管理员", cnt: 24}, {case_creator: "测试", cnt: 2}]
+              this.queryObjList[index].tableData = res.data.data
             }
           }
         );

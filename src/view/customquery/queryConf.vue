@@ -130,7 +130,17 @@
             title: '轮询频率',
             key: 'timesTy',
             align: 'center',
-            minWidth: 100
+            minWidth: 100,
+            render: (h, params, vm) => {
+              if (params.row.timesTy === 'timesTy1'){
+                var tt = '每'+ params.row.timesTy1Val + '分钟'
+              } else {
+                var tt = '每天'+ params.row.timesTy2Val
+              }
+              return h('div', [
+                h('span', {}, tt)
+              ])
+            }
           },
           {
             title: '状态',
@@ -225,7 +235,7 @@
         },
         ruleValidate: {
           title: [{required: true, message: "标题不能为空", trigger: "blur"}],
-          // dblinkId: [{required: true, message: "数据库源不能为空", trigger: "blur"}],
+          // timesTy1Val: [{required: true, message: "数据库源不能为空", trigger: "blur"}],
           database: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
         },
         dbList: [],
