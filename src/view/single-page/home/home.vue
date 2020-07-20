@@ -27,12 +27,12 @@
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="14" style="margin-bottom: 10px;">
         <Card shadow>
-          <Row style="text-align: right;">
-            <Col>
+          <Row style="text-align:right">
+            <Col span="24">
               <DatePicker :value="value2" format="yyyy-MM-dd" type="daterange" placement="bottom-end"
                           placeholder="请选择日期范围"
                           @on-change="initBarCase"
-              >
+                          style="width: 200px">
 
               </DatePicker>
             </Col>

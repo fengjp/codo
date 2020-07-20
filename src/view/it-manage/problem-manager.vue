@@ -290,7 +290,6 @@
                 >
                   <Input
                     v-model="formValidate.demander"
-                    :autosize="{minRows: 2,maxRows: 5}"
                     :maxlength="200"
                     placeholder="需求人"
                   ></Input>
@@ -305,8 +304,9 @@
                   prop="case_stime" style="width:240px;margin-right:50px"
                 >
                   <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
-                              :value="formValidate.case_stime" @on-change="formValidate.case_stime=$event"
+                              :value="formValidate.case_stime" @on-change="changestime"
                               placeholder="记录开始时间"
+                              :clearable="false"
                               :options="optionsDate">
 
                   </DatePicker>
@@ -318,7 +318,7 @@
                   prop="case_etime" style="width:240px;margin-right:50px"
                 >
                   <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
-                              :value="formValidate.case_etime" @on-change="formValidate.case_etime=$event"
+                              :value="formValidate.case_etime"  @on-change="changeetime"
                               placeholder="记录结束时间"
                               :options="optionsDate">
 
@@ -330,14 +330,19 @@
               <Col span="8">
                 <FormItem
                   label="时长"
-                  prop="case_ltime" style="width:240px;margin-right:30px"
+                  prop="case_ltime" style="width:230px;margin-right:30px"
                 >
                   <Input
                     v-model="formValidate.case_ltime"
-                    :autosize="{minRows: 2,maxRows: 10}"
                     :maxlength="200"
-                    placeholder="时长(单位:分钟)"
+                    placeholder="请输入数字(单位:分钟)"
+                    @on-change="changeltime"
                   ></Input>
+                </FormItem>
+
+              </Col>
+              <Col span="8">
+                <FormItem label="分钟">
                 </FormItem>
               </Col>
             </Row>
@@ -549,7 +554,8 @@
           ],
           case_ltime: [
             {
-              message: "时长",
+              required: true,
+              message: "时长:请输入整数",
               trigger: "blur"
             }
           ],
@@ -729,6 +735,48 @@
       };
     },
     methods: {
+      changestime(data){
+        var starttime = new Date(data).getTime()
+        console.log(data)
+        var endtime = new Date(this.formValidate.case_etime).getTime()
+        console.log(endtime)
+        var  temptime  =  parseInt((endtime -starttime)/1000/60)
+        if (temptime <0){
+          this.$Message.error("结束时间要大于开始时间!")
+        }else{
+          this.formValidate.case_ltime  =  temptime
+          this.formValidate.case_stime  =  data
+        }
+      },
+      changeetime(data){
+        var starttime = new Date(this.formValidate.case_stime).getTime()
+        var endtime = new Date(data).getTime()
+        var  temptime  =  parseInt((endtime -starttime)/1000/60)
+        if (temptime <0){
+          this.$Message.error("结束时间要大于开始时间!")
+        }else{
+          this.formValidate.case_ltime  =  temptime
+          this.formValidate.case_etime = data
+        }
+      },
+      changeltime(){
+        var tempstr = typeof this.formValidate.case_ltime
+        if (Number(parseInt(this.formValidate.case_ltime))){
+            var starttime = new Date(this.formValidate.case_stime).getTime()
+            var endtime = new Date(new Date().setHours(0, 0, 0, 0));// 获取当天 0 点的时间;
+            endtime.setTime(starttime + this.formValidate.case_ltime * 60 * 1000)
+            var Y = endtime.getFullYear();
+            var M = (endtime.getMonth()+1 < 10 ? '0'+(endtime.getMonth()+1) : endtime.getMonth()+1) ;
+            var D = (endtime.getDate() < 10 ? '0'+(endtime.getDate()) + ' ' : endtime.getDate()) + ' ';
+            var h = (endtime.getHours() < 10 ? '0'+(endtime.getHours()) : endtime.getHours()) ;
+            var m = (endtime.getMinutes() < 10 ? '0'+(endtime.getMinutes()) : endtime.getMinutes()) ;
+            var s = (endtime.getSeconds() < 10 ? '0'+(endtime.getSeconds()) : endtime.getSeconds()) ;
+            var todate = Y+"-"+M+"-"+D+" "+h+":"+m+":"+s;
+            this.formValidate.case_etime = todate}
+        else{
+          this.$Message.error("请输入整数！")
+        }
+      },
       changeShow() {
         this.isShow = !this.isShow
         // if (this.isShow) {
@@ -881,6 +929,7 @@
             case_stime: getDate(new Date().getTime() / 1000, 'year'),
             case_etime: getDate(new Date().getTime() / 1000, 'year'),
             case_details: "",
+            case_ltime: 0,
             demander: '',
           }
         }
