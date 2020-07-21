@@ -54,13 +54,20 @@
         </Card>
       </i-col>
     </Row>
+    <Row :gutter="20" style="margin-top: 10px;">
+      <i-col :md="24" :lg="14" style="margin-bottom: 1px;">
+        <Card shadow>
+          <chart-line ref="childCaseLine" style="height: 340px;" :value="lineCaseData" :keylist="keys"  text="趋势图"/>
+        </Card>
+      </i-col>
+      </Row>
   </div>
 </template>
 
 <script>
   import InforCard from '_c/info-card'
   import CountTo from '_c/count-to'
-  import {ChartPie, ChartBar} from '_c/charts'
+  import {ChartPie, ChartBar,ChartLine} from '_c/charts'
   import Example from './example.vue'
   import {getCaseBarList, getTaskOrderlist, getTaskStatementlist} from '@/api/dashboard/home.js'
   import {getZabbixLastissues} from "@/api/devops-tools";
@@ -76,6 +83,7 @@
       InforCard,
       ChartPie,
       ChartBar,
+      ChartLine,
       Example,
       TaskInfo,
       IssuesInfo,
@@ -86,7 +94,9 @@
         pieCaseData: [],//[{"name":"来文", "value": 1},{"name":"应用升级","value": 1},{"name":"故障","value": 1},{"name":"重要工作","value": 2},{"name":"其他","value": 2}],
         pieTaskData: [],
         taskInfoData: [],
-        IssuesInfoData: [],
+        IssuesInfoData: [{"name":"来文", "value": 1},{"name":"应用升级","value": 1},{"name":"故障","value": 1}],
+        keys : ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],
+        lineCaseData: [[15,21,30,35,58,25],[11,20,30,33,50,23,96,25,20,23,65,16],[10,15,30,42,53,0,0,0,0,0,0,0],[15,21,32,35,58], [18,20,30,35,55]],
         barCaseData: {}, // {来文: 1,应用升级: 1,故障: 1,重要工作: 2,其他: 2},
         isShow: false,
         isShow2: true,//false,
@@ -132,9 +142,13 @@
             this.isShow2 = false
             this.barCaseData = res.data.data[0]
             this.pieCaseData = res.data.list[0]
+            this.keys = res.data.keylist
+            this.lineCaseData = res.data.linelist
           } else {
             this.barCaseData = {}
             this.pieCaseData = []
+            this.keys = res.data.keylist
+            this.lineCaseData = res.data.linelist
             this.$Message.error(`${res.data.msg}`)
           }
         })
@@ -175,6 +189,9 @@
       },
       pieCaseData: function () {
         this.$refs.childCasePie.initPie()
+      },
+      lineCaseData: function () {
+        this.$refs.childCaseLine.initLine()
       },
     }
   }

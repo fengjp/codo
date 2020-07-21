@@ -1,5 +1,5 @@
 <template>
-  <div ref="dom" class="charts chart-bar"></div>
+  <div ref="dom" class="charts chart-line"></div>
 </template>
 
 <script>
@@ -8,9 +8,10 @@ import tdTheme from './theme.json'
 import { on, off } from '@/libs/tools'
 echarts.registerTheme('tdTheme', tdTheme)
 export default {
-  name: 'ChartBar',
+  name: 'ChartLine',
   props: {
-    value: Object,
+    value: Array,
+    keylist: Array,
     text: String,
     subtext: String
   },
@@ -23,14 +24,14 @@ export default {
     resize () {
       this.dom.resize()
     },
-    initBar(){
+    initLine(){
       this.$nextTick(() => {
-      let xAxisData = Object.keys(this.value)
-      let seriesData = Object.values(this.value)
+      // let xAxisData = Object.keys(this.value)
+      let xAxisData = this.keylist
+      let seriesData = this.value
       let  temp  = {}
       let option = {}
       temp = JSON.stringify(this.value)
-
       if  (temp == '{}'){
 
         option = {
@@ -44,6 +45,7 @@ export default {
              fontSize: 16},
           subtext: this.subtext,
         },
+
         xAxis: {
           type: 'category',
           data: xAxisData
@@ -51,41 +53,45 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [{
-          data: seriesData,
-          type: 'bar'
-        }]
+        series: [
+          {data: seriesData,
+          type: 'line'},
+          ]
       }
       }else{
        option = {
         title: {
           text: this.text,
-          subtext: this.subtext,
-          //x: 'center'
+          x: 'top',
           y: 'top',
         },
+
         xAxis: {
-          type: 'category',
-          data: xAxisData
+          data: xAxisData,
         },
         yAxis: {
-          type: 'value'
         },
-        series: [{
-          data: seriesData,
-          type: 'bar',
-          //配置样式
-          itemStyle: {
-            //通常情况下：
-            normal: {
-              //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
-              color: function (params) {
-                var colorList = ['#4962FC','#02ae60','#fe8104','#f376e0','#844ba3'];
-                return colorList[params.dataIndex];
-              }
-            },
-          },
-        }]
+        series: [
+          {data: seriesData[0],
+           name: '来文',
+          type: 'line'},
+          {data: seriesData[1],
+            name: '应用升级',
+          type: 'line'},
+          {data: seriesData[2],
+            name: '故障',
+          type: 'line'},
+          {data: seriesData[3],
+            name: '重要工作',
+          type: 'line'},
+          {data: seriesData[4],
+            name: '其他',
+          type: 'line'},
+        ],
+         legend: { // 图例
+                // align: 'right', //水平方向位置
+// 　　            verticalAlign: 'top', //垂直方向位置
+                },
       }}
 
       this.dom = echarts.init(this.$refs.dom, 'tdTheme')
@@ -95,7 +101,7 @@ export default {
     }
   },
   mounted () {
-    this.initBar()
+    this.initLine()
   },
   beforeDestroy () {
     off(window, 'resize', this.resize)
