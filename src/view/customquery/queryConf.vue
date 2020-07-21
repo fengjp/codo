@@ -43,25 +43,57 @@
                   :editorHeight=200 :key="`${_uid}`"></editor>
         </FormItem>
         <FormItem
-          v-for="(item, index) in formValidate.colnames"
-          :key="index"
           label="设置列名"
-          :prop="'colnames.' + index + '.col'"
         >
-          <Row>
-            <Col span="14">
+          <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colnames">
+            <Col span="12">
               <Input style="width: 80px" v-model="item.col" :maxlength="20" placeholder="字段名"></Input> ：
-              <Input style="width: 120px" v-model="item.name" :maxlength="20" placeholder="字段名称"></Input>
+              <Input style="width: 100px" v-model="item.name" :maxlength="20" placeholder="字段名称"></Input>
             </Col>
             <Col span="4">
-              <Button type="text" shape="circle" icon="md-close" @click="handleColRemove(index)"></Button>
+              <Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colnames',index)"></Button>
             </Col>
           </Row>
         </FormItem>
         <FormItem>
           <Row>
             <Col span="12">
-              <Button type="dashed" long @click="handleColAdd" icon="md-add">增加列名</Button>
+              <Button type="dashed" long @click="handleColAdd('colnames')" icon="md-add">增加列名</Button>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="是否配置告警">
+          <Checkbox v-model="isAlarm"></Checkbox>
+        </FormItem>
+        <FormItem label="" v-if="isAlarm" style="margin-top: -30px;">
+          <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colalarms">
+            <Select size="small" style="width:80px" v-model="item.selCol">
+              <Option v-for="i in formValidate.colnames" :value="i.col" :key="i.col">{{ i.col }}</Option>
+            </Select>
+            <Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colalarms',index)"></Button>
+            <div v-for="(subCol, subColIndex) in item.subColList">
+              <Col span="13" offset="5">
+                <Select style="width:60px" v-model="subCol.sign">
+                  <Option v-for="s in signList" :value="s.name" :key="s.id">{{ s.name }}</Option>
+                </Select>
+                <InputNumber style="width: 65px; margin-left: 5px; margin-right: 5px" v-model="subCol.alarmVal"
+                             placeholder="指标值"></InputNumber>
+                <Select style="width:70px" v-model="subCol.alarmType">
+                  <Option v-for="t in typeList" :value="t.name" :key="t.id">{{ t.name }}</Option>
+                </Select>
+              </Col>
+              <Col span="4">
+                <Button type="text" shape="circle" icon="md-add" @click="handleColAdd('subColList',index)"></Button>
+                <Button type="text" shape="circle" icon="md-close"
+                        @click="handleColRemove('subColList',index,subColIndex)"></Button>
+              </Col>
+            </div>
+          </Row>
+        </FormItem>
+        <FormItem>
+          <Row>
+            <Col span="12">
+              <Button type="dashed" long @click="handleColAdd('colalarms')" icon="md-add">增加配置</Button>
             </Col>
           </Row>
         </FormItem>
@@ -101,6 +133,20 @@
     components: {editor},
     data() {
       return {
+        signList: [
+          {'id': 0, 'name': '>'},
+          {'id': 1, 'name': '<'},
+          {'id': 2, 'name': '>='},
+          {'id': 3, 'name': '<='},
+          {'id': 4, 'name': '='},
+        ],
+        typeList: [
+          {'id': 0, 'name': '正常'},
+          {'id': 1, 'name': '一般'},
+          {'id': 2, 'name': '严重'},
+          {'id': 3, 'name': '致命'},
+        ],
+        isAlarm: false,
         mode_type: 'mysql',
         editor: {
           title: '编辑',
@@ -132,10 +178,10 @@
             align: 'center',
             minWidth: 100,
             render: (h, params, vm) => {
-              if (params.row.timesTy === 'timesTy1'){
-                var tt = '每'+ params.row.timesTy1Val + '分钟'
+              if (params.row.timesTy === 'timesTy1') {
+                var tt = '每' + params.row.timesTy1Val + '分钟'
               } else {
-                var tt = '每天'+ params.row.timesTy2Val
+                var tt = '每天' + params.row.timesTy2Val
               }
               return h('div', [
                 h('span', {}, tt)
@@ -226,7 +272,20 @@
           colnames: [{
             col: '',
             name: '',
+            alarm: {},
           }],
+          colalarms: [
+            {
+              selCol: '',
+              subColList: [
+                {
+                  sign: '',
+                  alarmVal: 0,
+                  alarmType: ''
+                }
+              ],
+            }
+          ],
           timesTy: '',
           timesTy1Val: 1,
           timesTy2Val: '',
@@ -277,6 +336,7 @@
             database: paramsRow.database,
             sql: paramsRow.sql,
             colnames: paramsRow.colnames,
+            colalarms: paramsRow.colalarms,
             timesTy: paramsRow.timesTy,
             timesTy1Val: parseInt(paramsRow.timesTy1Val),
             timesTy2Val: paramsRow.timesTy2Val,
@@ -292,21 +352,63 @@
               col: '',
               name: '',
             }],
+            colalarms: [
+              {
+                selCol: '',
+                subColList: [
+                  {
+                    sign: '>',
+                    alarmVal: 0,
+                    alarmType: '正常'
+                  }
+                ],
+              }
+            ],
             timesTy: 'timesTy1',
             timesTy1Val: 1,
             timesTy2Val: '',
           }
         }
       },
-      handleColAdd() {
-        this.formValidate.colnames.push({
-          col: '',
-          name: '',
-        });
+      handleColAdd(val, index) {
+        if (val === 'subColList') {
+          this.formValidate.colalarms[index].subColList.push({
+              sign: '>',
+              alarmVal: 0,
+              alarmType: '正常'
+            }
+          )
+        }
+        if (val === 'colalarms') {
+          this.formValidate.colalarms.push({
+            selCol: '',
+            subColList: [
+              {
+                sign: '>',
+                alarmVal: 0,
+                alarmType: '正常'
+              }
+            ],
+          });
+        }
+        if (val === 'colnames') {
+          this.formValidate.colnames.push({
+            col: '',
+            name: '',
+          });
+        }
       },
-      handleColRemove(index) {
+      handleColRemove(val, index, subColIndex) {
         // console.log(index)
-        this.formValidate.colnames.splice(index, 1)
+        if (val === 'subColList') {
+          this.formValidate.colalarms[index].subColList.splice(subColIndex, 1)
+        }
+        if (val === 'colalarms') {
+          this.formValidate.colalarms.splice(index, 1)
+        }
+        if (val === 'colnames') {
+          this.formValidate.colnames.splice(index, 1)
+        }
       },
       handleSubmitQuery(value) {
         this.$refs[value].validate((valid) => {
