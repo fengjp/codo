@@ -387,8 +387,7 @@
 </template>
 
 <script>
-  import XLSX from 'xlsx'
-  import FileSaver from 'file-saver'
+
 
   import {CaseAdd, getCase, getCaseList, getname, caseDelete, getCaseFile} from "@/api/problem"
   import {getuserlist} from '@/api/user'

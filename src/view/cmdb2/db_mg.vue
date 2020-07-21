@@ -227,9 +227,9 @@
         typeList: [
           {value: 'oracle', label: 'oracle'},
           {value: 'mysql', label: 'mysql'},
-          {value: 'redis', label: 'redis'},
-          {value: 'mongodb', label: 'mongodb'},
-          {value: 'other', label: 'other'}
+          // {value: 'redis', label: 'redis'},
+          // {value: 'mongodb', label: 'mongodb'},
+          // {value: 'other', label: 'other'}
         ],
         markList: [
           {value: '写', label: '写'},
@@ -640,7 +640,7 @@
             db_pwd: '',
             db_env: '',
             // proxy_host:'',
-            db_type: 'mysql',
+            db_type: 'oracle',
             db_version: '',
             db_mark: '写',
             tag_list: [],
