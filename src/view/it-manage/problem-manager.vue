@@ -552,13 +552,13 @@
               trigger: "blur"
             }
           ],
-          case_ltime: [
-            {
-              required: true,
-              message: "时长:请输入整数",
-              trigger: "blur"
-            }
-          ],
+          // case_ltime: [
+          //   {
+          //     required: true,
+          //     message: "时长:请输入整数",
+          //     trigger: "blur"
+          //   }
+          // ],
           case_creator: [
             {
               message: "新建人",

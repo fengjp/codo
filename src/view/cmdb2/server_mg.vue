@@ -2,7 +2,7 @@
   <div>
     <Row :gutter="10">
       <i-col :md="24" :lg="5" style="margin-bottom: 20px;">
-        <Card>
+        <Card :bordered="false">
           <Tree
             ref="tree"
             :data="tagTreeData"
@@ -12,7 +12,7 @@
         </Card>
       </i-col>
       <i-col :md="24" :lg="19" style="margin-bottom: 10px;">
-        <Card>
+        <Card :bordered="false">
           <Alert
             banner
             closable
@@ -122,7 +122,7 @@
             <Option value="其他" >其他</Option>
           </Select>
               </FormItem>-->
-              <FormItem label="IDC" prop="idc">
+              <!-- <FormItem label="IDC" prop="idc">
                 <Select
                   class="search-input-long"
                   v-model="formValidate.idc"
@@ -136,16 +136,14 @@
                     :key="item.id"
                   >{{ item.name }}</Option>
                 </Select>
-              </FormItem>
-
-              <FormItem label="区域" prop="region">
+              </FormItem> -->
+              <!-- <FormItem label="区域" prop="region">
                 <Input
                   v-model="formValidate.region"
                   :maxlength="45"
                   placeholder="Region区域，如：cn-shanghai, us-east-1"
                 ></Input>
-              </FormItem>
-
+              </FormItem> -->
               <FormItem label="管理用户" prop="admin_user">
                 <Select v-model="formValidate.admin_user" placeholder="请选择一个管理用户" filterable>
                   <Option v-for="item in admUserList" :value="item.admin_user">{{item.admin_user}}</Option>
@@ -288,9 +286,9 @@ export default {
       searchValue: "",
 
       ruleValidate: {
-        admin_user: [
-          { required: true, message: "请选择管理用户", trigger: "change" }
-        ],
+        // admin_user: [
+        //   { required: true, message: "请选择管理用户", trigger: "change" }
+        // ],
         hostname: [
           {
             required: true,
@@ -363,20 +361,20 @@ export default {
           align: "center",
           sortable: true
         },
-        {
-          title: "IDC",
-          key: "idc",
-          width: 130,
-          align: "center",
-          sortable: true
-        },
-        {
-          title: "区域",
-          key: "region",
-          width: 150,
-          align: "center",
-          sortable: true
-        },
+        // {
+        //   title: "IDC",
+        //   key: "idc",
+        //   width: 130,
+        //   align: "center",
+        //   sortable: true
+        // },
+        // {
+        //   title: "区域",
+        //   key: "region",
+        //   width: 150,
+        //   align: "center",
+        //   sortable: true
+        // },
         // {
         //   title: "管理用户",
         //   key: "admin_user",
@@ -526,16 +524,16 @@ export default {
     exportData(type) {
       if (type === 1) {
         this.$refs.selection.exportCsv({
-          filename: "codo_cmdb_original_data"
+          filename: "cmdb_original_data"
         });
       } else if (type === 2) {
         this.$refs.selection.exportCsv({
-          filename: "codo_cmdb_sorting_and_filtering_data",
+          filename: "cmdb_sorting_and_filtering_data",
           original: false
         });
       } else if (type === 3) {
         this.$refs.selection.exportCsv({
-          filename: "codo_cmdb_custom_data",
+          filename: "cmdb_custom_data",
           columns: this.columns8.filter((col, index) => index < 4),
           data: this.data7.filter((data, index) => index < 4)
         });
@@ -682,15 +680,15 @@ export default {
       });
     },
     // 获取IDC列表
-    getIDCList() {
-      getIDClist().then(res => {
-        if (res.data.code === 0) {
-          // this.$Message.success(`${res.data.msg}`)
-          this.allIDCList = res.data.data;
-          // console.log(this.allTagList)
-        }
-      });
-    },
+    // getIDCList() {
+    //   getIDClist().then(res => {
+    //     if (res.data.code === 0) {
+    //       // this.$Message.success(`${res.data.msg}`)
+    //       this.allIDCList = res.data.data;
+    //       // console.log(this.allTagList)
+    //     }
+    //   });
+    // },
 
     // 获取Tag列表
     getTagList() {
@@ -1035,7 +1033,7 @@ export default {
     this.getTagList();
     this.getAdminUserList();
     this.getTagTree();
-    this.getIDCList();
+    // this.getIDCList();
   }
 };
 </script>

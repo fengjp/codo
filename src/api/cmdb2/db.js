@@ -48,3 +48,14 @@ export const operationDB = (data, meth) => {
   })
 }
 
+//获取DBlist 用于自定义查询
+export const getDBListForQry= (key, value) => {
+  return axios.request({
+    url: '/cmdb2/v1/cmdb/db/forQry',
+    method: 'get',
+    params: {
+      key,
+      value,
+    }
+  })
+}

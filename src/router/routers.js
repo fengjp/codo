@@ -96,6 +96,37 @@ export const routerMap = [
       import ('@/view/cmdb2/webssh/web-ssh.vue')
   },
   {
+    path: '/customquery',
+    name: 'customquery',
+    meta: {
+      icon: 'md-search',
+      title: '自定义查询'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'queryShow',
+        name: 'queryShow',
+        meta: {
+          icon: 'ios-stats',
+          title: '查询展示'
+        },
+        component: () =>
+          import ('@/view/customquery/queryShow.vue')
+      },
+      {
+        path: 'queryConf',
+        name: 'queryConf',
+        meta: {
+          icon: 'md-settings',
+          title: '查询配置'
+        },
+        component: () =>
+          import ('@/view/customquery/queryConf.vue')
+      },
+    ]
+  },
+  {
     path: '/itmanage',
     name: 'itmanage',
     meta: {
