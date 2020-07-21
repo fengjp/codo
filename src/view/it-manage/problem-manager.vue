@@ -387,7 +387,7 @@
 </template>
 
 <script>
-z
+
 
   import {CaseAdd, getCase, getCaseList, getname, caseDelete, getCaseFile} from "@/api/problem"
   import {getuserlist} from '@/api/user'
