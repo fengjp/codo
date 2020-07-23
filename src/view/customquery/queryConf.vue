@@ -23,27 +23,33 @@
 
     <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="540"
            :mask-closable=false :styles="{top: '20px'}">
-      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100" inline>
         <!--<alert>温馨提示：xxx</alert>-->
-        <FormItem label="标题" prop="title">
+        <FormItem label="标题" prop="title" style="display: block">
           <Input v-model="formValidate.title" :maxlength="50" placeholder='请输入标题'></Input>
         </FormItem>
-        <FormItem label="数据库源" prop="dblinkId">
+        <FormItem label="数据库源" prop="dblinkId" style="width: 48%">
           <!--<Input v-model="formValidate.dblinkId" :maxlength="50" placeholder="数据库源"></Input>-->
           <Select v-model="formValidate.dblinkId" placeholder='请选择数据库源'>
-            <Option v-for="item in dbList" :value="item.id" :key="item.id">{{ item.name }}
+            <Option v-for="item in dbList" :value="item.id" :key="`dblinkId-${item.id}`">{{ item.name }}
             </Option>
           </Select>
         </FormItem>
-        <FormItem label="数据库名" prop="database">
+        <FormItem label="数据库名" prop="database" style="width: 48%">
           <Input v-model="formValidate.database" :maxlength="50" placeholder="请输入数据库名"></Input>
         </FormItem>
-        <FormItem label="SQL语句" prop="sql">
+        <FormItem label="用户名" prop="user" style="width: 48%">
+          <Input v-model="formValidate.user" placeholder="连接数据库用户名"></Input>
+        </FormItem>
+        <FormItem label="密码" prop="password" style="width: 48%">
+          <Input v-model="formValidate.password" type="password" password placeholder="连接数据库密码"></Input>
+        </FormItem>
+        <FormItem label="SQL语句" prop="sql" style="display: block">
           <editor v-model="formValidate.sql" @init="editorInit" :mode_type="mode_type" :read="editor.read"
                   :editorHeight=200 :key="`${_uid}`"></editor>
         </FormItem>
         <FormItem
-          label="设置列名"
+          label="设置列名" style="width: 100%"
         >
           <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colnames">
             <Col span="12">
@@ -55,31 +61,31 @@
             </Col>
           </Row>
         </FormItem>
-        <FormItem>
+        <FormItem style="display: block">
           <Row>
             <Col span="12">
               <Button type="dashed" long @click="handleColAdd('colnames')" icon="md-add">增加列名</Button>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="是否配置告警">
+        <FormItem label="是否配置告警" style="display: block">
           <Checkbox v-model="isAlarm"></Checkbox>
         </FormItem>
-        <FormItem label="" v-if="isAlarm" style="margin-top: -30px;">
+        <FormItem label="" v-if="isAlarm" style="display: block; margin-top: -30px;">
           <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colalarms">
             <Select size="small" style="width:80px" v-model="item.selCol">
-              <Option v-for="i in formValidate.colnames" :value="i.col" :key="i.col">{{ i.col }}</Option>
+              <Option v-for="i in formValidate.colnames" :value="i.col">{{ i.col }}</Option>
             </Select>
-            <Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colalarms',index)"></Button>
+            <!--<Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colalarms',index)"></Button>-->
             <div v-for="(subCol, subColIndex) in item.subColList">
               <Col span="13" offset="5">
                 <Select style="width:60px" v-model="subCol.sign">
-                  <Option v-for="s in signList" :value="s.name" :key="s.id">{{ s.name }}</Option>
+                  <Option v-for="s in signList" :value="s.name" :key="`sign-${s.id}`">{{ s.name }}</Option>
                 </Select>
                 <InputNumber style="width: 65px; margin-left: 5px; margin-right: 5px" v-model="subCol.alarmVal"
                              placeholder="指标值"></InputNumber>
                 <Select style="width:70px" v-model="subCol.alarmType">
-                  <Option v-for="t in typeList" :value="t.name" :key="t.id">{{ t.name }}</Option>
+                  <Option v-for="t in typeList" :value="t.name" :key="`type-${t.id}`">{{ t.name }}</Option>
                 </Select>
               </Col>
               <Col span="4">
@@ -90,13 +96,13 @@
             </div>
           </Row>
         </FormItem>
-        <FormItem>
-          <Row>
-            <Col span="12">
-              <Button type="dashed" long @click="handleColAdd('colalarms')" icon="md-add">增加配置</Button>
-            </Col>
-          </Row>
-        </FormItem>
+        <!--<FormItem>-->
+          <!--<Row>-->
+            <!--<Col span="12">-->
+              <!--<Button type="dashed" long @click="handleColAdd('colalarms')" icon="md-add">增加配置</Button>-->
+            <!--</Col>-->
+          <!--</Row>-->
+        <!--</FormItem>-->
         <FormItem label="轮询频率" prop="times">
           <RadioGroup v-model="formValidate.timesTy" vertical>
             <Radio label="timesTy1">
@@ -267,6 +273,8 @@
           id: null,
           title: '',
           dblinkId: '',
+          user:'',
+          password:'',
           database: '',
           sql: '',
           colnames: [{
@@ -295,7 +303,7 @@
         ruleValidate: {
           title: [{required: true, message: "标题不能为空", trigger: "blur"}],
           // timesTy1Val: [{required: true, message: "数据库源不能为空", trigger: "blur"}],
-          database: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
+          // database: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
         },
         dbList: [],
       }
@@ -340,6 +348,11 @@
             timesTy: paramsRow.timesTy,
             timesTy1Val: parseInt(paramsRow.timesTy1Val),
             timesTy2Val: paramsRow.timesTy2Val,
+            user: paramsRow.user,
+            password: paramsRow.password,
+          }
+          if (paramsRow.colalarms.length > 0){
+            this.isAlarm = true
           }
         } else {
           this.formValidate = {
@@ -347,6 +360,8 @@
             title: '',
             dblinkId: '',
             database: '',
+            user: '',
+            password: '',
             sql: '',
             colnames: [{
               col: '',
@@ -414,7 +429,7 @@
         this.$refs[value].validate((valid) => {
           if (valid) {
             setTimeout(() => {
-              console.log(this.formValidate)
+              // console.log(this.formValidate)
               operationQuery(this.formValidate, this.editModalData).then(
                 res => {
                   if (res.data.code === 0) {

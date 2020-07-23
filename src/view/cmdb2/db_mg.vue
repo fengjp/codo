@@ -314,26 +314,6 @@
                 return h('div', [h('Tag', {props: {color: 'success'}}, '运行中')])
               } else {
                 return h('div', [h('Tag', {props: {color: 'error'}}, 'False')])
-                // return h('div', [
-                //   h(
-                //     'Button',
-                //     {
-                //       props: {
-                //         type: 'error',
-                //         size: 'small'
-                //       },
-                //       style: {
-                //         marginRight: '4px'
-                //       },
-                //       on: {
-                //         click: () => {
-                //           this.handleErrorLog(params.row.db_host)
-                //         }
-                //       }
-                //     },
-                //     'False'
-                //   ),
-                // ])
               }
             }
           },

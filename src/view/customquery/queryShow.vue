@@ -40,6 +40,20 @@
                 let col = {title: '', key: '', align: 'center', minWidth: 80}
                 col.title = item.colnames[j].name
                 col.key = item.colnames[j].col
+                if (col.key === 'target') {
+                  col.render = (h, params) => {
+                    let target = params.row.target
+                    if (target === '正常') {
+                      return h('div', [h('Tag', {props: {color: 'success'}}, target)])
+                    } else if (target === '一般') {
+                      return h('div', [h('Tag', {props: {color: 'blue'}}, target)])
+                    } else if (target === '严重') {
+                      return h('div', [h('Tag', {props: {color: 'warning'}}, target)])
+                    } else if (target === '致命') {
+                      return h('div', [h('Tag', {props: {color: 'error'}}, target)])
+                    }
+                  }
+                }
                 columns.push(col)
               }
               queryObjList[i].columns = columns
