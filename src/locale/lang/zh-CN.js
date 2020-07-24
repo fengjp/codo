@@ -80,9 +80,6 @@ export default {
     cmdb: '资产管理',
     appsys_mg: '应用系统管理',
     device_mg: '设备管理',
-    customquery: '自定义查询',
-    queryConf: '查询配置',
-    queryShow: '查询展示',
     itmanage: 'ITSM',
     case_mg: '个案管理',
     plan_mg: '计划工作',
@@ -122,5 +119,9 @@ export default {
     domain_name_manage: 'BIND解析',
     cloud_domain_name: '云解析',
     cloud_domain_account: '云账号-域名',
-    domain_name_monitor: '域名监控'
+    domain_name_monitor: '域名监控',
+    monitor: '监控巡检',
+    monitor_home_mg: '总览',
+    monitor_mg: '监控详情',
+
 }

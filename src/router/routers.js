@@ -96,37 +96,6 @@ export const routerMap = [
       import ('@/view/cmdb2/webssh/web-ssh.vue')
   },
   {
-    path: '/customquery',
-    name: 'customquery',
-    meta: {
-      icon: 'md-search',
-      title: '自定义查询'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'queryShow',
-        name: 'queryShow',
-        meta: {
-          icon: 'ios-stats',
-          title: '查询展示'
-        },
-        component: () =>
-          import ('@/view/customquery/queryShow.vue')
-      },
-      {
-        path: 'queryConf',
-        name: 'queryConf',
-        meta: {
-          icon: 'md-settings',
-          title: '查询配置'
-        },
-        component: () =>
-          import ('@/view/customquery/queryConf.vue')
-      },
-    ]
-  },
-  {
     path: '/itmanage',
     name: 'itmanage',
     meta: {
@@ -294,6 +263,36 @@ export const routerMap = [
         component: () =>
           import ('@/view/system-manage/systemlog.vue')
       }
+    ]
+  },
+  {
+    path: '/monitor',
+    name: 'monitor',
+    meta: {
+      icon: 'md-paper',
+      title: '监控巡检'
+    },
+    component: Main,
+    children: [{
+      path: 'monitorhome_mg',
+      name: 'monitor_home_mg',
+      meta: {
+        icon: 'ios-paper',
+        title: '总览'
+      },
+      component: () =>
+        import ('@/view/monitor/monitorhome.vue')
+    },
+      {
+      path: 'monitor_mg',
+      name: 'monitor_mg',
+      meta: {
+        icon: 'ios-paper',
+        title: '监控详情'
+      },
+      component: () =>
+        import ('@/view/monitor/monitor.vue')
+    },
     ]
   },
 

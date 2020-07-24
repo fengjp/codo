@@ -12,6 +12,7 @@ export default {
   props: {
     value: Array,
     keylist: Array,
+    flag:String,
     text: String,
     subtext: String
   },
@@ -59,40 +60,69 @@ export default {
           ]
       }
       }else{
-       option = {
-        title: {
-          text: this.text,
-          x: 'top',
-          y: 'top',
-        },
+          var tempstr = temp = JSON.stringify(this.flag)
+          if (this.flag == "1"){
+                 option = {
+                  title: {
+                    text: this.text,
+                    x: 'top',
+                    y: 'top',
+                  },
 
-        xAxis: {
-          data: xAxisData,
-        },
-        yAxis: {
-        },
-        series: [
-          {data: seriesData[0],
-           name: '来文',
-          type: 'line'},
-          {data: seriesData[1],
-            name: '应用升级',
-          type: 'line'},
-          {data: seriesData[2],
-            name: '故障',
-          type: 'line'},
-          {data: seriesData[3],
-            name: '重要工作',
-          type: 'line'},
-          {data: seriesData[4],
-            name: '其他',
-          type: 'line'},
-        ],
-         legend: { // 图例
-                // align: 'right', //水平方向位置
-// 　　            verticalAlign: 'top', //垂直方向位置
-                },
-      }}
+                  xAxis: {
+                    data: xAxisData,
+                  },
+                  yAxis: {
+                  },
+
+                  series: [
+                    {data: seriesData[0],
+                     // name: '来文',
+                    type: 'line'},
+                  ],
+             //       legend: { // 图例
+             //                 // align: 'right', //水平方向位置
+             // 　　            // verticalAlign: 'top', //垂直方向位置
+             //              },
+                }}
+          else{
+                option = {
+                  title: {
+                    text: this.text,
+                    x: 'top',
+                    y: 'top',
+                  },
+
+                  xAxis: {
+                    data: xAxisData,
+                  },
+                  yAxis: {
+                  },
+
+                  series: [
+                    {data: seriesData[0],
+                     name: '来文',
+                    type: 'line'},
+                    {data: seriesData[1],
+                      name: '应用升级',
+                    type: 'line'},
+                    {data: seriesData[2],
+                      name: '故障',
+                    type: 'line'},
+                    {data: seriesData[3],
+                      name: '重要工作',
+                    type: 'line'},
+                    {data: seriesData[4],
+                      name: '其他',
+                    type: 'line'},
+                  ],
+                   legend: { // 图例
+                             // align: 'right', //水平方向位置
+             　　            // verticalAlign: 'top', //垂直方向位置
+                          },
+                }
+          }
+        }
 
       this.dom = echarts.init(this.$refs.dom, 'tdTheme')
       this.dom.setOption(option)

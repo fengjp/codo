@@ -57,7 +57,7 @@
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="14" style="margin-bottom: 1px;">
         <Card shadow>
-          <chart-line ref="childCaseLine" style="height: 340px;" :value="lineCaseData" :keylist="keys"  text="趋势图"/>
+          <chart-line ref="childCaseLine" style="height: 340px;" :value="lineCaseData" :keylist="keys" flag="0" text="趋势图"/>
         </Card>
       </i-col>
       </Row>
