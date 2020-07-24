@@ -268,7 +268,7 @@
                   {
                     on: {
                       click: () => {
-                        this.handleDetail(params.row)
+                        // this.handleDetail(params.row)
                       }
                     }
                   },
