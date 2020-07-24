@@ -13,10 +13,10 @@
       </i-col>
       <i-col :md="24" :lg="19" style="margin-bottom: 10px;">
         <Card :bordered="false">
-          <Alert
-            banner
-            closable
-          >同步Tag树：默认情况下部署CMDB时候settings里面配置了任务系统的数据库信息，主机资产会每天定时同步到Tag树，也可点击手动同步，无需选中主机，同步所有，注意请不要多次点击。</Alert>
+          <!--<Alert-->
+            <!--banner-->
+            <!--closable-->
+          <!--&gt;同步Tag树：默认情况下部署CMDB时候settings里面配置了任务系统的数据库信息，主机资产会每天定时同步到Tag树，也可点击手动同步，无需选中主机，同步所有，注意请不要多次点击。</Alert>-->
           <div class="search-con search-con-top">
             <!-- <Input class="search-input" v-model="searchVal" style="padding:5px;" placeholder="输入关键字全局搜索"/> -->
             <Input
@@ -42,20 +42,14 @@
               @e-update="getServerList"
               @e-close="closeMultiModal"
             ></MultiAdd>
-            <!-- <Button type="info" v-if="rules.asset_error_log" class="search-btn" @click="handlerCheckErrorLog">任务日志 -->
-            <!-- </Button>
-        <Button v-if="rules.web_ssh_btn" class="search-btn">
-          <router-link tag="a" target="_blank" :to="{name: 'web_ssh'}">Web终端</router-link>
-            </Button>-->
-
+            <!-- <Button type="info" v-if="rules.asset_error_log" class="search-btn" @click="handlerCheckErrorLog">任务日志
+            </Button> -->
+            <!-- <Button v-if="rules.web_ssh_btn" class="search-btn">
+              <router-link tag="a" target="_blank" :to="{name: 'web_ssh'}">Web终端</router-link>
+            </Button> -->
             <!-- <Button type="info" class="search-btn"  @click="handlerRsyncKey">推送密钥</Button> -->
-            <Button type="success" class="search-btn" @click="handlerAssetUpdate">资产更新</Button>
-            <Button
-              type="warning"
-              class="search-btn"
-              :loading="loading"
-              @click="handleSyncTagTree"
-            >同步作业标签</Button>
+            <!--<Button type="success" class="search-btn" @click="handlerAssetUpdate">资产更新</Button>-->
+            <!--<Button type="warning" class="search-btn" :loading="loading" @click="handleSyncTagTree">同步作业标签</Button>-->
 
             <Button type="primary" class="search-btn" @click="exportData(2)">
               <Icon type="ios-download-outline"></Icon>导出数据
@@ -103,8 +97,8 @@
                   <Input v-model="formValidate.hostname" :maxlength="45" placeholder="请输入主机名"></Input>
                 </FormItem>
               </div>
-              <FormItem label="IP" prop="ip">
-                <Input v-model="formValidate.ip" :maxlength="45" placeholder="请输入IP地址"></Input>
+              <FormItem label="内网IP" prop="内网ip">
+                <Input v-model="formValidate.private_ip" :maxlength="45" placeholder="请输入内网IP地址"></Input>
               </FormItem>
               <FormItem label="公网IP" prop="public_ip">
                 <Input v-model="formValidate.public_ip" :maxlength="45" placeholder="公网IP"></Input>
@@ -113,14 +107,14 @@
                 <Input v-model="formValidate.port" :maxlength="5" placeholder="端口"></Input>
               </FormItem>
               <!-- <FormItem label="IDC" prop="idc">
-          <Select v-model="formValidate.idc" placeholder="选择IDC机房">
-            <Option value="AWS" >AWS</Option>
-            <Option value="阿里云" >阿里云</Option>
-            <Option value="腾讯云" >腾讯云</Option>
-            <Option value="华为云" >华为云</Option>
-            <Option value="内网" >内网</Option>
-            <Option value="其他" >其他</Option>
-          </Select>
+                <Select v-model="formValidate.idc" placeholder="选择IDC机房">
+                  <Option value="AWS" >AWS</Option>
+                  <Option value="阿里云" >阿里云</Option>
+                  <Option value="腾讯云" >腾讯云</Option>
+                  <Option value="华为云" >华为云</Option>
+                  <Option value="内网" >内网</Option>
+                  <Option value="其他" >其他</Option>
+                </Select>
               </FormItem>-->
               <!-- <FormItem label="IDC" prop="idc">
                 <Select
@@ -170,7 +164,7 @@
                   type="textarea"
                   :autosize="{minRows: 2,maxRows: 10}"
                   :maxlength="50"
-                  placeholder="简单描述下吧"
+                  placeholder="描述"
                 ></Input>
               </FormItem>
 
@@ -181,15 +175,15 @@
             </Form>
           </Modal>
           <!-- <Modal v-model="modalMaplinkTag.modalVisible" :title="modalMaplinkTag.modalTitle" :loading=true :footer-hide=true :mask-closable=false>
-     <Form ref="formValidateLinkTag" :model="formValidateLinkTag" :label-width="80">
-        <CheckboxGroup v-model="formValidateLinkTag.link_tag_list">
-          <Checkbox v-for="item in allTagList" :key="item.id"   :label="item.id" >
-            <span style="font-size:12px">{{item.tag_name}}</span>
-          </Checkbox>
-        </CheckboxGroup>
-        <Button type="primary" @click="handleSubmitlinkTag('formValidateLinkTag')">提交</Button>
-     </Form>
-          </Modal>-->
+           <Form ref="formValidateLinkTag" :model="formValidateLinkTag" :label-width="80">
+              <CheckboxGroup v-model="formValidateLinkTag.link_tag_list">
+                <Checkbox v-for="item in allTagList" :key="item.id"   :label="item.id" >
+                  <span style="font-size:12px">{{item.tag_name}}</span>
+                </Checkbox>
+              </CheckboxGroup>
+              <Button type="primary" @click="handleSubmitlinkTag('formValidateLinkTag')">提交</Button>
+           </Form>
+          </Modal> -->
         </Card>
       </i-col>
     </Row>
@@ -256,7 +250,7 @@ export default {
       },
       formValidate: {
         hostname: "",
-        ip: "",
+        private_ip: "",
         public_ip: "",
         port: "22",
         region: "",
@@ -286,37 +280,10 @@ export default {
       searchValue: "",
 
       ruleValidate: {
-        // admin_user: [
-        //   { required: true, message: "请选择管理用户", trigger: "change" }
-        // ],
-        hostname: [
-          {
-            required: true,
-            message: "The name cannot be empty",
-            trigger: "blur"
-          }
-        ],
-        ip: [
-          {
-            required: true,
-            message: "请输入IP",
-            trigger: "blur"
-          }
-        ],
-        port: [
-          {
-            required: true,
-            message: "请输入端口",
-            trigger: "blur"
-          }
-        ],
-        admin_user: [
-          {
-            required: true,
-            message: "请选择管理用户",
-            trigger: "blur"
-          }
-        ]
+        hostname: [{required: true, message: "The name cannot be empty", trigger: "blur"}],
+        ip: [{required: true, message: "请输入IP", trigger: "blur"}],
+        port: [{required: true, message: "请输入端口", trigger: "blur"}],
+        admin_user: [{required: true, message: "请选择管理用户", trigger: "blur"}]
       },
       columns: [
         {
@@ -339,7 +306,7 @@ export default {
               {
                 on: {
                   click: () => {
-                    this.handleDetail(params.row);
+                    // this.handleDetail(params.row);
                   }
                 }
               },
@@ -414,7 +381,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.handleErrorLog(params.row.ip);
+                        this.handleErrorLog(params.row.private_ip);
                       }
                     }
                   },
@@ -500,7 +467,7 @@ export default {
       };
 
       //ip地址
-      let connect_ip = params.row.ip;
+      let connect_ip = params.row.private_ip;
       webterminnal(data).then(res => {
         if (res.data.code === 0) {
           // this.loading = false;
@@ -537,51 +504,6 @@ export default {
           columns: this.columns8.filter((col, index) => index < 4),
           data: this.data7.filter((data, index) => index < 4)
         });
-      }
-    },
-
-    // // 反向关联标签，支持多对多批量
-    // handleSubmitlinkTag(value) {
-    //   const data = {
-    //     "tag_list": this.formValidateLinkTag.link_tag_list,
-    //     "server_list": this.tableSelectIdList,
-    //   }
-    //   console.log('new_data--->', data)
-    //   // console.log(this.formValidateLinkTag)
-    //   // console.log('allTagList',this.allTagList)
-    //   // this.$refs[value].validate((valid) => {
-    //   //   if (valid) {
-    //   //     setTimeout(() => {
-    //   //       operationTag(this.formValidate2, this.editModalData).then(
-    //   //         res => {
-    //   //           if (res.data.code === 0) {
-    //   //             this.$Message.success(`${res.data.msg}`);
-    //   //             this.getTagList('tag_name', this.searchVal);
-    //   //             // this.getTagTree()
-    //   //             this.modalMap2.modalVisible = false;
-    //   //           } else {
-    //   //             this.$Message.error(`${res.data.msg}`);
-    //   //           }
-    //   //         }
-    //   //       );
-    //   //     }, 1000);
-    //   //   } else {
-    //   //     this.$Message.error('表单校验错误');
-    //   //   }
-    //   // })
-    // },
-
-    //点击关联标签按钮
-    HandlelinkTag() {
-      console.log("长度", this.tableSelectIdList.length);
-      if (this.tableSelectIdList.length > 1000) {
-        this.$Message.error("一次性最多关联1000台");
-        return;
-      }
-      if (this.tableSelectIdList.length > 0) {
-        this.modalMaplinkTag.modalVisible = true;
-      } else {
-        this.$Message.info(`请选择你要关联的主机`);
       }
     },
 
@@ -727,7 +649,7 @@ export default {
         os_kernel: "",
         sn: ""
       };
-      this.getServerDetailList("ip", paramsRow.ip);
+      this.getServerDetailList("private_ip", paramsRow.private_ip);
 
       setTimeout(() => {
         // const tag_list = paramsRow.tag_list.join(',')
@@ -735,7 +657,7 @@ export default {
         this.formValidate = {
           id: paramsRow.id,
           hostname: paramsRow.hostname,
-          ip: paramsRow.ip,
+          private_ip: paramsRow.private_ip,
           public_ip: paramsRow.public_ip,
           port: paramsRow.port,
           idc: paramsRow.idc,
@@ -778,7 +700,7 @@ export default {
         this.formValidate = {
           id: paramsRow.id,
           hostname: paramsRow.hostname,
-          ip: paramsRow.ip,
+          private_ip: paramsRow.private_ip,
           public_ip: paramsRow.public_ip,
           port: paramsRow.port,
           idc: paramsRow.idc,
@@ -794,7 +716,7 @@ export default {
         if (this.selectTag) {
           this.formValidate = {
             hostname: "",
-            ip: "",
+            private_ip: "",
             port: "22",
             admin_user: "",
             idc: "",
@@ -806,7 +728,7 @@ export default {
         } else {
           this.formValidate = {
             hostname: "",
-            ip: "",
+            private_ip: "",
             port: "22",
             admin_user: "",
             idc: "",
@@ -825,20 +747,14 @@ export default {
             operationServer(this.formValidate, this.editModalData).then(res => {
               if (res.data.code === 0) {
                 this.$Message.success(`${res.data.msg}`);
-                this
-                  .getServerList
-                  // this.pageNum,
-                  // this.pageSize,
-                  // this.searchKey,
-                  // this.searchValue
-                  ();
+                this.getServerList();
                 // this.getTagtree()
                 this.modalMap.modalVisible = false;
               } else {
                 this.$Message.error(`${res.data.msg}`);
               }
             });
-          }, 1000);
+          }, 500);
           // this.$Message.success('Success!');
         } else {
           this.$Message.error("缺少必要参数");
@@ -847,79 +763,6 @@ export default {
     },
     handleReset(name) {
       this.$refs[name].resetFields();
-    },
-
-    handlerAssetUpdate() {
-      // console.log(this.tableSelectIdList.length)
-      if (this.tableSelectIdList.length > 6) {
-        this.$Message.error(
-          `手动更新请不要超过5个，默认添加的机器都会自动推送更新`
-        );
-        return;
-      }
-      if (this.tableSelectIdList.length > 0) {
-        this.$Spin.show({
-          render: h => {
-            return h("div", [
-              h("Icon", {
-                class: "demo-spin-icon-load",
-                props: {
-                  type: "ios-loading",
-                  size: 18
-                }
-              }),
-              h("div", "资产更新中....")
-            ]);
-          }
-        });
-        assetServerUpdate({ id_list: this.tableSelectIdList }, "post").then(
-          res => {
-            this.$Spin.hide();
-            if (res.data.code === 0) {
-              this.$Message.config({
-                top: 24,
-                duration: 5 // 停留时间
-              });
-              this.$Message.info(`${res.data.msg}`);
-              this.getServerList(this.searchVal);
-            } else {
-              this.$Message.config({
-                top: 24,
-                duration: 5 // 停留时间
-              });
-              this.$Message.error(`${res.data.msg}`);
-            }
-          }
-        );
-      } else {
-        this.$Message.info(`你总要选中点什么吧`);
-      }
-    },
-
-    handleSyncTagTree() {
-      this.loading = true;
-      this.$Modal.confirm({
-        title: "提醒",
-        content: "<p>向【作业配置】--【Tag树】进行同步资产任务</p>",
-        loading: true,
-        onOk: () => {
-          setTimeout(() => {
-            this.$Modal.remove();
-            syncServerToTagTree().then(res => {
-              if (res.data.code === 0) {
-                this.$Message.success(`${res.data.msg}`);
-              } else {
-                this.$Message.error(`${res.data.msg}`);
-              }
-              this.loading = false;
-            });
-          }, 2000);
-        },
-        onCancel: () => {
-          this.loading = false;
-          this.$Message.info("Clicked cancel");
-        }
-      });
     },
 
     handlerDelete() {
@@ -938,7 +781,7 @@ export default {
           );
         }
       } else {
-        this.$Message.info(`你总要选中点什么吧`);
+        this.$Message.info(`没有选中`);
       }
     },
     // 删除
