@@ -23,7 +23,7 @@
               </Col>
               <Col span="11" style="margin: 10px; margin-left: 30px;" v-if="item.flag == '4'">
                 <Card :bordered="false">
-                  <p style="font-size:20px">系统url返回状态码</p>
+                  <p slot="title">系统url返回状态码</p>
                   <Row :gutter="1" style="margin-top: 23px">
                     <Col span="12">
                       <span>名称：</span>
@@ -44,7 +44,7 @@
                       <span>200.00</span>
                     </Col>
                   </Row>
-              </Card>
+                </Card>
               </Col>
               <Col span="11" style="margin: 10px; margin-left: 30px;" v-if="item.flag == '3'">
                 <Card :bordered="false">
@@ -65,50 +65,29 @@
                 </Card>
               </Col>
               <Col span="24" style="margin: 10px;" v-if="item.flag == '0'">
-                <i-col :lg="25" :md="24" style="margin-bottom: 10px;">
-                  <Card shadow>
-                    <p style="font-size:20px">主机基本信息</p>
-                    <Col span="8">
-                      <span>系统IP：</span>
-                      <span>10.40.30.87</span>
-                    </Col>
-                    <Col span="8">
-                      <span>主机：</span>
-                      <span>app08(10.40.30.87)</span>
-                    </Col>
-                    <Col span="8">
-                      <span>CPU频率：</span>
-                      <span>processor 0:159MHz pro</span>
-                    </Col>
-                    <Col span="8">
-                      <span>物理内存总大小：</span>
-                      <span>x86_64</span>
-                    </Col>
-                    <Col span="8">
-                      <span>CPU核数：</span>
-                      <span>16</span>
-                    </Col>
-                    <Col span="8">
-                      <span>操作系统版本：</span>
-                      <span>Red Hat Enterprise Linx 9</span>
-                    </Col>
-
-                    <Row :gutter="1" style="margin-top: 23px">
-                      <Col span="8">
-                        <span>系统位数：</span>
-                        <span>x86_64</span>
-                      </Col>
-                      <Col span="8">
-                        <span>维护人：</span>
-                        <span></span>
-                      </Col>
-                      <Col span="8">
-                        <span>维护人联系电话：</span>
-                        <span></span>
-                      </Col>
-                    </Row>
-                  </Card>
-                </i-col>
+                <Card shadow>
+                  <p slot="title">主机信息</p>
+                  <Form label-position="right" :label-width="120" inline label-colon=":">
+                    <FormItem label="系统IP" style="width: 30%">
+                      <span style="font-size: 12px;">10.40.30.87</span>
+                    </FormItem>
+                    <FormItem label="主机" style="width: 30%">
+                      <span style="font-size: 12px;">app08(10.40.30.87)</span>
+                    </FormItem>
+                    <FormItem label="CPU频率" style="width: 30%">
+                      <span style="font-size: 12px;">processor 0:159MHz pro</span>
+                    </FormItem>
+                    <FormItem label="物理内存总大小" style="width: 30%">
+                      <span style="font-size: 12px;">x86_64</span>
+                    </FormItem>
+                    <FormItem label="CPU核数" style="width: 30%">
+                      <span style="font-size: 12px;">16</span>
+                    </FormItem>
+                    <FormItem label="操作系统版本" style="width: 30%">
+                      <span style="font-size: 12px;">Red Hat Enterprise Linx 9</span>
+                    </FormItem>
+                  </Form>
+                </Card>
               </Col>
             </div>
           </TabPane>
@@ -293,18 +272,18 @@
           console.log(obj)
           console.log("111111111111111111111111111")
           console.log(data["title"].indexOf('http:'))
-          if (data["title"].indexOf('http:') >  0 ){
+          if (data["title"].indexOf('http:') > 0) {
 
-             this.cardlist=[{"title": "系统url返回状态码", "flag": "4", "tableData": [{}]},{
-            "title": "系统url响应时间",
-            "flag": "5",
-            "tableData": [["06:00", "08:00", "10:00", "12:00", "15:30", "18:00", "20:00", "20:30", "21:00", "22:00", "23:00", "01:00"],
-              [[11, 20, 30, 33, 50, 23, 96, 25, 20, 23, 65, 16], [51, 20, 30, 33, 50, 23, 96, 25, 50, 23, 65, 16], [9, 20, 30, 33, 30, 23, 96, 25, 20, 23, 65, 16], [31, 20, 30, 33, 50, 23, 96, 25, 20, 53, 65, 16]]]},]
-          }
-          else{
+            this.cardlist = [{"title": "系统url返回状态码", "flag": "4", "tableData": [{}]}, {
+              "title": "系统url响应时间",
+              "flag": "5",
+              "tableData": [["06:00", "08:00", "10:00", "12:00", "15:30", "18:00", "20:00", "20:30", "21:00", "22:00", "23:00", "01:00"],
+                [[11, 20, 30, 33, 50, 23, 96, 25, 20, 23, 65, 16], [51, 20, 30, 33, 50, 23, 96, 25, 50, 23, 65, 16], [9, 20, 30, 33, 30, 23, 96, 25, 20, 23, 65, 16], [31, 20, 30, 33, 50, 23, 96, 25, 20, 53, 65, 16]]]
+            },]
+          } else {
             console.log("3333333333333333333333333333333333")
-            this.cardlist=[]
-            this.cardlist=this.cardlist2
+            this.cardlist = []
+            this.cardlist = this.cardlist2
           }
           console.log("111111111111111111111111111")
           console.log("111111111111111111111111111")
