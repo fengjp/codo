@@ -49,3 +49,15 @@ export const getSysUpdateList = (page, limit, key, value, date = ['', '']) => {
     }
   })
 }
+
+//获取Tag Tree
+export const getTagtree = (key, value) => {
+	return axios.request({
+		url: '/cmdb/v1/cmdb/sys_tree/',
+		method: 'get',
+		params: {
+			key,
+			value
+		}
+	});
+};

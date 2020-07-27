@@ -190,6 +190,9 @@
     beforeRouteLeave(to, from, next) {
       clearInterval(this.timer)
       next()
+    },
+    beforeDestroy() {
+      clearInterval(this.timer)
     }
   }
 </script>
