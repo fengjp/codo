@@ -2,7 +2,7 @@
   <div>
     <Row :gutter="10">
       <Col span="5" style="margin-bottom: 5px;">
-        <Card :bordered="false" style="height:315px;">
+        <Card :bordered="false">
           <Tree
             ref="tree"
             :data="tagTreeData"
@@ -89,11 +89,7 @@
         <!--&gt;-->
         <!--</Table>-->
         <!--</Card>-->
-      </Col>
-    </Row>
-    <Row :gutter="20">
-      <Col>
-        <Card :bordered="false">
+        <Card :bordered="false" style="margin-top: 5px">
           <p slot="title">系统组件列表</p>
           <tables ref="selection1"
                   v-model="tableData1"
@@ -805,11 +801,12 @@
         searchSysValue: '',
         tableData2: [],
         columns2: [
-          {title: '系统名称', key: 'sys_name', align: 'center'},
-          {title: '版本号', key: 'sys_version', align: 'center'},
+          {title: '系统名称', key: 'sys_name', minWidth: 100,align: 'center'},
+          {title: '版本号', key: 'sys_version', width: 80, align: 'center'},
           {
             title: '升级内容',
             key: 'up_content',
+            minWidth: 100,
             align: 'center',
             render: (h, params) => {
               const roleTitle = params.row.up_content
@@ -832,10 +829,10 @@
           {title: '开始时间', key: 'up_stime', width: 100, align: 'center'},
           {title: '结束时间', key: 'up_etime', width: 100, align: 'center'},
           {title: '下发时间', key: 'issued_time', width: 100, align: 'center'},
-          {title: '实际完成时间', key: 'up_real_time', width: 100, align: 'center'},
-          {title: '是否试点', key: 'isPilot', align: 'center'},
-          {title: '试点单位', key: 'pilot_unit', align: 'center'},
-          {title: '是否影响业务', key: 'isAffect', align: 'center'},
+          {title: '实际完成时间', key: 'up_real_time', width: 110, align: 'center'},
+          {title: '是否试点', key: 'isPilot', width: 60, align: 'center'},
+          {title: '试点单位', key: 'pilot_unit', minWidth: 100, align: 'center'},
+          {title: '是否影响业务', key: 'isAffect', width: 80,align: 'center'},
           {
             title: '操作',
             key: 'handle2',
@@ -902,6 +899,14 @@
         getTagtree(key).then(res => {
           if (res.data.code === 0) {
             this.tagTreeData = res.data.data;
+            this.sysNameList = []
+            let tags = this.tagTreeData[0].children
+            for (let i in tags) {
+              let obj = {}
+              obj.id = tags[i].sys_id
+              obj.sys_name = tags[i].tag_name
+              this.sysNameList.push(obj)
+            }
           } else {
             this.$Message.error(`${res.data.msg}`);
           }
@@ -1265,7 +1270,7 @@
     },
     mounted() {
       this.getTagTree();
-      this.getSysList();
+      // this.getSysList();
       this.getSoftList();
       this.UploadUrl = UploadUrl;
       this.uploadList = this.$refs.upload.fileList

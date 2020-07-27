@@ -268,6 +268,14 @@ export default {
           ]
         },
         {
+          name: "password",
+          type: "i-input",
+          type1:'password',
+          value: meth === "put" ? this.tableData[index].password : "",
+          label: "用户密码",
+          placeholder: "请输入系统用户密码",
+        },
+        {
           name: "user_key",
           type: "i-input",
           type1:'textarea',
@@ -275,13 +283,13 @@ export default {
           value: meth === "put" ? this.tableData[index].user_key : "",
           label: "密钥",
           placeholder: "请输入用户私钥",
-          rule: [
-            {
-              required: true,
-              message: "私钥不可为空",
-              trigger: "blur"
-            }
-          ]
+          // rule: [
+          //   {
+          //     required: true,
+          //     message: "私钥不可为空",
+          //     trigger: "blur"
+          //   }
+          // ]
         },
         {
           name: "remarks",

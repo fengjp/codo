@@ -286,18 +286,8 @@ export default {
         admin_user: [{required: true, message: "请选择管理用户", trigger: "blur"}]
       },
       columns: [
-        {
-          type: "selection",
-          key: "id",
-          width: 60,
-          align: "center"
-        },
-        {
-          title: "主机名",
-          key: "hostname",
-          minWidth: 200,
-          // width: 350,
-          align: "center",
+        {type: "selection", key: "id", width: 60, align: "center",fixed: 'left',},
+        {title: "主机名", key: "hostname", minWidth: 200, align: "center",
           // fixed: 'left',
           sortable: true,
           render: (h, params) => {
@@ -314,42 +304,11 @@ export default {
             );
           }
         },
-        {
-          title: "内网IP",
-          key: "private_ip",
-          minWidth: 140,
-          align: "center",
-          sortable: true
-        },
-        {
-          title: "公网IP",
-          key: "ip",
-          minWidth: 140,
-          align: "center",
-          sortable: true
-        },
-        // {
-        //   title: "IDC",
-        //   key: "idc",
-        //   width: 130,
-        //   align: "center",
-        //   sortable: true
-        // },
-        // {
-        //   title: "区域",
-        //   key: "region",
-        //   width: 150,
-        //   align: "center",
-        //   sortable: true
-        // },
-        // {
-        //   title: "管理用户",
-        //   key: "admin_user",
-        //   width: 150,
-        //   align: "center",
-        //   sortable: true
-        // },
-
+        {title: "内网IP", key: "private_ip", minWidth: 140, align: "center", sortable: true},
+        {title: "公网IP", key: "public_ip", minWidth: 140, align: "center", sortable: true},
+        // {title: "IDC", key: "idc", width: 130, align: "center", sortable: true},
+        // {title: "区域", key: "region", width: 150, align: "center", sortable: true},
+        {title: "管理用户", key: "admin_user", width: 150, align: "center", sortable: true},
         {
           title: "状态",
           key: "handle",
