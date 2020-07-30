@@ -26,7 +26,6 @@ export const getSysList = (page, limit, key, value, date = ['', '']) => {
   })
 }
 
-
 export const operationSysUpdate = (data, meth) => {
   return axios.request({
     url: '/cmdb/v1/cmdb/sys_update/',
@@ -50,14 +49,30 @@ export const getSysUpdateList = (page, limit, key, value, date = ['', '']) => {
   })
 }
 
-//获取Tag Tree
+// 获取Tag Tree
 export const getTagtree = (key, value) => {
-	return axios.request({
-		url: '/cmdb/v1/cmdb/sys_tree/',
-		method: 'get',
-		params: {
-			key,
-			value
-		}
-	});
-};
+  return axios.request({
+    url: '/cmdb/v1/cmdb/sys_tree/',
+    method: 'get',
+    params: {
+      key,
+      value
+    }
+  })
+}
+
+// 获取主机列表
+export const getHostIpList = (page, limit, key, value, date = ['', '']) => {
+  return axios.request({
+    url: '/cmdb/v1/cmdb/ser_host/',
+    method: 'get',
+    params: {
+      page,
+      limit,
+      key,
+      value,
+      start_date: date[0],
+      end_date: date.length > 1 ? date[1] : ''
+    }
+  })
+}
