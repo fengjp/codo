@@ -97,7 +97,7 @@
                   <Input v-model="formValidate.hostname" :maxlength="45" placeholder="请输入主机名"></Input>
                 </FormItem>
               </div>
-              <FormItem label="内网IP" prop="内网ip">
+              <FormItem label="内网IP" prop="private_ip">
                 <Input v-model="formValidate.private_ip" :maxlength="45" placeholder="请输入内网IP地址"></Input>
               </FormItem>
               <FormItem label="公网IP" prop="public_ip">
@@ -201,7 +201,7 @@
 </template>
 
 <script>
-import Detail from "./server_detail";
+import Detail from './server_detail'
 import {
   getServerList,
   getServerDetailList,
@@ -210,33 +210,33 @@ import {
   getTagtree,
   getErrorLog,
   syncServerToTagTree,
-  webterminnal,
-} from "@/api/cmdb2/server.js";
-import { getAdminUserList } from "@/api/cmdb2/admin_user";
-import { getTagList } from "@/api/cmdb2/tag.js";
-import { getIDClist } from "@/api/cmdb2/idc.js";
-import MultiAdd from "./multi_add_server";
-import { mapState } from "vuex";
+  webterminnal
+} from '@/api/cmdb2/server.js'
+import { getAdminUserList } from '@/api/cmdb2/admin_user'
+import { getTagList } from '@/api/cmdb2/tag.js'
+import { getIDClist } from '@/api/cmdb2/idc.js'
+import MultiAdd from './multi_add_server'
+import { mapState } from 'vuex'
 export default {
   components: {
     MultiAdd,
     Detail
   },
-  data() {
+  data () {
     return {
       formValidateLinkTag: {
         link_tag_list: []
       },
       modalMaplinkTag: {
         modalVisible: false,
-        modalTitle: "选择你要关联的标签"
+        modalTitle: '选择你要关联的标签'
       },
       formData_multi: {
         data: null
       },
       multi_dialog: {
         show: false,
-        title: "批量添加"
+        title: '批量添加'
       },
       loading: false,
       SSHloading: false,
@@ -246,19 +246,19 @@ export default {
       serverDetail: Object,
       dialog2: {
         show: false,
-        title: "主机详情"
+        title: '主机详情'
       },
       formValidate: {
-        hostname: "",
-        private_ip: "",
-        public_ip: "",
-        port: "22",
-        region: "",
-        admin_user: "",
+        hostname: '',
+        private_ip: '',
+        public_ip: '',
+        port: '22',
+        region: '',
+        admin_user: '',
         tag_list: [],
-        detail: ""
+        detail: ''
       },
-      searchVal: "",
+      searchVal: '',
       single: false,
       loadingStatus: false,
       tableData: [],
@@ -268,31 +268,34 @@ export default {
       tableSelectIdList: [],
       modalMap: {
         modalVisible: false,
-        modalTitle: "新建"
+        modalTitle: '新建'
       },
       formList: [],
-      editModalData: "",
+      editModalData: '',
       pageNum: 1, // 当前页码
       pageTotal: 0, // 数据总数
       pageSize: 15, // 每页条数
       //
-      searchKey: "",
-      searchValue: "",
+      searchKey: '',
+      searchValue: '',
 
       ruleValidate: {
-        hostname: [{required: true, message: "The name cannot be empty", trigger: "blur"}],
-        ip: [{required: true, message: "请输入IP", trigger: "blur"}],
-        port: [{required: true, message: "请输入端口", trigger: "blur"}],
-        admin_user: [{required: true, message: "请选择管理用户", trigger: "blur"}]
+        hostname: [{ required: true, message: '请输入主机名', trigger: 'blur' }],
+        private_ip: [{ required: true, message: '请输入IP', trigger: 'blur' }],
+        port: [{ required: true, message: '请输入端口', trigger: 'blur' }],
+        admin_user: [{ required: true, message: '请选择管理用户', trigger: 'blur' }]
       },
       columns: [
-        {type: "selection", key: "id", width: 60, align: "center",fixed: 'left',},
-        {title: "主机名", key: "hostname", minWidth: 200, align: "center",
+        { type: 'selection', key: 'id', width: 60, align: 'center', fixed: 'left' },
+        { title: '主机名',
+          key: 'hostname',
+          minWidth: 200,
+          align: 'center',
           // fixed: 'left',
           sortable: true,
           render: (h, params) => {
             return h(
-              "a",
+              'a',
               {
                 on: {
                   click: () => {
@@ -301,132 +304,132 @@ export default {
                 }
               },
               params.row.hostname
-            );
+            )
           }
         },
-        {title: "内网IP", key: "private_ip", minWidth: 140, align: "center", sortable: true},
-        {title: "公网IP", key: "public_ip", minWidth: 140, align: "center", sortable: true},
+        { title: '内网IP', key: 'private_ip', minWidth: 140, align: 'center', sortable: true },
+        { title: '公网IP', key: 'public_ip', minWidth: 140, align: 'center', sortable: true },
         // {title: "IDC", key: "idc", width: 130, align: "center", sortable: true},
         // {title: "区域", key: "region", width: 150, align: "center", sortable: true},
-        {title: "管理用户", key: "admin_user", width: 150, align: "center", sortable: true},
+        { title: '管理用户', key: 'admin_user', width: 150, align: 'center', sortable: true },
         {
-          title: "状态",
-          key: "handle",
+          title: '状态',
+          key: 'handle',
           width: 100,
-          align: "center",
+          align: 'center',
           render: (h, params) => {
-            let state = params.row.state;
-            if (state === "new") {
-              return h("div", [
-                h("Tag", { props: { color: "default" } }, "New")
-              ]);
-            } else if (state === "true") {
-              return h("div", [
-                h("Tag", { props: { color: "success" } }, "True")
-              ]);
-            } else if (state === "auto") {
-              return h("div", [h("Tag", { props: { color: "blue" } }, "Auto")]);
+            let state = params.row.state
+            if (state === 'new') {
+              return h('div', [
+                h('Tag', { props: { color: 'default' } }, 'New')
+              ])
+            } else if (state === 'true') {
+              return h('div', [
+                h('Tag', { props: { color: 'success' } }, 'True')
+              ])
+            } else if (state === 'auto') {
+              return h('div', [h('Tag', { props: { color: 'blue' } }, 'Auto')])
             } else {
-              return h("div", [
+              return h('div', [
                 h(
-                  "Button",
+                  'Button',
                   {
                     props: {
-                      type: "error",
-                      size: "small"
+                      type: 'error',
+                      size: 'small'
                     },
                     style: {
-                      marginRight: "4px"
+                      marginRight: '4px'
                     },
                     on: {
                       click: () => {
-                        this.handleErrorLog(params.row.private_ip);
+                        this.handleErrorLog(params.row.private_ip)
                       }
                     }
                   },
-                  "false"
+                  'false'
                 )
-              ]);
+              ])
             }
           }
         },
 
         {
-          title: "操作",
-          key: "handle",
+          title: '操作',
+          key: 'handle',
           width: 180,
-          align: "center",
+          align: 'center',
           render: (h, params) => {
-            return h("div", [
+            return h('div', [
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "success",
-                    size: "small"
+                    type: 'success',
+                    size: 'small'
                     // loading: this.SSHloading
                   },
                   style: {
-                    marginRight: "5px"
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      this.webTerminnal(params, "server");
-                      //window.open('/terminal/?id=' + params.row.id)
+                      this.webTerminnal(params, 'server')
+                      // window.open('/terminal/?id=' + params.row.id)
                     }
                   }
                 },
-                "SSH"
+                'SSH'
               ),
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "primary",
-                    size: "small"
+                    type: 'primary',
+                    size: 'small'
                   },
                   style: {
-                    marginRight: "5px"
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      this.editModal(params.row, "put", "更新主机");
+                      this.editModal(params.row, 'put', '更新主机')
                     }
                   }
                 },
-                "编辑"
+                '编辑'
               ),
               h(
-                "Button",
+                'Button',
                 {
                   props: {
-                    type: "error",
-                    size: "small"
+                    type: 'error',
+                    size: 'small'
                   },
                   on: {
                     click: () => {
-                      this.delData(params);
+                      this.delData(params)
                     }
                   }
                 },
-                "删除"
+                '删除'
               )
-            ]);
+            ])
           }
         }
       ]
-    };
+    }
   },
   methods: {
-    //请求Web Terminal接口
-    webTerminnal(params) {
+    // 请求Web Terminal接口
+    webTerminnal (params) {
       // this.SSHloading = true
       const data = {
         server_id: params.row.id
-      };
+      }
 
-      //ip地址
-      let connect_ip = params.row.private_ip;
+      // ip地址
+      let connect_ip = params.row.private_ip
       webterminnal(data).then(res => {
         if (res.data.code === 0) {
           // this.loading = false;
@@ -434,131 +437,131 @@ export default {
           let web_terminal_conncet =
             res.data.data.web_terminal_url +
             connect_ip +
-            "/" +
+            '/' +
             res.data.data.web_terminal_key +
-            "/";
+            '/'
           // console.log('web_terminal_conncet-->',web_terminal_conncet)
-          window.open(web_terminal_conncet);
+          window.open(web_terminal_conncet)
         } else {
           // this.loading = false;
-          this.$Message.error(`${res.data.msg}`);
+          this.$Message.error(`${res.data.msg}`)
         }
-      });
+      })
     },
 
     // 导出数据、支持分页、过滤、搜索、排序后导出
-    exportData(type) {
+    exportData (type) {
       if (type === 1) {
         this.$refs.selection.exportCsv({
-          filename: "cmdb_original_data"
-        });
+          filename: 'cmdb_original_data'
+        })
       } else if (type === 2) {
         this.$refs.selection.exportCsv({
-          filename: "cmdb_sorting_and_filtering_data",
+          filename: 'cmdb_sorting_and_filtering_data',
           original: false
-        });
+        })
       } else if (type === 3) {
         this.$refs.selection.exportCsv({
-          filename: "cmdb_custom_data",
+          filename: 'cmdb_custom_data',
           columns: this.columns8.filter((col, index) => index < 4),
           data: this.data7.filter((data, index) => index < 4)
-        });
+        })
       }
     },
 
     // 批量添加
-    handlemultiAdd() {
+    handlemultiAdd () {
       this.multi_dialog = {
         show: true,
-        title: "批量添加主机"
-      };
+        title: '批量添加主机'
+      }
     },
-    closeMultiModal() {
+    closeMultiModal () {
       this.formData_multi = {
         data: null
-      };
-      this.multi_dialog.show = false;
+      }
+      this.multi_dialog.show = false
     },
-    handleErrorLog(value) {
-      this.logModal = true;
-      getErrorLog("ip", value).then(res => {
+    handleErrorLog (value) {
+      this.logModal = true
+      getErrorLog('ip', value).then(res => {
         if (res.data.code === 0) {
-          this.logInfo = res.data.data;
+          this.logInfo = res.data.data
         } else {
-          this.$Message.error(`${res.data.msg}`);
+          this.$Message.error(`${res.data.msg}`)
         }
-      });
+      })
     },
-    handlerCheckErrorLog() {
-      this.logModal = true;
+    handlerCheckErrorLog () {
+      this.logModal = true
       getErrorLog().then(res => {
         if (res.data.code === 0) {
-          this.logInfo = res.data.data;
+          this.logInfo = res.data.data
         } else {
-          this.$Message.error(`${res.data.msg}`);
+          this.$Message.error(`${res.data.msg}`)
         }
-      });
+      })
     },
-    closeModal() {
-      this.over();
+    closeModal () {
+      this.over()
     },
     // 获取TagTree
-    getTagTree(key) {
+    getTagTree (key) {
       getTagtree(key).then(res => {
         if (res.data.code === 0) {
-          this.tagTreeData = res.data.data;
+          this.tagTreeData = res.data.data
         } else {
-          this.$Message.error(`${res.data.msg}`);
+          this.$Message.error(`${res.data.msg}`)
         }
-      });
+      })
     },
     // 获取主机信息
-    getServerList(key, value) {
+    getServerList (key, value) {
       getServerList(this.pageNum, this.pageSize, key, value).then(res => {
         if (res.data.code === 0) {
           // console.log('count-->',res.data.count)
-          this.pageTotal = res.data.count;
-          this.tableData = res.data.data;
+          this.pageTotal = res.data.count
+          this.tableData = res.data.data
         } else {
-          this.$Message.error(`${res.data.msg}`);
+          this.$Message.error(`${res.data.msg}`)
         }
-      });
+      })
     },
     // 获取主机详情
-    getServerDetailList(key, value) {
+    getServerDetailList (key, value) {
       // console.log('key, vlaue', key,value)
       getServerDetailList(key, value).then(res => {
         if (res.data.code === 0) {
-          this.serverDetail = res.data.data[0];
+          this.serverDetail = res.data.data[0]
         } else {
           this.serverDetail = {
-            cpu: "",
-            disk: "",
-            disk_utilization: "",
-            id: "",
+            cpu: '',
+            disk: '',
+            disk_utilization: '',
+            id: '',
             // instance_id: null
             // instance_type: null
-            ip: "",
-            memory: "",
-            os_distribution: "",
-            os_version: "",
-            sn: ""
-          };
+            ip: '',
+            memory: '',
+            os_distribution: '',
+            os_version: '',
+            sn: ''
+          }
           // this.$Message.error(`${res.data.msg}`)
         }
-      });
+      })
     },
 
     // 获取管理用户列表
-    getAdminUserList(page, limit, key, value) {
+    getAdminUserList (page, limit, key, value) {
       getAdminUserList(page, limit, key, value).then(res => {
         if (res.data.code === 0) {
           // this.$Message.success(`${res.data.msg}`)
-          this.admUserList = res.data.data;
+          this.admUserList = res.data.data
         } else {
-          this.$Message.error(`${res.data.msg}`);
+          this.$Message.error(`${res.data.msg}`)
         }
-      });
+      })
     },
     // 获取IDC列表
     // getIDCList() {
@@ -572,43 +575,43 @@ export default {
     // },
 
     // 获取Tag列表
-    getTagList() {
+    getTagList () {
       getTagList().then(res => {
         if (res.data.code === 0) {
           // this.$Message.success(`${res.data.msg}`)
-          this.allTagList = res.data.data;
+          this.allTagList = res.data.data
           // console.log(this.allTagList)
         }
-      });
+      })
     },
     // table 选中的ID
-    handleSelectChange(val) {
-      let SelectIdList = [];
+    handleSelectChange (val) {
+      let SelectIdList = []
       val.forEach(item => {
-        SelectIdList.push(item.id);
-      });
-      this.tableSelectIdList = SelectIdList;
+        SelectIdList.push(item.id)
+      })
+      this.tableSelectIdList = SelectIdList
     },
-    handleDetail(paramsRow) {
-      this.dialog2.show = true;
+    handleDetail (paramsRow) {
+      this.dialog2.show = true
       // this.getTagList()
       // this.getAdminUserList()
       this.serverDetail = {
-        cpu: "",
-        cpu_count: "",
-        cpu_cores: "",
-        disk: "",
-        disk_utilization: "",
-        id: "",
+        cpu: '',
+        cpu_count: '',
+        cpu_cores: '',
+        disk: '',
+        disk_utilization: '',
+        id: '',
         // instance_id: null
         // instance_type: null
-        ip: "",
-        memory: "",
-        sysinfo: "",
-        os_kernel: "",
-        sn: ""
-      };
-      this.getServerDetailList("private_ip", paramsRow.private_ip);
+        ip: '',
+        memory: '',
+        sysinfo: '',
+        os_kernel: '',
+        sn: ''
+      }
+      this.getServerDetailList('private_ip', paramsRow.private_ip)
 
       setTimeout(() => {
         // const tag_list = paramsRow.tag_list.join(',')
@@ -636,26 +639,26 @@ export default {
           os_kernel: this.serverDetail.os_kernel,
           sn: this.serverDetail.sn,
           update_time: this.serverDetail.update_time
-        };
-      }, 500);
+        }
+      }, 500)
     },
-    closeModal() {
-      this.dialog.show = false;
+    closeModal () {
+      this.dialog.show = false
     },
-    tagHandleChange(newTargetKeys) {
-      this.formData.tag = newTargetKeys;
+    tagHandleChange (newTargetKeys) {
+      this.formData.tag = newTargetKeys
     },
-    tagFilter(data, query) {
-      return data.label.indexOf(query) > -1;
+    tagFilter (data, query) {
+      return data.label.indexOf(query) > -1
     },
-    editModal(paramsRow, meth, mtitle) {
-      this.modalMap.modalVisible = true;
-      this.modalMap.modalTitle = mtitle;
-      this.editModalData = meth;
+    editModal (paramsRow, meth, mtitle) {
+      this.modalMap.modalVisible = true
+      this.modalMap.modalTitle = mtitle
+      this.editModalData = meth
       if (paramsRow && paramsRow.id) {
         // put
-        this.getTagList();
-        this.getAdminUserList();
+        this.getTagList()
+        this.getAdminUserList()
         this.formValidate = {
           id: paramsRow.id,
           hostname: paramsRow.hostname,
@@ -667,154 +670,154 @@ export default {
           admin_user: paramsRow.admin_user,
           tag_list: paramsRow.tag_list,
           detail: paramsRow.detail
-        };
+        }
       } else {
         // post
-        this.getAdminUserList();
-        this.getTagList();
+        this.getAdminUserList()
+        this.getTagList()
         if (this.selectTag) {
           this.formValidate = {
-            hostname: "",
-            private_ip: "",
-            port: "22",
-            admin_user: "",
-            idc: "",
-            region: "",
+            hostname: '',
+            private_ip: '',
+            port: '22',
+            admin_user: '',
+            idc: '',
+            region: '',
             tag_list: [this.selectTag],
-            detail: "",
-            state: "new"
-          };
+            detail: '',
+            state: 'new'
+          }
         } else {
           this.formValidate = {
-            hostname: "",
-            private_ip: "",
-            port: "22",
-            admin_user: "",
-            idc: "",
-            region: "",
+            hostname: '',
+            private_ip: '',
+            port: '22',
+            admin_user: '',
+            idc: '',
+            region: '',
             tag_list: [],
-            detail: "",
-            state: "new"
-          };
+            detail: '',
+            state: 'new'
+          }
         }
       }
     },
-    handleSubmit(value) {
+    handleSubmit (value) {
       this.$refs[value].validate(valid => {
         if (valid) {
           setTimeout(() => {
             operationServer(this.formValidate, this.editModalData).then(res => {
               if (res.data.code === 0) {
-                this.$Message.success(`${res.data.msg}`);
-                this.getServerList();
+                this.$Message.success(`${res.data.msg}`)
+                this.getServerList()
                 // this.getTagtree()
-                this.modalMap.modalVisible = false;
+                this.modalMap.modalVisible = false
               } else {
-                this.$Message.error(`${res.data.msg}`);
+                this.$Message.error(`${res.data.msg}`)
               }
-            });
-          }, 500);
+            })
+          }, 500)
           // this.$Message.success('Success!');
         } else {
-          this.$Message.error("缺少必要参数");
+          this.$Message.error('缺少必要参数')
         }
-      });
+      })
     },
-    handleReset(name) {
-      this.$refs[name].resetFields();
+    handleReset (name) {
+      this.$refs[name].resetFields()
     },
 
-    handlerDelete() {
+    handlerDelete () {
       // console.log(this.tableSelectIdList.length)
       if (this.tableSelectIdList.length > 0) {
         if (confirm(`确定要批量删除选中主机 `)) {
-          operationServer({ id_list: this.tableSelectIdList }, "delete").then(
+          operationServer({ id_list: this.tableSelectIdList }, 'delete').then(
             res => {
               if (res.data.code === 0) {
-                this.$Message.success(`${res.data.msg}`);
-                this.getServerList(this.searchVal);
+                this.$Message.success(`${res.data.msg}`)
+                this.getServerList(this.searchVal)
               } else {
-                this.$Message.error(`${res.data.msg}`);
+                this.$Message.error(`${res.data.msg}`)
               }
             }
-          );
+          )
         }
       } else {
-        this.$Message.info(`没有选中`);
+        this.$Message.info(`没有选中`)
       }
     },
     // 删除
-    delData(params) {
+    delData (params) {
       if (confirm(`确定要删除 ${params.row.hostname}`)) {
         // console.log(params.row.id)
         operationServer(
           {
             server_id: params.row.id
           },
-          "delete"
+          'delete'
         ).then(res => {
           if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`);
-            this.tableData.splice(params.index, 1);
+            this.$Message.success(`${res.data.msg}`)
+            this.tableData.splice(params.index, 1)
           } else {
-            this.$Message.error(`${res.data.msg}`);
+            this.$Message.error(`${res.data.msg}`)
           }
-        });
+        })
       }
     },
-    handleClear(e) {
-      if (e.target.value === "") this.tableData = this.value;
+    handleClear (e) {
+      if (e.target.value === '') this.tableData = this.value
     },
-    handleSearch() {
-      this.getServerList(this.searchValue);
+    handleSearch () {
+      this.getServerList(this.searchValue)
     },
     // 点击节点
-    handlerTreeChange(obj) {
+    handlerTreeChange (obj) {
       if (obj.length !== 0) {
-        const data = obj[0];
+        const data = obj[0]
         // this.searchVal = null
-        this.pageNum = 1;
-        if (data.title === "root") {
-          this.selectTag = null;
+        this.pageNum = 1
+        if (data.title === 'root') {
+          this.selectTag = null
           // this.selectTwo = 'tag'
-          this.getTagList();
-          this.getServerList();
+          this.getTagList()
+          this.getServerList()
         } else if (data.tag_name) {
-          this.selectTwo = data.node;
-          this.selectTag = data.tag_name;
-          this.getServerList("tag_name", data.tag_name);
-        } else if (data.title === "root" && !data.node) {
-          this.selectTag = null;
-          this.selectTwo = data.title;
-          this.getServerList();
+          this.selectTwo = data.node
+          this.selectTag = data.tag_name
+          this.getServerList('tag_name', data.tag_name)
+        } else if (data.title === 'root' && !data.node) {
+          this.selectTag = null
+          this.selectTwo = data.title
+          this.getServerList()
         }
       }
     },
     // 翻页
-    changePage(value) {
-      this.pageNum = value;
-      if (this.selectTwo === "tag") {
+    changePage (value) {
+      this.pageNum = value
+      if (this.selectTwo === 'tag') {
         if (this.searchValue) {
-          this.getTagList("tag_name", this.searchValue);
+          this.getTagList('tag_name', this.searchValue)
         } else {
-          this.getTagList();
+          this.getTagList()
         }
       } else if (this.selectTag) {
-        this.getServerList("tag_name", this.selectTag);
+        this.getServerList('tag_name', this.selectTag)
       } else {
-        this.getServerList();
+        this.getServerList()
       }
     },
     // 切换分页
-    handlePageSize(value) {
-      this.pageSize = value;
-      this.pageNum = 1;
+    handlePageSize (value) {
+      this.pageSize = value
+      this.pageNum = 1
       if (this.searchValue) {
-        this.getServerList(this.searchValue);
+        this.getServerList(this.searchValue)
       } else if (this.selectTag) {
-        this.getServerList("tag_name", this.tag_name);
+        this.getServerList('tag_name', this.tag_name)
       } else {
-        this.getServerList();
+        this.getServerList()
       }
     }
   },
@@ -830,14 +833,14 @@ export default {
     // }
   },
 
-  mounted() {
-    this.getServerList();
-    this.getTagList();
-    this.getAdminUserList();
-    this.getTagTree();
+  mounted () {
+    this.getServerList()
+    this.getTagList()
+    this.getAdminUserList()
+    this.getTagTree()
     // this.getIDCList();
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
