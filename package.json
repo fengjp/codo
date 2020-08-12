@@ -1,7 +1,7 @@
 {
-    "name": "codo",
+    "name": "LK",
     "version": "1.0.0",
-    "author": "ss<191715030@qq.com>",
+    "author": "fjp<366085674@qq.com>",
     "private": false,
     "scripts": {
         "dev": "vue-cli-service serve --open",

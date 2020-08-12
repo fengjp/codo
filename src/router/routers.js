@@ -205,6 +205,36 @@ export const routerMap = [
     ]
   },
   {
+    path: '/cron',
+    name: 'cron',
+    meta: {
+      icon: 'ios-alarm',
+      title: '定时任务'
+    },
+    component: Main,
+    children: [{
+      path: 'cronjobs',
+      name: 'cronjobs',
+      meta: {
+        icon: 'md-alarm',
+        title: '定时列表'
+      },
+      component: () =>
+        import ('@/view/cron/cron-jobs.vue')
+    },
+      {
+        path: 'cronlogs',
+        name: 'cronlogs',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '任务日志'
+        },
+        component: () =>
+          import ('@/view/cron/cron-logs.vue')
+      }
+    ]
+  },
+  {
     path: '/usermanage',
     name: 'usermanage',
     meta: {
@@ -296,36 +326,36 @@ export const routerMap = [
       }
     ]
   },
-  {
-    path: '/monitor',
-    name: 'monitor',
-    meta: {
-      icon: 'md-paper',
-      title: '监控巡检'
-    },
-    component: Main,
-    children: [{
-      path: 'monitorhome_mg',
-      name: 'monitor_home_mg',
-      meta: {
-        icon: 'ios-paper',
-        title: '总览'
-      },
-      component: () =>
-        import ('@/view/monitor/monitorhome.vue')
-    },
-    {
-      path: 'monitor_mg',
-      name: 'monitor_mg',
-      meta: {
-        icon: 'ios-paper',
-        title: '监控详情'
-      },
-      component: () =>
-          import ('@/view/monitor/monitor.vue')
-    }
-    ]
-  }
+  // {
+  //   path: '/monitor',
+  //   name: 'monitor',
+  //   meta: {
+  //     icon: 'md-paper',
+  //     title: '监控巡检'
+  //   },
+  //   component: Main,
+  //   children: [{
+  //     path: 'monitorhome_mg',
+  //     name: 'monitor_home_mg',
+  //     meta: {
+  //       icon: 'ios-paper',
+  //       title: '总览'
+  //     },
+  //     component: () =>
+  //       import ('@/view/monitor/monitorhome.vue')
+  //   },
+  //   {
+  //     path: 'monitor_mg',
+  //     name: 'monitor_mg',
+  //     meta: {
+  //       icon: 'ios-paper',
+  //       title: '监控详情'
+  //     },
+  //     component: () =>
+  //         import ('@/view/monitor/monitor.vue')
+  //   }
+  //   ]
+  // }
 
 ]
 
@@ -340,80 +370,80 @@ export const routes = [{
   component: () =>
     import ('@/view/login/login.vue')
 },
-{
-  path: '/',
-  name: '_home',
-  redirect: '/home',
-  component: Main,
-  meta: {
-    hideInMenu: true,
-    notCache: true
-  },
-  children: [{
-    path: '/home',
-    name: 'home',
+  {
+    path: '/',
+    name: '_home',
+    redirect: '/home',
+    component: Main,
     meta: {
       hideInMenu: true,
-      title: '首页',
-      notCache: true,
-      icon: 'md-home'
+      notCache: true
     },
-    component: () =>
+    children: [{
+      path: '/home',
+      name: 'home',
+      meta: {
+        hideInMenu: true,
+        title: '首页',
+        notCache: true,
+        icon: 'md-home'
+      },
+      component: () =>
         import ('@/view/single-page/home')
-  }]
-},
-{
-  path: '/i18n',
-  name: 'i18n',
-  meta: {
-    hideInMenu: true
+    }]
   },
-  component: Main,
-  children: [{
-    path: 'i18n_page',
-    name: 'i18n_page',
+  {
+    path: '/i18n',
+    name: 'i18n',
     meta: {
-      icon: 'md-planet',
-      title: '国际化'
+      hideInMenu: true
+    },
+    component: Main,
+    children: [{
+      path: 'i18n_page',
+      name: 'i18n_page',
+      meta: {
+        icon: 'md-planet',
+        title: '国际化'
+      },
+      component: () =>
+        import ('@/view/i18n/i18n-page.vue')
+    }]
+  },
+  {
+    path: '/403',
+    name: 'error_403',
+    meta: {
+      hideInMenu: true
     },
     component: () =>
-        import ('@/view/i18n/i18n-page.vue')
-  }]
-},
-{
-  path: '/403',
-  name: 'error_403',
-  meta: {
-    hideInMenu: true
-  },
-  component: () =>
       import ('@/view/error-page/403.vue')
-},
-{
-  path: '/500',
-  name: 'error_500',
-  meta: {
-    hideInMenu: true
   },
-  component: () =>
+  {
+    path: '/500',
+    name: 'error_500',
+    meta: {
+      hideInMenu: true
+    },
+    component: () =>
       import ('@/view/error-page/500.vue')
-},
-{
-  path: '/loginBack',
-  name: 'loginBack',
-  meta: {
-    hideInMenu: true
   },
-  component: () =>
+  {
+    path: '/loginBack',
+    name: 'loginBack',
+    meta: {
+      hideInMenu: true
+    },
+    component: () =>
       import ('@/view/loginBack.vue')
-},
-{
-  path: '*',
-  meta: {
-    icon: 'md-home',
-    hideInMenu: true
   },
-  component: () =>
+  {
+    path: '*',
+    meta: {
+      icon: 'md-home',
+      hideInMenu: true
+    },
+    component: () =>
       import ('@/view/error-page/404.vue')
-}
+  }
 ]

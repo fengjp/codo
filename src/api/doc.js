@@ -45,3 +45,12 @@ export const getFileList = (report_na, report_val) => {
     }
   })
 }
+
+export const getReportList = () => {
+  return axios.request({
+    url: '/tk/v1/getReportList/',
+    method: 'get',
+    params: {
+    }
+  })
+}

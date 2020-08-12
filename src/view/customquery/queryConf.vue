@@ -31,7 +31,7 @@
         <FormItem label="数据库源" prop="dblinkId" style="width: 48%">
           <!--<Input v-model="formValidate.dblinkId" :maxlength="50" placeholder="数据库源"></Input>-->
           <Select v-model="formValidate.dblinkId" placeholder='请选择数据库源'>
-            <Option v-for="item in dbList" :value="item.id" :key="`dblinkId-${item.id}`">{{ item.name }}
+            <Option v-for="item in dbList" :value="item.id">{{ item.name }}
             </Option>
           </Select>
         </FormItem>
@@ -73,9 +73,10 @@
         </FormItem>
         <FormItem label="" v-if="isAlarm" style="display: block; margin-top: -30px;">
           <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colalarms">
-            <Select size="small" style="width:80px" v-model="item.selCol">
+            <Select id="alarmCol" size="small" style="width:100px" v-model="item.selCol">
               <Option v-for="i in formValidate.colnames" :value="i.col">{{ i.col }}</Option>
             </Select>
+            <p style="display: initial;color: red;margin-left: 10px;" v-text="message"></p>
             <!--<Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colalarms',index)"></Button>-->
             <div v-for="(subCol, subColIndex) in item.subColList">
               <Col span="13" offset="5">
@@ -97,11 +98,11 @@
           </Row>
         </FormItem>
         <!--<FormItem>-->
-          <!--<Row>-->
-            <!--<Col span="12">-->
-              <!--<Button type="dashed" long @click="handleColAdd('colalarms')" icon="md-add">增加配置</Button>-->
-            <!--</Col>-->
-          <!--</Row>-->
+        <!--<Row>-->
+        <!--<Col span="12">-->
+        <!--<Button type="dashed" long @click="handleColAdd('colalarms')" icon="md-add">增加配置</Button>-->
+        <!--</Col>-->
+        <!--</Row>-->
         <!--</FormItem>-->
         <FormItem label="轮询频率" prop="times">
           <RadioGroup v-model="formValidate.timesTy" vertical>
@@ -139,6 +140,7 @@
     components: {editor},
     data() {
       return {
+        message: '',
         signList: [
           {'id': 0, 'name': '>'},
           {'id': 1, 'name': '<'},
@@ -273,8 +275,8 @@
           id: null,
           title: '',
           dblinkId: '',
-          user:'',
-          password:'',
+          user: '',
+          password: '',
           database: '',
           sql: '',
           colnames: [{
@@ -302,7 +304,7 @@
         },
         ruleValidate: {
           title: [{required: true, message: "标题不能为空", trigger: "blur"}],
-          // timesTy1Val: [{required: true, message: "数据库源不能为空", trigger: "blur"}],
+          dblinkId: [{required: true, message: "数据库源不能为空", trigger: "blur", type: 'number'}],
           // database: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
         },
         dbList: [],
@@ -351,7 +353,7 @@
             user: paramsRow.user,
             password: paramsRow.password,
           }
-          if (paramsRow.colalarms.length > 0){
+          if (paramsRow.colalarms.length > 0) {
             this.isAlarm = true
           }
         } else {
@@ -428,19 +430,25 @@
       handleSubmitQuery(value) {
         this.$refs[value].validate((valid) => {
           if (valid) {
+            // console.log(this.formValidate)
+            if (this.isAlarm && this.formValidate.colalarms[0].selCol === '') {
+              this.message = '请选择告警字段'
+              this.$Message.error('表单校验错误');
+              return
+            } else {
+              this.message = ''
+            }
             setTimeout(() => {
               // console.log(this.formValidate)
-              operationQuery(this.formValidate, this.editModalData).then(
-                res => {
-                  if (res.data.code === 0) {
-                    this.$Message.success(`${res.data.msg}`);
-                    this.getQueryList(this.pageNum, this.pageSize, this.searchKey, this.searchVal);
-                    this.modalMap.modalVisible = false;
-                  } else {
-                    this.$Message.error(`${res.data.msg}`);
-                  }
+              operationQuery(this.formValidate, this.editModalData).then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`);
+                  this.getQueryList(this.pageNum, this.pageSize, this.searchKey, this.searchVal);
+                  this.modalMap.modalVisible = false;
+                } else {
+                  this.$Message.error(`${res.data.msg}`);
                 }
-              );
+              });
             }, 500);
           } else {
             this.$Message.error('表单校验错误');

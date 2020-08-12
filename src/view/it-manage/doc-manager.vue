@@ -22,10 +22,10 @@
       </template>
     </Card>
     <Card :bordered="false" style="margin-top: 16px">
-      <List item-layout="vertical">
+      <List item-layout="vertical" size="large">
         <ListItem v-for="item in data" :key="item.title">
           <ListItemMeta :title="item.title"/>
-          <a @click="openUrl(item.url)">
+          <a class="list-a" @click="openUrl(item.url)">
             <span v-html="brightenKeyword(item.content, searchValue)"></span>
           </a>
           <!--{{ item.content }}-->
@@ -343,7 +343,7 @@
 
 <style lang="less" scoped>
   a {
-    color: #17233d;
+    color: #808080;
   }
 
   a:link {
