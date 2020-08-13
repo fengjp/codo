@@ -131,6 +131,9 @@
             render: (h, params) => {
               return h('div', [
                 h('a', {
+                  class: {
+                        prspan: "prspan"
+                      },
                   attrs: {
                     href: params.row.url
                   }
@@ -171,6 +174,13 @@
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
             this.reportdata2 = res.data.data
+            for (let i in this.reportdata2) {
+              if (this.reportdata2[i].file_na.indexOf('r') > -1) {
+                this.reportdata2[i].cellClassName = {
+                  file_na: 'table-error-cell-target'
+                }
+              }
+            }
           } else {
             this.$Message.error(`${res.data.msg}`)
             this.reportdata2 = []
@@ -230,6 +240,13 @@
   }
 </script>
 
-<style lang="less" scoped>
-
+<style lang="less">
+  .ivu-table .table-error-cell-target {
+    background-color: #ed4014;
+    color: #fff;
+  }
+  .prspan {
+    display: block;
+    color: #F0F0F0;
+  }
 </style>
