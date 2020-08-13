@@ -81,7 +81,7 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/cmdb2/admin_user.vue')
-      },
+      }
     ]
   },
   {
@@ -94,6 +94,37 @@ export const routerMap = [
     },
     component: () =>
       import ('@/view/cmdb2/webssh/web-ssh.vue')
+  },
+  {
+    path: '/customquery',
+    name: 'customquery',
+    meta: {
+      icon: 'md-search',
+      title: '自定义查询'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'queryShow',
+        name: 'queryShow',
+        meta: {
+          icon: 'ios-stats',
+          title: '查询展示'
+        },
+        component: () =>
+          import ('@/view/customquery/queryShow.vue')
+      },
+      {
+        path: 'queryConf',
+        name: 'queryConf',
+        meta: {
+          icon: 'md-settings',
+          title: '查询配置'
+        },
+        component: () =>
+          import ('@/view/customquery/queryConf.vue')
+      }
+    ]
   },
   {
     path: '/itmanage',
@@ -112,10 +143,10 @@ export const routerMap = [
       },
       component: () =>
         import ('@/view/it-manage/problem-manager.vue')
-    },
+    }
     ]
   },
-    {
+  {
     path: '/plan',
     name: 'plan',
     meta: {
@@ -132,33 +163,33 @@ export const routerMap = [
       },
       component: () =>
         import ('@/view/it-manage/plan-manager.vue')
-    },]
+    }]
   },
   {
     path: '/report',
     name: 'report',
     meta: {
-      icon: 'md-report',
-      title: 'REPOT'
+      icon: 'md-folder',
+      title: '报表'
     },
     component: Main,
     children: [{
       path: 'report_mg',
       name: 'report_mg',
       meta: {
-        icon: 'ios-paper',
-        title: '报表'
+        icon: 'md-book',
+        title: '报表管理'
       },
       component: () =>
         import ('@/view/it-manage/report-manager.vue')
-    },]
+    }]
   },
   {
     path: '/doc',
     name: 'doc',
     meta: {
       icon: 'ios-book',
-      title: '文档管理',
+      title: '文档管理'
     },
     component: Main,
     children: [{
@@ -170,7 +201,37 @@ export const routerMap = [
       },
       component: () =>
         import ('@/view/it-manage/doc-manager.vue')
+    }
+    ]
+  },
+  {
+    path: '/cron',
+    name: 'cron',
+    meta: {
+      icon: 'ios-alarm',
+      title: '定时任务'
     },
+    component: Main,
+    children: [{
+      path: 'cronjobs',
+      name: 'cronjobs',
+      meta: {
+        icon: 'md-alarm',
+        title: '定时列表'
+      },
+      component: () =>
+        import ('@/view/cron/cron-jobs.vue')
+    },
+      {
+        path: 'cronlogs',
+        name: 'cronlogs',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '任务日志'
+        },
+        component: () =>
+          import ('@/view/cron/cron-logs.vue')
+      }
     ]
   },
   {
@@ -265,36 +326,36 @@ export const routerMap = [
       }
     ]
   },
-  {
-    path: '/monitor',
-    name: 'monitor',
-    meta: {
-      icon: 'md-paper',
-      title: '监控巡检'
-    },
-    component: Main,
-    children: [{
-      path: 'monitorhome_mg',
-      name: 'monitor_home_mg',
-      meta: {
-        icon: 'ios-paper',
-        title: '总览'
-      },
-      component: () =>
-        import ('@/view/monitor/monitorhome.vue')
-    },
-      {
-      path: 'monitor_mg',
-      name: 'monitor_mg',
-      meta: {
-        icon: 'ios-paper',
-        title: '监控详情'
-      },
-      component: () =>
-        import ('@/view/monitor/monitor.vue')
-    },
-    ]
-  },
+  // {
+  //   path: '/monitor',
+  //   name: 'monitor',
+  //   meta: {
+  //     icon: 'md-paper',
+  //     title: '监控巡检'
+  //   },
+  //   component: Main,
+  //   children: [{
+  //     path: 'monitorhome_mg',
+  //     name: 'monitor_home_mg',
+  //     meta: {
+  //       icon: 'ios-paper',
+  //       title: '总览'
+  //     },
+  //     component: () =>
+  //       import ('@/view/monitor/monitorhome.vue')
+  //   },
+  //   {
+  //     path: 'monitor_mg',
+  //     name: 'monitor_mg',
+  //     meta: {
+  //       icon: 'ios-paper',
+  //       title: '监控详情'
+  //     },
+  //     component: () =>
+  //         import ('@/view/monitor/monitor.vue')
+  //   }
+  //   ]
+  // }
 
 ]
 
