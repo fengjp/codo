@@ -245,8 +245,8 @@
     background-color: #ed4014;
     color: #fff;
   }
-  .prspan {
-    display: block;
-    color: #F0F0F0;
-  }
+  /*.prspan {*/
+    /*display: block;*/
+    /*color: #F0F0F0;*/
+  /*}*/
 </style>

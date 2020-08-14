@@ -54,6 +54,9 @@
               <FormItem label="数据库端口" prop="db_port">
                 <Input v-model="formValidate.db_port" :maxlength=5></Input>
               </FormItem>
+              <FormItem label="数据库库名/实例" prop="db_instance">
+                <Input v-model="formValidate.db_instance" :maxlength=100 placeholder='请输入库名/实例'></Input>
+              </FormItem>
               <FormItem label="用户" prop="db_user">
                 <Input v-model="formValidate.db_user" :maxlength=100 placeholder='请输入数据库用户'></Input>
               </FormItem>
@@ -205,6 +208,7 @@ export default {
         db_code: '',
         db_class: '',
         db_region: '',
+        db_instance: '',
         db_host: '',
         db_port: '3306',
         db_user: 'root',
@@ -549,6 +553,7 @@ export default {
           db_class: paramsRow.db_class,
           db_region: paramsRow.db_region,
           db_disk: paramsRow.db_disk,
+          db_instance: paramsRow.db_instance,
           db_host: paramsRow.db_host,
           db_port: paramsRow.db_port,
           db_user: paramsRow.db_user,
@@ -612,6 +617,7 @@ export default {
           db_user: paramsRow.db_user,
           db_pwd: paramsRow.db_pwd,
           db_env: paramsRow.db_env,
+          db_instance: paramsRow.db_instance,
           // proxy_host: paramsRow.proxy_host,
           db_type: paramsRow.db_type,
           db_version: paramsRow.db_version,
@@ -626,7 +632,8 @@ export default {
           id: null,
           db_code: '',
           db_host: '',
-          db_port: '3306',
+          db_instance: '',
+          db_port: '',
           db_user: 'root',
           db_pwd: '',
           db_env: '',

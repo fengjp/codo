@@ -150,7 +150,7 @@ export const routerMap = [
     path: '/plan',
     name: 'plan',
     meta: {
-      icon: 'md-plan',
+      icon: 'ios-paper',
       title: 'PLAN'
     },
     component: Main,
@@ -158,7 +158,7 @@ export const routerMap = [
       path: 'plan_mg',
       name: 'plan_mg',
       meta: {
-        icon: 'ios-paper',
+        icon: 'ios-document',
         title: '计划工作'
       },
       component: () =>

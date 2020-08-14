@@ -5,7 +5,7 @@
         <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
         <div class="logo-con">
           <img v-show="!collapsed" style="width:125px; height:45px; border-radius:5px 5px 5px 0; margin-left: 20px;" :src="maxLogo" key="max-logo" />
-          <img v-show="collapsed" :src="minLogo" key="min-logo" />
+          <img v-show="collapsed" style="width:40px; height:40px; margin-left: 15px;" :src="minLogo" key="min-logo" />
         </div>
       </side-menu>
     </Sider>

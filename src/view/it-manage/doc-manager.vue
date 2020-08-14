@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Card :bordered="false" style="margin-top: -10px;">
+    <Card :bordered="false">
       <Row style="margin-top: 15px;margin-bottom: 15px">
         <Col span="6" offset="8">
           <Input search enter-button size="large" style="width: 400px;display: inline-table" v-model="searchValue"
@@ -109,13 +109,13 @@
             content: ''
           }
         ],
-        allSysList: [{"id": 0, "type_name": "不关联"}],
+        allSysList: [{"id": -1, "type_name": "不关联"}],
         modalTable: {
           tableVisible: false,
           tableTitle: '上传文档'
         },
         formValidate: {
-          sysID: 0,
+          sysID: -1,
           uploadList: []
         },
         tableData: [],
@@ -178,7 +178,7 @@
         getSysList(this.pageNum, 999, key, value).then(res => {
           if (res.data.code === 0) {
             this.tableData = res.data.data;
-            this.allSysList = [{"id": 0, "type_name": "不关联"}];
+            this.allSysList = [{"id": -1, "type_name": "不关联"}];
             for (var i = 0; i < this.tableData.length; i++) {
               let obj = {};
               obj['id'] = this.tableData[i].id;
@@ -248,7 +248,7 @@
         this.modalTable.tableVisible = true;
         this.getSysList();
         this.formValidate = {
-          sysID: 0,
+          sysID: -1,
           uploadList: []
         }
       },
