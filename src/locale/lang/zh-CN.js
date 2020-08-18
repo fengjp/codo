@@ -18,6 +18,8 @@ export default {
   error_store_page: '错误收集',
   error_logger_page: '错误日志',
   //
+  stakeholder_mg: '干系人管理',
+  stakeholder: '干系人列表',
   usermanage: '用户管理',
   user: '用户列表',
   role: '角色管理',

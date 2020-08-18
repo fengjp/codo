@@ -81,6 +81,16 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/cmdb2/admin_user.vue')
+      },
+      {
+        path: 'stakeholder',
+        name: 'stakeholder',
+        meta: {
+          icon: 'ios-people',
+          title: '干系人列表'
+        },
+        component: () =>
+          import ('@/view/user-manage/stakeholder.vue')
       }
     ]
   },
