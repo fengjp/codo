@@ -95,6 +95,7 @@ export default {
   asset_server: '主机管理',
   log_audit: '日志审计',
   asset_db: 'DB管理',
+  asset_sql: 'SQL管理',
   asset_idc: 'IDC管理',
   operational_audit: '操作审计',
   tag_mg: '标签管理',
