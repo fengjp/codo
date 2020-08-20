@@ -743,28 +743,10 @@ export default {
   },
   methods: {
     changestime (data) {
-      var starttime = new Date(data).getTime()
-      console.log(data)
-      var endtime = new Date(this.formValidate.case_etime).getTime()
-      console.log(endtime)
-      var temptime = parseInt((endtime - starttime) / 1000 / 60)
-      if (temptime < 0) {
-        this.$Message.error('结束时间要大于开始时间!')
-      } else {
-        this.formValidate.case_ltime = temptime
-        this.formValidate.case_stime = data
-      }
+      this.formValidate.case_stime = data
     },
     changeetime (data) {
-      var starttime = new Date(this.formValidate.case_stime).getTime()
-      var endtime = new Date(data).getTime()
-      var temptime = parseInt((endtime - starttime) / 1000 / 60)
-      if (temptime < 0) {
-        this.$Message.error('结束时间要大于开始时间!')
-      } else {
-        this.formValidate.case_ltime = temptime
-        this.formValidate.case_etime = data
-      }
+      this.formValidate.case_etime = data
     },
     changeShow () {
       this.isShow = !this.isShow
