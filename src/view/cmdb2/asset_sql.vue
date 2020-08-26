@@ -4,10 +4,10 @@
       <Form autocomplete="off" label-colon=":" class="case-form" ref="formValidate2" :model="formValidate2">
         <Row :gutter="1"  style="margin-bottom: -25px">
           <Col span="8">
-            <FormItem label="模块名称" prop="name" :label-width="100">
+            <FormItem label="脚本名称" prop="name" :label-width="100">
               <Input
                 v-model="formValidate2.name"
-                placeholder="请输入模块名称"
+                placeholder="请输入脚本名称"
               ></Input>
             </FormItem>
             </Col>
@@ -39,9 +39,9 @@
           <slot name="new_btn">
             <Button
               type="primary"
-              @click="editModal('', 'post', '新建SQL')" class="case-btn"
+              @click="editModal('', 'post', '新建脚本')" class="case-btn"
               style=""
-            >新建SQL
+            >新建脚本
             </Button>
           </slot>
           <Button type="success" @click="exportDateALL()" class="case-btn"
@@ -70,21 +70,21 @@
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
           <Card style="width:100%">
             <div v-if="editModalData && editModalData == 'put'">
-              <FormItem label="模块名" prop="name" style="width:350px;margin-right:20px">
+              <FormItem label="脚本名" prop="name" style="width:350px;margin-right:20px">
                 <Input
                   v-model="formValidate.name"
                   disabled
                   :maxlength="45"
-                  placeholder="请输入模块名"
+                  placeholder="请输入脚本名"
                 ></Input>
               </FormItem>
             </div>
             <div v-else>
-              <FormItem label="模块名" prop="name" style="width:350px;margin-right:20px">
+              <FormItem label="脚本名" prop="name" style="width:350px;margin-right:20px">
                 <Input
                   v-model="formValidate.name"
                   :maxlength="45"
-                  placeholder="请输入模块名"
+                  placeholder="请输入脚本名"
                 ></Input>
               </FormItem>
             </div>
@@ -164,12 +164,16 @@ export default {
     return {
       btnText: '展开',
       isShow: false,
+      toflag: 0,
+      tousername: "",
       isDisable: false,
+      isDisable2: false,
       surl: '',
       formValidate: {
         name: '',
         sqlstr: '',
         remarks: '',
+        username:'',
         create_time: ''
       },
       formValidate2: {
@@ -181,27 +185,45 @@ export default {
         name: [
           {
             required: true,
-            message: '请输入模块名',
+            message: '请输入脚本名',
             trigger: 'blur'
           }
         ]
       },
       columns: [
-        { title: '模块名称', key: 'name', width: 150, align: 'center' },
+        { title: '脚本名称', key: 'name', width: 150, align: 'center' , render: (h, params) => {
+            // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
+            return h('div', [
+              h('a', {
+              on: {
+                click: () => {
+                  this.handleDetail(params.row.name,params.row.sqlstr)
+                }
+              }
+            }, params.row.name)
+            ])
+          }
+        },
         {
           title: 'SQL',
           key: 'sqlstr',
           align: 'center',
           render: (h, params) => {
             // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
-            return h('a', {
-              on: {
-                click: () => {
-                  this.handleDetail(params.row.sqlstr)
+            return h('div', [
+              h('span', {
+                style: {
+                  display: 'inline-block',
+                  width: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                },
+                domProps: {
+                  title: params.row.sqlstr
                 }
-              }
-            }, params.row.sqlstr
-            )
+              }, params.row.sqlstr)
+            ])
           }
         },
 
@@ -227,6 +249,7 @@ export default {
             ])
           }
         },
+        { title: '创建人', key: 'username', width: 100, align: 'center' },
         { title: '记录时间', key: 'create_time', width: 100, align: 'center' },
         {
           title: '操作',
@@ -240,14 +263,15 @@ export default {
                 {
                   props: {
                     type: 'primary',
-                    size: 'small'
+                    size: 'small',
+                    disabled: (params.row.username != this.tousername) && (this.toflag === 0),
                   },
                   style: {
                     marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      this.editModal(params.row, 'put', '编辑SQL')
+                      this.editModal(params.row, 'put', '编辑脚本')
                     }
                   }
                 },
@@ -258,7 +282,8 @@ export default {
                 {
                   props: {
                     type: 'error',
-                    size: 'small'
+                    size: 'small',
+                    disabled: (params.row.username != this.tousername) && (this.toflag === 0),
                   },
                   on: {
                     click: () => {
@@ -324,11 +349,11 @@ export default {
       if (this.tableDataALL.length) {
         // this.exportLoading = true
         const params = {
-          title: ['ID', '模块名称', 'SQL', '描述', '记录时间'],
-          key: ['id', 'name', 'sqlstr', 'remarks', 'create_time'],
+          title: ['ID', '脚本名称', 'SQL', '描述',"创建人", '记录时间'],
+          key: ['id', 'name', 'sqlstr', 'remarks', "username",'create_time'],
           data: this.tableDataALL,
           autoWidth: true,
-          filename: 'SQl列表'
+          filename: '脚本列表'
         }
         excel.export_array_to_excel(params)
         // this.exportLoading = false
@@ -343,14 +368,21 @@ export default {
           this.$Message.success(`${res.data.msg}`)
           this.pageTotal = res.data.count
           this.tableData = res.data.data
+          if (res.data.flag == '1') {
+            this.toflag = 1
+          }else{ this.toflag = 0}
+          let loginUser = JSON.parse(sessionStorage.vuex).user.nickName
+          console.log(loginUser)
+          this.tousername = loginUser
         } else {
           this.$Message.error(`${res.data.msg}`)
         }
       })
     },
     // 查看Key详细信息
-    handleDetail (sqlstr) {
+    handleDetail (name ,sqlstr) {
       this.modalMapShow.modalVisible = true
+      this.modalMapShow.modalTitle = name
       this.modalMapShow.user_key = sqlstr
     },
     // handleDetail(index) {
@@ -371,6 +403,7 @@ export default {
           name: paramsRow.name,
           sqlstr: paramsRow.sqlstr,
           remarks: paramsRow.remarks,
+          username:paramsRow.username,
           create_time: getDate(new Date().getTime() / 1000, 'year')
         }
       } else {
@@ -379,6 +412,7 @@ export default {
           name: '',
           sqlstr: '',
           remarks: '',
+          username:'',
           create_time: getDate(new Date().getTime() / 1000, 'year')
         }
       }
@@ -387,6 +421,9 @@ export default {
       this.$refs[value].validate((valid) => {
         if (valid) {
           this.isDisable = true
+          let loginUser = JSON.parse(sessionStorage.vuex).user.nickName
+          console.log(loginUser)
+          this.formValidate.username = loginUser
           setTimeout(() => {
             SqlAdd(this.formValidate, this.editModalData).then(res => {
               if (res.data.code === 0) {

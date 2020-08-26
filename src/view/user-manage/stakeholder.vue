@@ -6,7 +6,7 @@
               @on-search-table="handleSearchTable"
               @on-selection-change="handleSelectChange">
         <div slot="new_btn" class="search-con search-col">
-          <Button type="info" class="search-btn" @click="showModal">新建干系人</Button>
+          <Button type="info" class="search-btn" @click="editModal('', 'post', '新增干系人')">新建干系人</Button>
         </div>
       </tables>
       <div style="margin: 10px; overflow: hidden">
@@ -16,18 +16,29 @@
         </div>
       </div>
     </Card>
-    <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true>
-      <form-group :list="formList" @on-submit-success="handleSubmit"></form-group>
-    </Modal>
+<!--    <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true>-->
+<!--      <form-group :list="formList" @on-submit-success="handleSubmit"></form-group>-->
+<!--    </Modal>-->
      <Modal
-        v-model="modalMap2.modalVisible"
-        :title="modalMap2.modalTitle"
+        v-model="modalMap.modalVisible"
+        :title="modalMap.modalTitle"
         :loading=true
         :footer-hide=true
         width="450"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
-        <Form ref="formValidate" :model="formValidate"  :label-width="69" :inline="true">
+        <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
+          <div v-if="editModalData && editModalData == 'put'">
+              <FormItem label="用户名" prop="username" style="width:350px;margin-right:20px">
+                <Input
+                  v-model="formValidate.username"
+                  disabled
+                  :maxlength="45"
+                  placeholder="请输入用户名"
+                ></Input>
+              </FormItem>
+            </div>
+            <div v-else>
               <FormItem label="用户名" prop="username" style="width:350px;margin-right:20px">
                 <Input
                   v-model="formValidate.username"
@@ -35,32 +46,43 @@
                   placeholder="请输入用户名"
                 ></Input>
               </FormItem>
-            <FormItem label="昵称" prop="nickname" style="width:350px;margin-right:20px">
+            </div>
+          <FormItem label="单位" prop="company"  style="width:350px;">
+              <Select v-model="formValidate.company" placeholder="单位">
+                <Option v-for="item in allcompanyList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
+              </Select>
+            </FormItem>
+          <FormItem label="部门" prop="department"  style="width:350px;">
+              <Select v-model="formValidate.department" placeholder="部门">
+                <Option v-for="item in alldepartmentList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
+              </Select>
+            </FormItem>
+          <FormItem label="职位" prop="position" style="width:350px;margin-right:20px">
                 <Input
-                  v-model="formValidate.nickname"
+                  v-model="formValidate.position"
                   :maxlength="45"
-                  placeholder="请输入昵称"
+                  placeholder="请输入职位"
                 ></Input>
               </FormItem>
-            <FormItem label="部门" prop="department" style="width:350px;margin-right:20px">
+          <FormItem label="职责范围" prop="range" style="width:350px;margin-right:20px">
                 <Input
-                  v-model="formValidate.department"
+                  v-model="formValidate.range"
                   :maxlength="45"
-                  placeholder="请输入部门名"
+                  placeholder="请输入职责范围"
                 ></Input>
               </FormItem>
-            <FormItem label="手机" prop="tel" style="width:350px;margin-right:20px">
+            <FormItem label="电话" prop="tel" style="width:350px;margin-right:20px">
                 <Input
                   v-model="formValidate.tel"
                   :maxlength="45"
-                  placeholder="请输入手机"
+                  placeholder="请输入联系方式"
                 ></Input>
               </FormItem>
-            <FormItem label="微信号" prop="wechat" style="width:350px;margin-right:20px">
+            <FormItem label="地址" prop="addr" style="width:350px;margin-right:20px">
                 <Input
-                  v-model="formValidate.wechat"
+                  v-model="formValidate.addr"
                   :maxlength="45"
-                  placeholder="请输入微信号"
+                  placeholder="请输入地址"
                 ></Input>
               </FormItem>
             <FormItem label="邮箱" prop="email" style="width:350px;margin-right:20px">
@@ -70,10 +92,17 @@
                   placeholder="请输入邮箱号"
                 ></Input>
               </FormItem>
+          <FormItem label="备注" prop="remarks" style="width:350px;margin-right:20px">
+                <Input
+                  v-model="formValidate.remarks"
+                  :maxlength="45"
+                  placeholder="备注信息"
+                ></Input>
+              </FormItem>
           <FormItem>
               <Button
                 type="primary"
-                @click="handleSubmit2()"
+                @click="handleSubmit('formValidate')"
                 :disabled="isDisable"
               >提交
               </Button>
@@ -97,6 +126,7 @@ import {
   delStakeholder,
   updateStakeholder
 } from '@/api/stakeholder'
+import { getDictConfList } from '@/api/app'
 
 export default {
   components: {
@@ -111,74 +141,104 @@ export default {
         modalTitle: '创建干系人'
       },
       isDisable: false,
-      modalMap2: {
-        modalVisible: false,
-        modalTitle: '创建干系人'
-      },
+      editModalData: '',
       formValidate: {
         id: 0,
         username: '',
-        nickname: '',
+        company: "",
         department: '',
+        position: '',
         tel: '',
-        wechat: '',
+        range: '',
+        addr:'',
+        remarks:'',
         email: ''
       },
-      // 渲染form数据
-      formList: [
-        {
-          name: 'username',
-          type: 'i-input',
-          value: '',
-          label: '用户名',
-          placeholder: '英文字母',
-          rule: [
-            { required: true, message: '用户名不能为空', trigger: 'blur' }
-          ]
-        },
-        {
-          name: 'nickname',
-          type: 'i-input',
-          value: '',
-          label: '昵称',
-          placeholder: '中文',
-          rule: [
-            { required: true, message: '昵称不能为空', trigger: 'blur' }
-          ]
-        },
-        {
-          name: 'department',
-          type: 'i-input',
-          value: '',
-          label: '部门'
-        },
-        {
-          name: 'wechat',
-          type: 'i-input',
-          value: '',
-          label: '微信号码'
-        },
-        {
-          name: 'tel',
-          type: 'i-input',
-          value: '',
-          label: '手机号码'
-        },
-        {
-          name: 'email',
-          type: 'i-input',
-          value: '',
-          label: '邮箱'
-        }
-      ],
+      allcompanyList: [],
+      alldepartmentList: [],
+      ruleValidate: {
+        username: [
+          {
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur'
+          }
+        ],
+        company: [
+          {
+            required: true,
+            message: '请输入单位名',
+            trigger: 'blur'
+          }
+        ]
+      },
+      // // 渲染form数据
+      // formList: [
+      //   {
+      //     name: 'username',
+      //     type: 'i-input',
+      //     value: '',
+      //     label: '用户名',
+      //     placeholder: '英文字母',
+      //     rule: [
+      //       { required: true, message: '用户名不能为空', trigger: 'blur' }
+      //     ]
+      //   },
+      //   {
+      //     name: 'nickname',
+      //     type: 'i-input',
+      //     value: '',
+      //     label: '昵称',
+      //     placeholder: '中文',
+      //     rule: [
+      //       { required: true, message: '昵称不能为空', trigger: 'blur' }
+      //     ]
+      //   },
+      //   {
+      //     name: 'company',
+      //     type: 'i-input',
+      //     value: '',
+      //     label: '单位',
+      //     rule: [
+      //       { required: true, message: '单位名称不能为空', trigger: 'blur' }
+      //     ]
+      //   },
+      //   {
+      //     name: 'department',
+      //     type: 'i-input',
+      //     value: '',
+      //     label: '部门'
+      //   },
+      //   {
+      //     name: 'wechat',
+      //     type: 'i-input',
+      //     value: '',
+      //     label: '微信号码'
+      //   },
+      //   {
+      //     name: 'tel',
+      //     type: 'i-input',
+      //     value: '',
+      //     label: '手机号码'
+      //   },
+      //   {
+      //     name: 'email',
+      //     type: 'i-input',
+      //     value: '',
+      //     label: '邮箱'
+      //   }
+      // ],
       columns: [
         { type: 'selection', title: '', key: '', width: 60, align: 'center' },
         { title: '用户名', key: 'username', sortable: true },
-        { title: '昵称', key: 'nickname', sortable: true },
+        { title: '单位', key: 'company', sortable: true },
         { title: '部门', key: 'department', editable: true },
-        { title: '手机', key: 'tel', editable: true },
-        { title: '微信', key: 'wechat', editable: true },
+        { title: '职位', key: 'position', editable: true },
+        { title: '职责范围', key: 'range', editable: true },
+        { title: '电话', key: 'tel', editable: true },
+        { title: '地址', key: 'addr', editable: true },
         { title: '邮箱', key: 'email', editable: true },
+         { title: '备注', key: 'remarks', sortable: true },
         {
           title: '操作',
           align: 'center',
@@ -254,20 +314,56 @@ export default {
     }
   },
   methods: {
+     getDictConfList () {
+      getDictConfList().then(res => {
+        if (res.data.code === 0) {
+          // let stakeholder_company_list = JSON.parse(res.data.data['stakeholder_company_list'])
+          // let stakeholder_department_list = JSON.parse(res.data.data['stakeholder_department_list'])
+          let stakeholder_company_list = eval(res.data.data['stakeholder_company_list'])
+          let stakeholder_department_list = eval(res.data.data['stakeholder_department_list'])
+          if (stakeholder_company_list) {
+            this.allcompanyList = stakeholder_company_list
+            console.log(this.allcompanyList)
+          }
+          if (stakeholder_department_list) {
+            this.alldepartmentList = stakeholder_department_list
+          }
+
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
     editModal (paramsRow, meth, mtitle) {
-      this.modalMap2.modalVisible = true
-      this.modalMap2.modalTitle = mtitle
+      this.modalMap.modalVisible = true
+      this.modalMap.modalTitle = mtitle
       this.editModalData = meth
       if (paramsRow && paramsRow.id) {
         // put
         this.formValidate = {
           id: paramsRow.id,
           username: paramsRow.username,
-          nickname: paramsRow.nickname,
           department: paramsRow.department,
+          company: paramsRow.company,
+          position:paramsRow.position,
+          range:paramsRow.range,
           tel: paramsRow.tel,
-          wechat: paramsRow.wechat,
-          email: paramsRow.email
+          addr: paramsRow.addr,
+          email: paramsRow.email,
+          remarks:paramsRow.remarks
+        }
+      }else {
+        // post
+        this.formValidate = {
+          username: "",
+          department: "",
+          company: "",
+          position:"",
+          range:"",
+          tel: "",
+          addr: "",
+          email: "",
+          remarks:""
         }
       }
     },
@@ -325,41 +421,48 @@ export default {
         }
       })
     },
-    handleSubmit (value) {
-      setTimeout(() => {
-        newStakeholder(value.data).then(res => {
-          const data = res.data
-          if (res.data.code === 0) {
-            this.$Message.info(`${data.msg}`)
-            // 重新获取数据
-            this.getStakeholderList(this.pageNum, this.pageSize)
-          } else {
-            this.$Message.error(`${data.msg}`)
-          }
-        }).catch(err => {
-          this.$Message.error(err)
-        })
-        this.modalMap.modalVisible = false
-      }, 1000)
-    },
-    handleSubmit2 () {
-      this.isDisable = true
-      setTimeout(() => {
-        updateStakeholder(this.formValidate).then(res => {
-          const data = res.data
-          if (res.data.code === 0) {
-            this.$Message.info(`${data.msg}`)
-            // 重新获取数据
-            this.getStakeholderList(this.pageNum, this.pageSize)
-            this.modalMap2.modalVisible = false
-          } else {
-            this.$Message.error(`${data.msg}`)
-          }
-        }).catch(err => {
-          this.$Message.error(err)
-        })
-        this.isDisable = false
-      }, 1000)
+     handleSubmit (value) {
+      this.$refs[value].validate((valid) => {
+        if (valid) {
+          this.isDisable = true
+          if(this.formValidate.tel.length > 11)
+          {this.$Message.error("请输入正确的手机号")}
+          setTimeout(() => {
+            if(this.editModalData == "post"){
+                  newStakeholder(this.formValidate).then(res => {
+                       const data = res.data
+                       if (res.data.code === 0) {
+                               this.$Message.info(`${data.msg}`)
+                               // 重新获取数据
+                               this.getStakeholderList(this.pageNum, this.pageSize)
+                       } else {
+                            this.$Message.error(`${data.msg}`)
+                       }
+                  }).catch(err => {
+                        this.$Message.error(err)
+                  })
+            }
+            if (this.editModalData == "put"){
+                  updateStakeholder(this.formValidate).then(res => {
+                            const data = res.data
+                            if (res.data.code === 0) {
+                                    this.$Message.info(`${data.msg}`)
+                                    // 重新获取数据
+                                    this.getStakeholderList(this.pageNum, this.pageSize)
+                            } else {
+                                    this.$Message.error(`${data.msg}`)
+                            }
+                  }).catch(err => {
+                          this.$Message.error(err)
+                  })
+            }
+            this.modalMap.modalVisible = false
+            this.isDisable = false
+          }, 1000)
+        } else {
+          this.$Message.error('缺少必要参数')
+        }
+      })
     },
     handleInput (editData) {
       // 行内编辑
@@ -376,10 +479,6 @@ export default {
         }
       })
     },
-    // 弹出对话框
-    showModal () {
-      this.modalMap.modalVisible = true
-    },
     handleSelectChange (val) {
       let userList = []
       val.forEach(item => {
@@ -390,6 +489,7 @@ export default {
   },
   mounted () {
     this.getStakeholderList(this.pageNum, this.pageSize)
+    this.getDictConfList()
   }
 }
 </script>

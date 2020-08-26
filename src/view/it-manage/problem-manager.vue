@@ -97,19 +97,18 @@
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="开始日期" prop="case_stime" :label-width="100">
-              <DatePicker type="datetime" format="yyyy-MM-dd"
+                <FormItem label="创建开始时间" prop="case_stime"   :label-width="100">
+                   <DatePicker type="datetime" format="yyyy-MM-dd"
                           :value="formValidate2.case_stime" @on-change="formValidate2.case_stime=$event"
-                          placeholder="记录开始时间" :options="optionsDate">
-
-              </DatePicker>
-            </FormItem>
+                          placeholder="创建开始时间" :options="optionsDate">
+                   </DatePicker>
+                  </FormItem>
           </Col>
-          <Col span="6">
-            <FormItem label="结束日期" prop="case_etime" :label-width="100">
+          <Col span="6" style = "">
+            <FormItem label="创建结束时间" prop="case_etime" :label-width="100">
               <DatePicker type="datetime" format="yyyy-MM-dd"
                           :value="formValidate2.case_etime" @on-change="formValidate2.case_etime=$event"
-                          placeholder="记录结束时间"
+                          placeholder="创建结束时间"
                           :options="optionsDate">
 
               </DatePicker>
@@ -704,9 +703,9 @@ export default {
       UploadUrl: '',
       allNameList: [],
       allTypeList: [
-        { 'id': 0, 'type_name': '咨询' },
+        { 'id': 0, 'type_name': '协作' },
         { 'id': 1, 'type_name': '故障' },
-        { 'id': 2, 'type_name': '协作' },
+        { 'id': 2, 'type_name': '咨询' },
         { 'id': 3, 'type_name': '统计' },
         { 'id': 4, 'type_name': '优化' },
         { 'id': 5, 'type_name': '监控巡检' },
@@ -893,7 +892,7 @@ export default {
           case_name: '',
           case_priority: '一般',
           case_status: '已完成',
-          case_type: '咨询',
+          case_type: '协作',
           case_source: '微信',
           case_obj: '综合应用平台',
           case_executor: loginUser,

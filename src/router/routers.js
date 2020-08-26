@@ -67,7 +67,7 @@ export const routerMap = [
         name: 'asset_sql',
         meta: {
           icon: 'ios-cube',
-          title: 'SQL管理'
+          title: '脚本管理'
         },
         component: () =>
           import ('@/view/cmdb2/asset_sql.vue')
