@@ -15,17 +15,13 @@ export const getQueryList = (page, limit, key, value, date = ['', '']) => {
   })
 }
 
-export const getQueryListForshow = (page, limit, key, value, date = ['', '']) => {
+export const getQueryListForshow = (key, value) => {
   return axios.request({
     url: '/tk/v1/queryConfForshow/',
     method: 'get',
     params: {
-      page,
-      limit,
       key,
       value,
-      start_date: date[0],
-      end_date: date.length > 1 ? date[1] : ''
     }
   })
 }

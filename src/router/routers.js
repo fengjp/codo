@@ -120,7 +120,7 @@ export const routerMap = [
     name: 'customquery',
     meta: {
       icon: 'md-search',
-      title: '自定义查询'
+      title: '自定义监控'
     },
     component: Main,
     children: [
@@ -129,7 +129,7 @@ export const routerMap = [
         name: 'queryShow',
         meta: {
           icon: 'ios-stats',
-          title: '查询展示'
+          title: '监控展示'
         },
         component: () =>
           import ('@/view/customquery/queryShow.vue')
@@ -139,7 +139,7 @@ export const routerMap = [
         name: 'queryConf',
         meta: {
           icon: 'md-settings',
-          title: '查询配置'
+          title: '监控配置'
         },
         component: () =>
           import ('@/view/customquery/queryConf.vue')

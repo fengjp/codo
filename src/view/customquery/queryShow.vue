@@ -1,23 +1,13 @@
 <template>
   <div>
-    <Row :gutter="10">
-      <Col span="12" style="margin-bottom: 10px" v-for="(item, index) in queryObjList">
-        <Card :bordered="false">
-          <p slot="title">{{item.title}}</p>
-          <p slot="extra" style="font-size: 12px;">
-            <Badge status="processing"/>
-            <span v-text="item.up_tip"></span>
-            <!--<span>{{tList[index].xcsj.hh}}时{{tList[index].xcsj.mm}}分{{tList[index].xcsj.ss}}秒后更新</span>-->
-          </p>
-          <Table :no-data-text="item.errormsg" :columns="item.columns" :data="item.tableData" size="small"
-                 height="250"></Table>
-        </Card>
-      </Col>
+    <Row :gutter="10" style="margin-top: 10px;">
+      <CustomInfo :data="queryObjList"></CustomInfo>
     </Row>
   </div>
 </template>
 
 <script>
+  import CustomInfo from '_c/custom-card'
   import {
     getQueryListForshow,
     do_sql
@@ -25,6 +15,9 @@
   import {dateFormat} from '@/libs/util'
 
   export default {
+    components: {
+      CustomInfo,
+    },
     data() {
       return {
         up_tip: '',
@@ -49,6 +42,20 @@
       }
     },
     methods: {
+      changeShow(item) {
+        item.isShow = !item.isShow
+      },
+      getColor(k) {
+        if (k === '正常') {
+          return '#19be6b'
+        } else if (k === '一般') {
+          return '#fadb14'
+        } else if (k === '严重') {
+          return '#ff9900'
+        } else if (k === '致命') {
+          return '#ed4014'
+        }
+      },
       playTimer() {
         this.timer = setInterval(() => {
           for (let i in this.tList) {
@@ -56,7 +63,7 @@
             let ret = this.countTime(this.tList[i].expireTime)
             if (ret === false) {
               this.tList[i].expireTime = this.tList[i].expireTime + this.tList[i].interval
-              this.do_sql(i, this.queryObjList[i].id)
+              this.do_sql(i, this.queryObjList, this.tList)
             } else {
               this.tList[i].xcsj = this.countTime(this.tList[i].expireTime)
               this.queryObjList[i].up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
@@ -84,21 +91,23 @@
         } else {
           return false
         }
-        // this.d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
-        // this.h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
-        // this.m = Math.floor(leftTime / 1000 / 60 % 60);
-        // this.s = Math.floor(leftTime / 1000 % 60);
-        // this.sum_h = this.d * 24 + this.h
         return newTimes
       },
-      getQueryListForshow(page, limit, key, value, dateValue) {
-        getQueryListForshow(page, limit, key, value, dateValue).then(res => {
+      getQueryListForshow(key, value) {
+        // console.log(this.tid)
+        // console.log(this.selectionAll.length)
+        if (this.tid > 0 && this.selectionAll.length > 0) {
+          key = 'tid'
+          value = JSON.stringify(this.selectionAll)
+        }
+        getQueryListForshow(key, value).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
             let data = res.data.data
             let queryObjList = res.data.data
             this.tList = []
+            this.queryObjList = []
             for (let i in data) {
               let item = data[i]
               let columns = []
@@ -106,24 +115,11 @@
                 let col = {title: '', key: '', align: 'center', minWidth: 80}
                 col.title = item.colnames[j].name
                 col.key = item.colnames[j].col
-                // if (col.key === 'target') {
-                //   col.render = (h, params) => {
-                //     let target = params.row.target
-                //     if (target === '一般') {
-                //       return h('div', [h('Tag', {props: {color: 'blue'}}, target)])
-                //     } else if (target === '严重') {
-                //       return h('div', [h('Tag', {props: {color: 'warning'}}, target)])
-                //     } else if (target === '致命') {
-                //       return h('div', [h('Tag', {props: {color: 'error'}}, target)])
-                //     } else {
-                //       return h('div', [h('Tag', {props: {color: 'success'}}, target)])
-                //     }
-                //   }
-                // }
                 columns.push(col)
               }
               queryObjList[i].columns = columns
               queryObjList[i].tableData = []
+              queryObjList[i].isShow = false
 
               // 处理倒计时参数
               let t_obj = {
@@ -157,12 +153,16 @@
             }
             this.queryObjList = queryObjList
             // console.log(this.tList)
+            for (let i in this.queryObjList) {
+              this.do_sql(i, this.queryObjList, this.tList)
+            }
           } else {
             this.$Message.error(`${res.data.msg}`)
           }
         })
       },
-      do_sql(index, query_id) {
+      do_sql(index, queryObjList, tList) {
+        let query_id = queryObjList[index].id
         do_sql('id', query_id).then(
           res => {
             if (res.data.code === 0) {
@@ -187,25 +187,71 @@
                 }
               }
               // console.log(tableData)
-              this.queryObjList[index].tableData = tableData
+              queryObjList[index].tableData = tableData
+              queryObjList[index].count = res.data.count
             } else {
-              this.queryObjList[index].errormsg = res.data.errormsg
+              queryObjList[index].errormsg = res.data.errormsg
             }
+            this.checkqueryObjSort(queryObjList, tList)
           }
         )
-      }
-
+      },
+      // 全部排序
+      checkqueryObjSort(queryObjList, tList) {
+        let l1 = []
+        let l2 = []
+        let l3 = []
+        let l4 = []
+        for (let i in queryObjList) {
+          let _count = queryObjList[i].count
+          if (_count) {
+            for (let j in _count) {
+              if (j === '致命') {
+                l1.push(queryObjList[i])
+                break
+              } else if (j === '严重') {
+                l2.push(queryObjList[i])
+                break
+              } else if (j === '一般') {
+                l3.push(queryObjList[i])
+                break
+              } else if (j === '正常') {
+                l4.push(queryObjList[i])
+                break
+              }
+            }
+          } else {
+            l4.push(queryObjList[i])
+          }
+        }
+        l1.push(...l2)
+        l1.push(...l3)
+        l1.push(...l4)
+        // console.log(queryObjList)
+        // console.log(l1)
+        let new_tList = []
+        for (let i in l1) {
+          for (let j in tList) {
+            if (l1[i].title === tList[j].tName) {
+              new_tList.push(tList[j])
+            }
+          }
+        }
+        // console.log(this.tList)
+        // console.log(new_tList)
+        this.queryObjList = l1
+        this.tList = new_tList
+      },
     },
     watch: {
-      queryObjList: function () {
-        for (let i in this.queryObjList) {
-          this.do_sql(i, this.queryObjList[i].id)
-        }
-      }
+      // queryObjList: function () {
+      //   for (let i in this.queryObjList) {
+      //     this.do_sql(i, this.queryObjList[i].id)
+      //   }
+      // }
     },
     mounted() {
-      this.getQueryListForshow(this.pageNum, 888)
-      // this.countTime()
+      this.getQueryListForshow()
       // 该组件渲染时，判断定时器是否已开启
       if (this.timer) {
         clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
@@ -225,12 +271,12 @@
 
 <style lang="less">
   .ivu-table .table-info-cell-target {
-    background-color: #2d8cf0;
+    background-color: #fadb14;
     color: #fff;
   }
 
   .ivu-table .table-warning-cell-target {
-    background-color: #f90;
+    background-color: #ff9900;
     color: #fff;
   }
 
@@ -244,4 +290,11 @@
     color: #fff;
   }
 
+  .tmptable.ivu-table-wrapper thead tr th {
+    background-color: #fff;
+  }
+
+  .customtable .ivu-table-small td {
+    height: 30px;
+  }
 </style>

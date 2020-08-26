@@ -46,7 +46,7 @@ export const hasOneOf = (targetarr, arr) => {
  * @param {String|Number} value 要验证的字符串或数值
  * @param {*} validList 用来验证的列表
  */
-export function oneOf (value, validList) {
+export function oneOf(value, validList) {
   for (let i = 0; i < validList.length; i++) {
     if (value === validList[i]) {
       return true
@@ -212,4 +212,56 @@ export const objEqual = (obj1, obj2) => {
   else if (keysArr1.length === 0 && keysArr2.length === 0) return true
   /* eslint-disable-next-line */
   else return !keysArr1.some(key => obj1[key] != obj2[key])
+}
+
+
+/**
+ * @param {*} arr 数组
+ * @param {*} index1 下标1
+ * @param {*} index2 下标2
+ * @description 两个元素换位子
+ */
+export const swapArr = (arr, index1, index2) => {
+  arr[index1] = arr.splice(index2, 1, arr[index1])[0];
+  return arr;
+}
+
+
+/**
+ * @param {*} arr 数组
+ * @param {*} index 下标
+ * @description 置顶移动
+ */
+export const toFirst = (arr, index) => {
+  if (index != 0) {
+    arr.unshift(arr.splice(index, 1)[0]);
+  }
+}
+
+
+/**
+ * @param {*} arr 数组
+ * @param {*} index 下标
+ * @description up上移动一格
+ */
+export const upGo = (arr, index) => {
+  if (index != 0) {
+    arr[index] = arr.splice(index - 1, 1, arr[index])[0];
+  } else {
+    arr.push(arr.shift());
+  }
+}
+
+
+/**
+ * @param {*} arr 数组
+ * @param {*} index 下标
+ * @description down 下移动一格
+ */
+export const downGo = (arr, index) => {
+  if (index != arr.length - 1) {
+    arr[index] = arr.splice(index + 1, 1, arr[index])[0];
+  } else {
+    arr.unshift(arr.splice(index, 1)[0]);
+  }
 }
