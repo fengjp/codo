@@ -49,12 +49,12 @@
             </div>
           <FormItem label="单位" prop="company"  style="width:350px;">
               <Select v-model="formValidate.company" placeholder="单位">
-                <Option v-for="item in allcompanyList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
+                <Option v-for="item in allcompanyList" :value="item.v" :key="item.k">{{item.v}}</Option>
               </Select>
             </FormItem>
           <FormItem label="部门" prop="department"  style="width:350px;">
               <Select v-model="formValidate.department" placeholder="部门">
-                <Option v-for="item in alldepartmentList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
+                <Option v-for="item in alldepartmentList" :value="item.v" :key="item.k">{{item.v}}</Option>
               </Select>
             </FormItem>
           <FormItem label="职位" prop="position" style="width:350px;margin-right:20px">

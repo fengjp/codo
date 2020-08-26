@@ -23,24 +23,36 @@
 
     <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="540"
            :mask-closable=false>
-      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
-        <!--<alert>温馨提示：xxx</alert>-->
+      <Form ref="formDynamic" :model="formDynamic" :label-width="80" inline>
         <FormItem label="字典名称" prop="dictname" style="margin-right:30px">
-          <Input v-model="formValidate.dictname" :maxlength="50" placeholder='请输入字典名称'></Input>
+          <Input v-model="formDynamic.dictname" :maxlength="50" placeholder='请输入字典名称'></Input>
         </FormItem>
         <FormItem label="字典KEY" prop="dictkey" style="margin-right:30px">
-          <Input v-model="formValidate.dictkey" :maxlength="50" placeholder="请输入字典KEY"></Input>
+          <Input v-model="formDynamic.dictkey" :maxlength="50" placeholder="请输入字典KEY"></Input>
         </FormItem>
-        <FormItem label="字典值" prop="dictvalue" style="margin-right:30px">
-          <i-input type="textarea" v-model="formValidate.dictvalue" placeholder="[{}]"
-                   :rows="5">
-          </i-input>
+        <FormItem label="设置字段" style="width: 100%">
+            <Row v-for="(item, index) in formDynamic.dictvalue">
+                <Col span="12">
+                    <Input style="width: 80px" type="text" v-model="item.k"  placeholder="请输入字段key"></Input>:
+                    <Input style="width: 100px" type="text" v-model="item.v"   placeholder="请输入字段值"></Input>
+                </Col>
+                <Col span="4" offset="1">
+                    <Button  @click="handleRemove(index)">删除</Button>
+                </Col>
+            </Row>
         </FormItem>
         <FormItem>
-          <Button type="primary" @click="handleSubmitDict('formValidate')">提交</Button>
-          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+            <Row>
+                <Col span="12">
+                    <Button style="width: 80px"  long @click="handleAdd" icon="md-add">添加</Button>
+                </Col>
+            </Row>
         </FormItem>
-      </Form>
+        <FormItem>
+            <Button type="primary" @click="handleSubmitDict('formDynamic')">提交</Button>
+            <Button @click="handleReset('formDynamic')" style="margin-left: 8px">重置</Button>
+        </FormItem>
+    </Form>
     </Modal>
   </div>
 </template>
@@ -116,6 +128,18 @@
         pageNum: 1, // 当前页码
         pageSize: 15, // 每页条数
         //
+        index: 0,
+        formDynamic: {
+                    id: null,
+                    dictname: '',
+                    dictkey: '',
+                    dictvalue: [
+                        {
+                            k: 0,
+                            v: '',
+                        }
+                    ]
+                },
         searchKey: 'dictkey',
         searchValue: '',
         //
@@ -136,24 +160,49 @@
       }
     },
     methods: {
+      handleSubmit (name) {
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.$Message.success('Success!');
+                    } else {
+                        this.$Message.error('Fail!');
+                    }
+                })
+            },
+            handleAdd () {
+                // this.index++;
+                this.index = this.formDynamic.dictvalue.length
+                this.formDynamic.dictvalue.push({
+                    v: '',
+                    k: this.index,
+                });
+            },
+            handleRemove (index) {
+                this.formDynamic.dictvalue.splice(index, 1);//(下标index开始，删除1个)
+            },
       // 添加字典
       handlerDict(paramsRow, meth, mtitle) {
         this.modalMap.modalVisible = true
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
+        console.log(paramsRow.dictvalue)
         if (paramsRow && paramsRow.id) {
-          this.formValidate = {
+          this.formDynamic = {
             id: paramsRow.id,
             dictname: paramsRow.dictname,
             dictkey: paramsRow.dictkey,
-            dictvalue: paramsRow.dictvalue,
+            dictvalue: eval(paramsRow.dictvalue),
           }
         } else {
-          this.formValidate = {
+          this.formDynamic = {
             id: null,
             dictname: '',
             dictkey: '',
-            dictvalue: '',
+            dictvalue: [
+              {
+                v: '',
+                k: 0,
+              }]
           }
         }
       },
@@ -161,7 +210,7 @@
         this.$refs[value].validate((valid) => {
           if (valid) {
             setTimeout(() => {
-              operationDict(this.formValidate, this.editModalData).then(
+              operationDict(this.formDynamic, this.editModalData).then(
                 res => {
                   if (res.data.code === 0) {
                     this.$Message.success(`${res.data.msg}`);
@@ -226,6 +275,10 @@
       },
       handleReset(name) {
         this.$refs[name].resetFields();
+        this.formDynamic.dictvalue = [{
+                v: '',
+                k: 0,
+              }]
       },
       handleClear(e) {
         if (e.target.value === '') this.tableData = this.value
