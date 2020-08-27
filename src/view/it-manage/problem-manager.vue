@@ -96,18 +96,18 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="6">
+          <Col span="12">
             <FormItem label="创建时间" prop="case_stime" :label-width="100" style="width: 100%">
               <Row>
                 <DatePicker
-                  style="width: 133px"
+                  style="width: 48%"
                   type="datetime" format="yyyy-MM-dd"
                   :value="formValidate2.case_stime" @on-change="formValidate2.case_stime=$event"
                   placeholder="创建开始时间"
                   :options="optionsDate">
                 </DatePicker>&nbsp;-&nbsp;
                 <DatePicker
-                  style="width: 133px"
+                  style="width: 48%"
                   type="datetime" format="yyyy-MM-dd"
                   :value="formValidate2.case_etime" @on-change="formValidate2.case_etime=$event"
                   placeholder="创建结束时间"
@@ -131,40 +131,37 @@
       </Form>
     </Card>
     <Card style="margin-top: 5px">
+      <div style="width: 100%">
       <Row>
-        <Col span="10" offset="14" style="text-align: right; margin-bottom: 5px">
+        <Col span="24"  style="text-align: right; margin-bottom: 5px">
           <Button
             @click="handleSearch" class="case-btn"
             type="info"
-            style=""
           >搜索
           </Button>
           <Button
             @click="handleReset('formValidate2')" class="case-btn"
-            style=""
           >重置
           </Button>
           <slot name="new_btn">
             <Button
               type="primary"
               @click="editModal('', 'post', '新建个案')" class="case-btn"
-              style=""
             >新建个案
             </Button>
           </slot>
-          <Button type="success" @click="exportDateALL()" class="case-btn"
-                  style="">
+          <Button type="success" @click="exportDateALL()" class="case-btn">
             <Icon type="ios-download-outline"></Icon>
             导出数据
           </Button>
           <Button
             type="primary"
             @click="editModaltable()"
-            style=""
           >生成报表
           </Button>
         </Col>
       </Row>
+        </div>
       <Table
         id="table"
         size="small"

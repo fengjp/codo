@@ -48,10 +48,12 @@
                 </Col>
             </Row>
         </FormItem>
+        <Row>
         <FormItem>
             <Button type="primary" @click="handleSubmitDict('formDynamic')">提交</Button>
             <Button @click="handleReset('formDynamic')" style="margin-left: 8px">重置</Button>
         </FormItem>
+          </Row>
     </Form>
     </Modal>
   </div>

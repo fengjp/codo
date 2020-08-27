@@ -24,21 +24,21 @@
           <Col span="6">
             <FormItem label="类型" prop="plan_type" :label-width="100">
               <Select v-model="formValidate2.plan_type">
-                <Option v-for="item in allTypeList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
+                <Option v-for="item in allTypeList" :value="item.v" :key="item.k">{{item.v}}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="6">
             <FormItem label="状态" prop="plan_status" :label-width="100">
               <Select v-model="formValidate2.plan_status">
-                <Option v-for="item in allstatusList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
+                <Option v-for="item in allstatusList" :value="item.v" :key="item.k">{{item.v}}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="6">
             <FormItem label="项目" prop="plan_obj" :label-width="100">
               <Select v-model="formValidate2.plan_obj" placeholder="项目">
-                <Option v-for="item in allobjecList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
+                <Option v-for="item in allobjecList" :value="item.v" :key="item.k">{{item.v}}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -47,7 +47,7 @@
           <Col span="6">
             <FormItem label="优先级" prop="plan_priority" :label-width="100">
               <Select v-model="formValidate2.plan_priority" placeholder="优先级">
-                <Option v-for="item in allpriorityList" :value="item.type_name" :key="item.id">{{item.type_name}}
+                <Option v-for="item in allpriorityList" :value="item.v" :key="item.k">{{item.v}}
                 </Option>
               </Select>
             </FormItem>
@@ -55,7 +55,7 @@
           <Col span="6">
             <FormItem label="来源" prop="plan_source" :label-width="100">
               <Select v-model="formValidate2.plan_source" placeholder="来源">
-                <Option v-for="item in allsourceList" :value="item.type_name" :key="item.id">{{item.type_name}}</Option>
+                <Option v-for="item in allsourceList" :value="item.v" :key="item.k">{{item.v}}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -88,38 +88,50 @@
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="时长" prop="plan_ltime" :label-width="100">
+            <FormItem label="处理人" prop="plan_executor" :label-width="100">
               <Input
-                v-model="formValidate2.plan_ltime"
-                placeholder="时长"
+                v-model="formValidate2.plan_executor"
+                placeholder="处理人"
+                :disabled="isDisable2"
               ></Input>
             </FormItem>
           </Col>
-          <Col span="6">
-            <FormItem label="开始时间" prop="plan_stime" :label-width="100">
-              <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
+          <Col span="12">
+            <FormItem label="开始时间" prop="plan_stime" :label-width="100"  style="width: 100%">
+              <Row>
+              <DatePicker type="datetime" format="yyyy-MM-dd"
+                          style="width: 48%"
                           :value="formValidate2.plan_stime" @on-change="formValidate2.plan_stime=$event"
                           placeholder="记录开始时间" :options="optionsDate">
 
-              </DatePicker>
-            </FormItem>
-          </Col>
-          <Col span="6">
-            <FormItem label="结束时间" prop="plan_etime" :label-width="100">
-              <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
+              </DatePicker>&nbsp;-&nbsp;
+              <DatePicker type="datetime" format="yyyy-MM-dd"
+                          style="width: 48%"
                           :value="formValidate2.plan_etime" @on-change="formValidate2.plan_etime=$event"
                           placeholder="记录结束时间"
                           :options="optionsDate">
 
               </DatePicker>
+                </Row>
             </FormItem>
           </Col>
+<!--          <Col span="6">-->
+<!--            <FormItem label="结束时间" prop="plan_etime" :label-width="100">-->
+<!--              <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"-->
+<!--                          style="width: 100%"-->
+<!--                          :value="formValidate2.plan_etime" @on-change="formValidate2.plan_etime=$event"-->
+<!--                          placeholder="记录结束时间"-->
+<!--                          :options="optionsDate">-->
+
+<!--              </DatePicker>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
         </Row>
       </Form>
     </Card>
     <Card style="margin-top: 5px">
       <Row>
-        <Col span="10" offset="14" style="text-align: right; margin-bottom: 5px">
+        <Col span="24"  style="text-align: right; margin-bottom: 5px">
           <Button
             @click="handleSearch" class="plan-btn"
             type="info"
@@ -209,7 +221,7 @@
               <Col span="6">
                 <FormItem label="类型" prop="plan_type" style="width:150px;margin-right:30px">
                   <Select v-model="formValidate.plan_type" placeholder="类型">
-                    <Option v-for="item in allTypeList" :value="item.type_name" :key="item.id">{{item.type_name}}
+                    <Option v-for="item in allTypeList" :value="item.v" :key="item.k">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
@@ -217,7 +229,7 @@
               <Col span="6">
                 <FormItem label="状态" prop="plan_status" style="width:150px;margin-right:30px">
                   <Select v-model="formValidate.plan_status" placeholder="状态">
-                    <Option v-for="item in allstatusList" :value="item.type_name" :key="item.id">{{item.type_name}}
+                    <Option v-for="item in allstatusList" :value="item.v" :key="item.k">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
@@ -225,7 +237,7 @@
               <Col span="6">
                 <FormItem label="项目" prop="plan_obj" style="width:220px;margin-right:30px">
                   <Select v-model="formValidate.plan_obj" placeholder="项目">
-                    <Option v-for="item in allobjecList" :value="item.type_name" :key="item.id">{{item.type_name}}
+                    <Option v-for="item in allobjecList" :value="item.v" :key="item.k">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
@@ -235,7 +247,7 @@
               <Col span="6">
                 <FormItem label="优先级" prop="plan_priority" style="width:150px;margin-right:30px">
                   <Select v-model="formValidate.plan_priority" placeholder="优先级">
-                    <Option v-for="item in allpriorityList" :value="item.type_name" :key="item.id">{{item.type_name}}
+                    <Option v-for="item in allpriorityList" :value="item.v" :key="item.id">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
@@ -243,7 +255,7 @@
               <Col span="6">
                 <FormItem label="来源" prop="plan_source" style="width:150px;margin-right:30px">
                   <Select v-model="formValidate.plan_source" placeholder="来源">
-                    <Option v-for="item in allsourceList" :value="item.type_name" :key="item.id">{{item.type_name}}
+                    <Option v-for="item in allsourceList" :value="item.v" :key="item.k">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
@@ -325,21 +337,21 @@
                 </FormItem>
               </Col>
             </Row>
-            <Row :gutter="10" style="margin-bottom: 5px">
-              <Col span="8">
-                <FormItem
-                  label="时长"
-                  prop="plan_ltime" style="width:240px;margin-right:30px"
-                >
-                  <Input
-                    v-model="formValidate.plan_ltime"
-                    :autosize="{minRows: 2,maxRows: 10}"
-                    :maxlength="200"
-                    placeholder="时长(单位:分钟)"
-                  ></Input>
-                </FormItem>
-              </Col>
-            </Row>
+<!--            <Row :gutter="10" style="margin-bottom: 5px">-->
+<!--              <Col span="8">-->
+<!--                <FormItem-->
+<!--                  label="时长"-->
+<!--                  prop="plan_ltime" style="width:240px;margin-right:30px"-->
+<!--                >-->
+<!--                  <Input-->
+<!--                    v-model="formValidate.plan_ltime"-->
+<!--                    :autosize="{minRows: 2,maxRows: 10}"-->
+<!--                    :maxlength="200"-->
+<!--                    placeholder="时长(单位:分钟)"-->
+<!--                  ></Input>-->
+<!--                </FormItem>-->
+<!--              </Col>-->
+<!--            </Row>-->
             <div>
               <FormItem
                 label="详情描述"
@@ -437,6 +449,7 @@
         btnText: "展开",
         isShow: false,
         isDisable: false,
+        isDisable2: true,
         surl: "",
         optionsDate: {
           shortcuts: [
@@ -690,40 +703,40 @@
         UploadUrl: "",
         allNameList: [],
         allTypeList: [
-          {'id': 0, 'type_name': '咨询'},
-          {'id': 1, 'type_name': '故障'},
-          {'id': 2, 'type_name': '统计'},
-          {'id': 3, 'type_name': '优化'},
-          {'id': 4, 'type_name': '协作'},
-          {'id': 5, 'type_name': '监控巡检'},
-          {'id': 6, 'type_name': '会议'},
-          {'id': 7, 'type_name': '报备审批'},
-          {'id': 8, 'type_name': '编写文档'},
-          {'id': 9, 'type_name': '应用升级'},
-          {'id': 10, 'type_name': '应用部署'},
+          {'k': 0, 'v': '咨询'},
+          {'k': 1, 'v': '故障'},
+          {'k': 2, 'v': '统计'},
+          {'k': 3, 'v': '优化'},
+          {'k': 4, 'v': '协作'},
+          {'k': 5, 'v': '监控巡检'},
+          {'k': 6, 'v': '会议'},
+          {'k': 7, 'v': '报备审批'},
+          {'k': 8, 'v': '编写文档'},
+          {'k': 9, 'v': '应用升级'},
+          {'k': 10, 'v': '应用部署'},
         ],
         allobjecList: [
-          {'id': 0, 'type_name': '综合应用平台'},
-          {'id': 1, 'type_name': '互联网服务平台'},
-          {'id': 2, 'type_name': '集成指挥平台'},
-          {'id': 3, 'type_name': '其他'},
+          {'k': 0, 'v': '综合应用平台'},
+          {'k': 1, 'v': '互联网服务平台'},
+          {'k': 2, 'v': '集成指挥平台'},
+          {'k': 3, 'v': '其他'},
         ],
         allsourceList: [
-          {'id': 0, 'type_name': 'OA'},
-          {'id': 1, 'type_name': '运维'},
-          {'id': 2, 'type_name': '来文'},
-          {'id': 3, 'type_name': '微信'},
-          {'id': 4, 'type_name': '电话'},
-          {'id': 5, 'type_name': '面对面'},
+          {'k': 0, 'v': 'OA'},
+          {'k': 1, 'v': '运维'},
+          {'k': 2, 'v': '来文'},
+          {'k': 3, 'v': '微信'},
+          {'k': 4, 'v': '电话'},
+          {'k': 5, 'v': '面对面'},
         ],
         allstatusList: [
-          {'id': 0, 'type_name': '已完成'},
-          {'id': 1, 'type_name': '处理中'},
+          {'k': 0, 'v': '已完成'},
+          {'k': 1, 'v': '处理中'},
         ],
         allpriorityList: [
-          {'id': 0, 'type_name': '特急'},
-          {'id': 1, 'type_name': '紧急'},
-          {'id': 2, 'type_name': '一般'},
+          {'k': 0, 'v': '特急'},
+          {'k': 1, 'v': '紧急'},
+          {'k': 2, 'v': '一般'},
         ],
       };
     },
@@ -812,6 +825,9 @@
             this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
             this.tableData = res.data.data
+            if (res.data.flag == '1') {
+              this.isDisable2 = false
+            }
           } else {
             this.tableData =  []
             this.$Message.error(`${res.data.msg}`)
