@@ -27,7 +27,7 @@
         <Col span="10" offset="14" style="text-align: right; margin-bottom: 5px">
           <Button
             @click="handleSearch" class="case-btn"
-            type="info"
+            type="primary"
             style=""
           >搜索
           </Button>
@@ -38,7 +38,7 @@
           </Button>
           <slot name="new_btn">
             <Button
-              type="primary"
+              type="info"
               @click="editModal('', 'post', '新建脚本')" class="case-btn"
               style=""
             >新建脚本

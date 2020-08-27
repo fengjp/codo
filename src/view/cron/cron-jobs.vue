@@ -4,7 +4,7 @@
       <Input clearable placeholder="输入任务ID搜索" class="search-input" v-model="searchValue"/>
       <Button @click="handleSearch" class="search-btn" type="primary">搜索</Button>
       <slot name="new_btn">
-        <Button type="primary" @click="editModal('', 'post', '新建任务')" class="search-btn">新建</Button>
+        <Button type="info" @click="editModal('', 'post', '新建任务')" class="search-btn">新建</Button>
       </slot>
     </div>
     <Table size="small" ref="selection" :columns="columns" :data="tableData"></Table>

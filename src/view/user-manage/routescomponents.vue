@@ -2,7 +2,7 @@
   <div style="height:100%">
     <Row :gutter="16">
       <Col span="12">
-        <Card>
+        <Card :bordered="false">
           <tables ref="tables"
                   :height="700"
                   editable
@@ -25,7 +25,7 @@
       </Col>
 
       <Col span="12">
-        <Card>
+        <Card :bordered="false">
           <tables
             ref="tables"
             :height="700"
@@ -97,7 +97,12 @@
         newDataType: "",
         editModalData: "",
         columns: [
-          {title: "菜单名称", key: "menu_name", minWidth: 200, sortable: true},
+          {
+            title: "菜单名称",
+            key: "menu_name",
+            minWidth: 180,
+            sortable: true
+          },
           {
             title: "状态",
             key: "status",
@@ -132,11 +137,11 @@
                     "Button",
                     {
                       props: {
-                        type: "success",
+                        type: "primary",
                         size: "small"
                       },
                       style: {
-                        marginRight: "10px"
+                        marginRight: "5px"
                       },
                       on: {
                         click: () => {
@@ -154,7 +159,7 @@
                         size: "small"
                       },
                       style: {
-                        marginRight: "10px"
+                        // marginRight: "10px"
                       },
                       on: {
                         click: () => {
@@ -173,7 +178,7 @@
           {
             title: "组件名称",
             key: "component_name",
-            minWidth: 200,
+            minWidth: 180,
             sortable: true
           },
           {
@@ -210,11 +215,11 @@
                     "Button",
                     {
                       props: {
-                        type: "success",
+                        type: "primary",
                         size: "small"
                       },
                       style: {
-                        marginRight: "10px"
+                        marginRight: "5px"
                       },
                       on: {
                         click: () => {
@@ -237,7 +242,7 @@
                         size: "small"
                       },
                       style: {
-                        marginRight: "10px"
+                        // marginRight: "10px"
                       },
                       on: {
                         click: () => {

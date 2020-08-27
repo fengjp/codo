@@ -38,7 +38,7 @@ module.exports = {
   devServer: {
     // proxy: 'http://172.16.0.223:9800/'
     // proxy: 'http://gw.opendevops.cn/api/'
-    proxy: 'http://192.168.79.100:8888/api/'
+    proxy: 'http://localhost:8081/api/'
 
   },
   transpileDependencies: ['socket.io-client', 'view-design', 'webpack-dev-server']

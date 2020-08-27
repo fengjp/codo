@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Card>
+    <Card :bordered="false" dis-hover>
       <div class="search-con search-con-top">
         <Select v-model="searchKey" class="search-col">
           <Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key"
@@ -227,7 +227,7 @@
                 h('Button',
                   {
                     props: {
-                      type: 'info',
+                      type: 'primary',
                       size: 'small'
                     },
                     style: {
