@@ -116,7 +116,7 @@
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem :label-width="100" label="创建时间" prop="case_stime" style="width: 100%">
+            <FormItem :label-width="100" label="开始结束时间" prop="case_stime" style="width: 100%">
               <Row>
 <!--                <DatePicker-->
 <!--                  :options="optionsDate"-->
@@ -136,7 +136,6 @@
                 <DatePicker :options="options2" :value="todate2" @on-change="todate2=$event"
                       confirm placeholder="请选择开始与结束日期"
                       placement="bottom-end"
-                      style="width: 230px"
                       type="daterange">
                 </DatePicker>
               </Row>
@@ -221,7 +220,6 @@
           <DatePicker :options="options2" :value="todate" @on-change="todate=$event"
                       confirm placeholder="请选择开始与结束日期"
                       placement="bottom-end"
-                      style="width: 230px"
                       type="daterange">
           </DatePicker>
           <Button @click="handleSubmitTable()" style="marginRight: 2px; marginLeft: 50px" type="success">生成报表
@@ -643,6 +641,7 @@
             key: 'case_name',
             align: 'center',
             width: 200,
+            fixed: 'left',
             render: (h, params) => {
               // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
               return h('a', {
@@ -655,13 +654,16 @@
               )
             }
           },
-          {title: '类型', key: 'case_type', align: 'center', width: 100,},
+          {title: '类型', key: 'case_type', align: 'center', width: 100,fixed: 'left'},
           {title: '状态', key: 'case_status', align: 'center', width: 100,},
           {title: '项目', key: 'case_obj', align: 'center', width: 150,},
+          {title: '开始时间', key: 'case_stime', width: 100, align: 'center', width: 150,},
+          {title: '结束时间', key: 'case_etime', width: 100, align: 'center', width: 150,},
+          {title: '处理人', key: 'case_executor', align: 'center', width: 100,},
           {title: '优先级', key: 'case_priority', align: 'center', width: 100,},
           {title: '新建人', key: 'case_creator', align: 'center', width: 100,},
           {title: '需求人', key: 'demander', align: 'center', width: 100,},
-          {title: '处理人', key: 'case_executor', align: 'center', width: 100,},
+
           {
             title: '描述',
             key: 'case_details',
@@ -685,12 +687,12 @@
               ])
             }
           },
-          {title: '开始时间', key: 'case_stime', width: 100, align: 'center', width: 150,},
-          {title: '结束时间', key: 'case_etime', width: 100, align: 'center', width: 150,},
+
           {
             title: '操作',
             key: 'handle',
             align: 'center',
+            fixed: 'right',
             width: 150,
             render: (h, params) => {
               return h('div', [

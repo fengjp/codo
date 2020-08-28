@@ -118,7 +118,7 @@
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem :label-width="100" label="创建时间" prop="plan_stime" style="width: 100%">
+            <FormItem :label-width="100" label="开始结束时间" prop="plan_stime" style="width: 100%">
               <Row>
 <!--                <DatePicker :options="optionsDate" :value="formValidate2.plan_stime"-->
 <!--                            @on-change="formValidate2.plan_stime=$event"-->
@@ -136,7 +136,6 @@
                 <DatePicker :options="options2" :value="todate2" @on-change="todate2=$event"
                       confirm placeholder="请选择开始与结束日期"
                       placement="bottom-end"
-                      style="width: 230px"
                       type="daterange">
           </DatePicker>
               </Row>
@@ -657,10 +656,13 @@
           {title: "类型", key: "plan_type", align: "center", width: 100},
           {title: "状态", key: "plan_status", align: "center", width: 100},
           {title: "项目", key: "plan_obj", align: "center", width: 150},
+          {title: "开始时间", key: "plan_stime", width: 150, align: "center",},
+          {title: "结束时间", key: "plan_etime", width: 150, align: "center",},
+          {title: "处理人", key: "plan_executor", align: "center", width: 100},
           {title: "优先级", key: "plan_priority", align: "center", width: 100},
           {title: "新建人", key: "plan_creator", align: "center", width: 100},
           {title: "需求人", key: "demander", align: "center", width: 100},
-          {title: "处理人", key: "plan_executor", align: "center", width: 100},
+
           {
             title: "描述", key: "plan_details", width: 150, align: "center",
             render: (h, params) => {
@@ -681,8 +683,7 @@
               ])
             }
           },
-          {title: "开始时间", key: "plan_stime", width: 150, align: "center",},
-          {title: "结束时间", key: "plan_etime", width: 150, align: "center",},
+
           {
             title: "操作", key: "handle", align: "center", width: 150,
             render: (h, params) => {
