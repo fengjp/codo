@@ -118,7 +118,7 @@
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem :label-width="100" label="开始时间" prop="plan_stime" style="width: 100%">
+            <FormItem :label-width="100" label="创建时间" prop="plan_stime" style="width: 100%">
               <Row>
 <!--                <DatePicker :options="optionsDate" :value="formValidate2.plan_stime"-->
 <!--                            @on-change="formValidate2.plan_stime=$event"-->
