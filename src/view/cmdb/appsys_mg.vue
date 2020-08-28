@@ -1002,7 +1002,7 @@
                 h('Button',
                   {
                     props: {
-                      type: 'info',
+                      type: 'primary',
                       size: 'small'
                     },
                     style: {
