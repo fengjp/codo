@@ -1,121 +1,165 @@
 <template>
   <div>
     <Card>
-      <Form autocomplete="off" label-colon=":" class="case-form" ref="formValidate2" :model="formValidate2">
+      <Form :model="formValidate2" autocomplete="off" class="case-form" label-colon=":" ref="formValidate2">
         <!--<a @click="changeShow()" v-text="btnText"></a>-->
-        <a class="ivu-ml-8" style="font-size: 14px;" @click="changeShow()" v-if="isShow">
-          收起
-          <Icon type="ios-arrow-up"/>
-        </a>
-        <a class="ivu-ml-8" style="font-size: 14px;" @click="changeShow()" v-else>
-          展开
-          <Icon type="ios-arrow-down"/>
-        </a>
-        <Row :gutter="1" type="flex" justify="start"
-             style="margin-top: -10px;margin-bottom: -25px">
+<!--        <a @click="changeShow()" class="ivu-ml-8" style="font-size: 14px;" v-if="isShow">-->
+<!--          收起-->
+<!--          <Icon type="ios-arrow-up"/>-->
+<!--        </a>-->
+<!--        <a @click="changeShow()" class="ivu-ml-8" style="font-size: 14px;" v-else>-->
+<!--          展开-->
+<!--          <Icon type="ios-arrow-down"/>-->
+<!--        </a>-->
+        <Row :gutter="1" justify="start" style="margin-top: -10px;margin-bottom: -25px"
+             type="flex">
           <Col span="6">
-            <FormItem label="个案" prop="case_name" :label-width="100">
+            <FormItem :label-width="100" label="个案" prop="case_name">
               <Input
-                v-model="formValidate2.case_name"
                 placeholder="请输入个案名称"
+                v-model="formValidate2.case_name"
               ></Input>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="类型" prop="case_type" :label-width="100">
+            <FormItem :label-width="100" label="类型" prop="case_type">
               <Select v-model="formValidate2.case_type">
-                <Option v-for="item in allTypeList" :value="item.v" :key="item.k">{{item.v}}</Option>
+                <Option :key="item.k" :value="item.v" v-for="item in allTypeList">{{item.v}}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="状态" prop="case_status" :label-width="100">
+            <FormItem :label-width="100" label="状态" prop="case_status">
               <Select v-model="formValidate2.case_status">
-                <Option v-for="item in allstatusList" :value="item.v" :key="item.k">{{item.v}}</Option>
+                <Option :key="item.k" :value="item.v" v-for="item in allstatusList">{{item.v}}</Option>
               </Select>
             </FormItem>
           </Col>
-          <Col span="6">
-            <FormItem label="项目" prop="case_obj" :label-width="100">
-              <Select v-model="formValidate2.case_obj" placeholder="项目">
-                <Option v-for="item in allobjecList" :value="item.v" :key="item.k">{{item.v}}</Option>
+          <Col span="6" v-show="isShow">
+            <FormItem :label-width="100" label="项目" prop="case_obj">
+              <Select placeholder="项目" v-model="formValidate2.case_obj">
+                <Option :key="item.k" :value="item.v" v-for="item in allobjecList">{{item.v}}</Option>
               </Select>
             </FormItem>
+          </Col>
+          <Col span="6" style="text-align: right; margin-bottom: 5px" v-show ="!isShow">
+            <a @click="changeShow()" class="ivu-ml-8" style="font-size: 14px;" v-if="isShow">
+              收起
+              <Icon type="ios-arrow-up"/>
+            </a>
+            <a @click="changeShow()" class="ivu-ml-8" style="font-size: 14px;" v-else>
+              展开
+              <Icon type="ios-arrow-down"/>
+            </a>&nbsp;&nbsp;&nbsp;
+            <Button
+              @click="handleSearch" class="case-btn"
+              type="info"
+            >搜索
+            </Button>
+            <Button
+              @click="handleReset('formValidate2')" class="case-btn"
+            >重置
+            </Button>
           </Col>
         </Row>
         <Row :gutter="1" style="margin-top: 23px" v-show="isShow">
           <Col span="6">
-            <FormItem label="优先级" prop="case_priority" :label-width="100">
-              <Select v-model="formValidate2.case_priority" placeholder="优先级">
-                <Option v-for="item in allpriorityList" :value="item.v" :key="item.k">{{item.v}}
+            <FormItem :label-width="100" label="优先级" prop="case_priority">
+              <Select placeholder="优先级" v-model="formValidate2.case_priority">
+                <Option :key="item.k" :value="item.v" v-for="item in allpriorityList">{{item.v}}
                 </Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="来源" prop="case_source" :label-width="100">
-              <Select v-model="formValidate2.case_source" placeholder="来源">
-                <Option v-for="item in allsourceList" :value="item.v" :key="item.k">{{item.v}}</Option>
+            <FormItem :label-width="100" label="来源" prop="case_source">
+              <Select placeholder="来源" v-model="formValidate2.case_source">
+                <Option :key="item.k" :value="item.v" v-for="item in allsourceList">{{item.v}}</Option>
               </Select>
             </FormItem>
           </Col>
 
           <Col span="6">
-            <FormItem label="需求单位" prop="demand_unit" :label-width="100">
+            <FormItem :label-width="100" label="需求单位" prop="demand_unit">
               <Input
-                v-model="formValidate2.demand_unit"
                 placeholder="需求单位"
+                v-model="formValidate2.demand_unit"
               ></Input>
             </FormItem>
           </Col>
 
           <Col span="6">
-            <FormItem label="需求人" prop="demander" :label-width="100">
+            <FormItem :label-width="100" label="需求人" prop="demander">
               <Input
-                v-model="formValidate2.demander"
                 placeholder="需求人"
+                v-model="formValidate2.demander"
               ></Input>
             </FormItem>
           </Col>
         </Row>
-        <Row :gutter="1" v-show="isShow" style="margin-bottom: -25px">
+        <Row :gutter="1" style="margin-bottom: -25px" v-show="isShow">
           <Col span="6">
-            <FormItem label="详情描述" prop="case_details" :label-width="100">
+            <FormItem :label-width="100" label="详情描述" prop="case_details">
               <Input
-                v-model="formValidate2.case_details"
                 placeholder="详细描述"
+                v-model="formValidate2.case_details"
               ></Input>
             </FormItem>
           </Col>
           <Col span="6">
-            <FormItem label="处理人" prop="case_executor" :label-width="100">
+            <FormItem :label-width="100" label="处理人" prop="case_executor">
               <Input
-                v-model="formValidate2.case_executor"
-                placeholder="处理人"
                 :disabled="isDisable2"
+                placeholder="处理人"
+                v-model="formValidate2.case_executor"
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
-            <FormItem label="创建时间" prop="case_stime" :label-width="100" style="width: 100%">
+          <Col span="6">
+            <FormItem :label-width="100" label="创建时间" prop="case_stime" style="width: 100%">
               <Row>
-                <DatePicker
-                  style="width: 48%"
-                  type="datetime" format="yyyy-MM-dd"
-                  :value="formValidate2.case_stime" @on-change="formValidate2.case_stime=$event"
-                  placeholder="创建开始时间"
-                  :options="optionsDate">
-                </DatePicker>&nbsp;-&nbsp;
-                <DatePicker
-                  style="width: 48%"
-                  type="datetime" format="yyyy-MM-dd"
-                  :value="formValidate2.case_etime" @on-change="formValidate2.case_etime=$event"
-                  placeholder="创建结束时间"
-                  :options="optionsDate">
+<!--                <DatePicker-->
+<!--                  :options="optionsDate"-->
+<!--                  :value="formValidate2.case_stime" @on-change="formValidate2.case_stime=$event"-->
+<!--                  format="yyyy-MM-dd" placeholder="创建开始时间"-->
+<!--                  style="width: 46%"-->
+<!--                  type="datetime">-->
+<!--                </DatePicker>&nbsp;-&nbsp;-->
+<!--                <DatePicker-->
+<!--                  :options="optionsDate"-->
+<!--                  :value="formValidate2.case_etime" @on-change="formValidate2.case_etime=$event"-->
+<!--                  format="yyyy-MM-dd" placeholder="创建结束时间"-->
+<!--                  style="width: 46%"-->
+<!--                  type="datetime">-->
 
+<!--                </DatePicker>-->
+                <DatePicker :options="options2" :value="todate2" @on-change="todate2=$event"
+                      confirm placeholder="请选择开始与结束日期"
+                      placement="bottom-end"
+                      style="width: 230px"
+                      type="daterange">
                 </DatePicker>
               </Row>
             </FormItem>
+          </Col>
+          <Col span="6" style="text-align: right; margin-bottom: 5px">
+            <a @click="changeShow()" class="ivu-ml-8" style="font-size: 14px;" v-if="isShow">
+              收起
+              <Icon type="ios-arrow-up"/>
+            </a>
+            <a @click="changeShow()" class="ivu-ml-8" style="font-size: 14px;" v-else>
+              展开
+              <Icon type="ios-arrow-down"/>
+            </a>&nbsp;&nbsp;&nbsp;
+            <Button
+              @click="handleSearch" class="case-btn"
+              type="info"
+            >搜索
+            </Button>
+            <Button
+              @click="handleReset('formValidate2')" class="case-btn"
+            >重置
+            </Button>
           </Col>
           <!--          <Col span="6" style = "">-->
           <!--            <FormItem label="创建结束时间" prop="case_etime" :label-width="100">-->
@@ -132,110 +176,110 @@
     </Card>
     <Card style="margin-top: 5px">
       <div style="width: 100%">
-      <Row>
-        <Col span="24"  style="text-align: right; margin-bottom: 5px">
-          <Button
-            @click="handleSearch" class="case-btn"
-            type="info"
-          >搜索
-          </Button>
-          <Button
-            @click="handleReset('formValidate2')" class="case-btn"
-          >重置
-          </Button>
-          <slot name="new_btn">
-            <Button
-              type="primary"
-              @click="editModal('', 'post', '新建个案')" class="case-btn"
-            >新建个案
+        <Row>
+          <Col style="text-align: right; margin-bottom: 5px">
+<!--            <Button-->
+<!--              @click="handleSearch" class="case-btn"-->
+<!--              type="info"-->
+<!--            >搜索-->
+<!--            </Button>-->
+<!--            <Button-->
+<!--              @click="handleReset('formValidate2')" class="case-btn"-->
+<!--            >重置-->
+<!--            </Button>-->
+            <slot name="new_btn">
+              <Button
+                @click="editModal('', 'post', '新建个案')"
+                class="case-btn" type="primary"
+              >新建个案
+              </Button>
+            </slot>
+            <Button @click="exportDateALL()" class="case-btn" type="success">
+              <Icon type="ios-download-outline"></Icon>
+              导出数据
             </Button>
-          </slot>
-          <Button type="success" @click="exportDateALL()" class="case-btn">
-            <Icon type="ios-download-outline"></Icon>
-            导出数据
-          </Button>
-          <Button
-            type="primary"
-            @click="editModaltable()"
-          >生成报表
-          </Button>
-        </Col>
-      </Row>
-        </div>
+            <Button
+              @click="editModaltable()"
+              type="primary"
+            >生成报表
+            </Button>
+          </Col>
+        </Row>
+      </div>
       <Table
-        id="table"
-        size="small"
-        ref="selection"
         :columns="columns"
         :data="tableData"
+        id="table"
+        ref="selection"
+        size="small"
       ></Table>
-      <Modal v-model="modalTable.tableVisible" :loading=true :footer-hide=true :title="modalTable.tablelTitle">
+      <Modal :footer-hide=true :loading=true :title="modalTable.tablelTitle" v-model="modalTable.tableVisible">
         <div style="padding: 10px; text-align:center;">
           <!--<DatePicker type="datetime" :value="valueDate" @on-change="handleChange"-->
           <!--:options="optionsDate" placeholder="选择执行时间" show-week-numbers confirm style="width: 220px">-->
           <!--</DatePicker>-->
-          <DatePicker type="daterange" :options="options2" confirm
-                      placement="bottom-end" placeholder="请选择开始与结束日期"
-                      :value="todate"
-                      @on-change="todate=$event"
-                      style="width: 230px">
+          <DatePicker :options="options2" :value="todate" @on-change="todate=$event"
+                      confirm placeholder="请选择开始与结束日期"
+                      placement="bottom-end"
+                      style="width: 230px"
+                      type="daterange">
           </DatePicker>
-          <Button type="success" style="marginRight: 2px; marginLeft: 50px" @click="handleSubmitTable()">生成报表
+          <Button @click="handleSubmitTable()" style="marginRight: 2px; marginLeft: 50px" type="success">生成报表
           </Button>
           <a :href=surl><span id="surl"></span></a>
         </div>
       </Modal>
 
       <Modal
-        v-model="modalMap.modalVisible"
-        :title="modalMap.modalTitle"
-        :loading=true
         :footer-hide=true
+        :loading=true
+        :title="modalMap.modalTitle"
+        v-model="modalMap.modalVisible"
         width="680"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
-        <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
+        <Form :inline="true" :label-width="69" :model="formValidate" :rules="ruleValidate" ref="formValidate">
           <Card style="width:100%">
             <div v-if="editModalData && editModalData == 'put'">
               <FormItem label="个案" prop="case_name" style="width:350px;margin-right:20px">
                 <Input
-                  v-model="formValidate.case_name"
-                  disabled
                   :maxlength="45"
+                  disabled
                   placeholder="请输入个案名称"
+                  v-model="formValidate.case_name"
                 ></Input>
               </FormItem>
             </div>
             <div v-else>
               <FormItem label="个案" prop="case_name" style="width:350px;margin-right:20px">
                 <Input
-                  v-model="formValidate.case_name"
                   :maxlength="45"
                   placeholder="请输入个案名称"
+                  v-model="formValidate.case_name"
                 ></Input>
               </FormItem>
             </div>
             <Row :gutter="10" style="margin-bottom: 5px">
               <Col span="6">
                 <FormItem label="类型" prop="case_type" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_type" placeholder="类型">
-                    <Option v-for="item in allTypeList" :value="item.v" :key="item.k">{{item.v}}
+                  <Select placeholder="类型" v-model="formValidate.case_type">
+                    <Option :key="item.k" :value="item.v" v-for="item in allTypeList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
               <Col span="6">
                 <FormItem label="状态" prop="case_status" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_status" placeholder="状态">
-                    <Option v-for="item in allstatusList" :value="item.v" :key="item.k">{{item.v}}
+                  <Select placeholder="状态" v-model="formValidate.case_status">
+                    <Option :key="item.k" :value="item.v" v-for="item in allstatusList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
               <Col span="6">
                 <FormItem label="项目" prop="case_obj" style="width:220px;margin-right:30px">
-                  <Select v-model="formValidate.case_obj" placeholder="项目">
-                    <Option v-for="item in allobjecList" :value="item.v" :key="item.k">{{item.v}}
+                  <Select placeholder="项目" v-model="formValidate.case_obj">
+                    <Option :key="item.k" :value="item.v" v-for="item in allobjecList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
@@ -244,16 +288,16 @@
             <Row :gutter="10" style="margin-bottom: 5px">
               <Col span="6">
                 <FormItem label="优先级" prop="case_priority" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_priority" placeholder="优先级">
-                    <Option v-for="item in allpriorityList" :value="item.v" :key="item.k">{{item.v}}
+                  <Select placeholder="优先级" v-model="formValidate.case_priority">
+                    <Option :key="item.k" :value="item.v" v-for="item in allpriorityList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
               <Col span="6">
                 <FormItem label="来源" prop="case_source" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_source" placeholder="来源">
-                    <Option v-for="item in allsourceList" :value="item.v" :key="item.k">{{item.v}}
+                  <Select placeholder="来源" v-model="formValidate.case_source">
+                    <Option :key="item.k" :value="item.v" v-for="item in allsourceList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
@@ -264,9 +308,9 @@
                   prop="case_creator" style="width:220px;margin-right:30px"
                 >
                   <Input
-                    v-model="formValidate.case_creator"
                     disabled
                     placeholder="新建人"
+                    v-model="formValidate.case_creator"
                   ></Input>
                 </FormItem>
               </Col>
@@ -274,8 +318,8 @@
             <Row :gutter="10" style="margin-bottom: 5px">
               <Col span="6">
                 <FormItem label="处理人" prop="case_executor" style="width:150px;margin-right:30px">
-                  <Select v-model="formValidate.case_executor" placeholder="处理人，接手人，参与人">
-                    <Option v-for="item in allNameList" :value="item.nickname" :key="item.user_id">{{ item.nickname }}
+                  <Select placeholder="处理人，接手人，参与人" v-model="formValidate.case_executor">
+                    <Option :key="item.user_id" :value="item.nickname" v-for="item in allNameList">{{ item.nickname }}
                     </Option>
                   </Select>
                 </FormItem>
@@ -286,10 +330,10 @@
                   prop="demand_unit" style="width:220px;margin-left:15px"
                 >
                   <Input
-                    v-model="formValidate.demand_unit"
                     :autosize="{minRows: 2,maxRows: 5}"
                     :maxlength="200"
                     placeholder="需求单位"
+                    v-model="formValidate.demand_unit"
                   ></Input>
                 </FormItem>
               </Col>
@@ -299,9 +343,9 @@
                   prop="demander" style="width:140px;margin-left:80px"
                 >
                   <Input
-                    v-model="formValidate.demander"
                     :maxlength="200"
                     placeholder="需求人"
+                    v-model="formValidate.demander"
                   ></Input>
                 </FormItem>
               </Col>
@@ -313,11 +357,11 @@
                   label="开始时间"
                   prop="case_stime" style="width:240px;margin-right:50px"
                 >
-                  <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
+                  <DatePicker :clearable="false" :options="optionsDate"
                               :value="formValidate.case_stime" @on-change="changestime"
+                              format="yyyy-MM-dd HH:mm:ss"
                               placeholder="记录开始时间"
-                              :clearable="false"
-                              :options="optionsDate">
+                              type="datetime">
 
                   </DatePicker>
                 </FormItem>
@@ -327,10 +371,10 @@
                   label="结束时间"
                   prop="case_etime" style="width:240px;margin-right:50px"
                 >
-                  <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss"
-                              :value="formValidate.case_etime" @on-change="changeetime"
+                  <DatePicker :options="optionsDate" :value="formValidate.case_etime"
+                              @on-change="changeetime" format="yyyy-MM-dd HH:mm:ss"
                               placeholder="记录结束时间"
-                              :options="optionsDate">
+                              type="datetime">
 
                   </DatePicker>
                 </FormItem>
@@ -362,18 +406,18 @@
                 prop="case_details" style="width:500px;margin-right:500px"
               >
                 <Input
-                  v-model="formValidate.case_details"
-                  type="textarea"
                   :rows="4"
                   placeholder="详细描述"
+                  type="textarea"
+                  v-model="formValidate.case_details"
                 ></Input>
               </FormItem>
             </div>
             <FormItem>
               <Button
-                type="primary"
-                @click="handleSubmit('formValidate')"
                 :disabled="isDisable"
+                @click="handleSubmit('formValidate')"
+                type="primary"
               >提交
               </Button>
               <Button
@@ -387,9 +431,10 @@
       </Modal>
       <div style="margin: 10px;overflow: hidden">
         <div style="float: left;">
-          <Page :total="pageTotal" :current="pageNum" :page-size="pageSize"
+          <Page :current="pageNum" :page-size="pageSize"
                 :page-size-opts=[10,15,25,35,50,100,150,200,300,500,800,1000,1500]
-                show-sizer show-total @on-change="changePage" @on-page-size-change="handlePageSize"></Page>
+                :total="pageTotal"
+                @on-change="changePage" @on-page-size-change="handlePageSize" show-sizer show-total></Page>
         </div>
       </div>
     </Card>
@@ -504,6 +549,7 @@
           case_creator: ''
         },
         todate: [],
+        todate2: [],
         ruleValidate: {
           case_name: [
             {
@@ -596,7 +642,7 @@
             title: '个案',
             key: 'case_name',
             align: 'center',
-            width: 150,
+            width: 200,
             render: (h, params) => {
               // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
               return h('a', {
@@ -609,13 +655,13 @@
               )
             }
           },
-          {title: '类型', key: 'case_type', align: 'center'},
-          {title: '状态', key: 'case_status', align: 'center'},
-          {title: '项目', key: 'case_obj', align: 'center'},
-          {title: '优先级', key: 'case_priority', align: 'center'},
-          {title: '新建人', key: 'case_creator', align: 'center'},
-          {title: '需求人', key: 'demander', align: 'center'},
-          {title: '处理人', key: 'case_executor', align: 'center'},
+          {title: '类型', key: 'case_type', align: 'center', width: 100,},
+          {title: '状态', key: 'case_status', align: 'center', width: 100,},
+          {title: '项目', key: 'case_obj', align: 'center', width: 150,},
+          {title: '优先级', key: 'case_priority', align: 'center', width: 100,},
+          {title: '新建人', key: 'case_creator', align: 'center', width: 100,},
+          {title: '需求人', key: 'demander', align: 'center', width: 100,},
+          {title: '处理人', key: 'case_executor', align: 'center', width: 100,},
           {
             title: '描述',
             key: 'case_details',
@@ -639,12 +685,13 @@
               ])
             }
           },
-          {title: '开始时间', key: 'case_stime', width: 100, align: 'center'},
-          {title: '结束时间', key: 'case_etime', width: 100, align: 'center'},
+          {title: '开始时间', key: 'case_stime', width: 100, align: 'center', width: 150,},
+          {title: '结束时间', key: 'case_etime', width: 100, align: 'center', width: 150,},
           {
             title: '操作',
             key: 'handle',
             align: 'center',
+            width: 150,
             render: (h, params) => {
               return h('div', [
                 h(
@@ -975,6 +1022,12 @@
         if (e.target.value === '') this.tableData = this.value
       },
       handleSearch() {
+        if (this.todate2.length) {
+          if (this.todate2[0].length) {
+            this.formValidate2.case_stime = this.todate2[0]
+            this.formValidate2.case_etime = this.todate2[1]
+          }
+        }
         this.tovalue = this.formValidate2
         this.getCaseList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
       },
