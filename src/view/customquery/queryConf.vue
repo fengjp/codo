@@ -21,7 +21,7 @@
       </div>
     </Card>
 
-    <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="540"
+    <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="600"
            :mask-closable=false :styles="{top: '20px'}">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100" inline>
         <!--<alert>温馨提示：xxx</alert>-->
@@ -118,7 +118,7 @@
             </Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem>
+        <FormItem style="display: block">
           <Button type="primary" @click="handleSubmitQuery('formValidate')">提交</Button>
           <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
         </FormItem>
@@ -418,6 +418,9 @@
       handleColRemove(val, index, subColIndex) {
         // console.log(index)
         if (val === 'subColList') {
+          if (this.formValidate.colalarms[index].subColList.length === 1) {
+            return
+          }
           this.formValidate.colalarms[index].subColList.splice(subColIndex, 1)
         }
         if (val === 'colalarms') {
@@ -437,6 +440,9 @@
               return
             } else {
               this.message = ''
+            }
+            if (!this.isAlarm) {
+              this.formValidate.colalarms = []
             }
             setTimeout(() => {
               // console.log(this.formValidate)
@@ -522,8 +528,24 @@
       },
     },
     watch: {
-      value(val) {
-        this.handleSearch()
+      isAlarm: function () {
+        if (this.isAlarm) {
+          // console.log(this.formValidate)
+          if (this.formValidate.colalarms.length === 0) {
+            this.formValidate.colalarms = [
+              {
+                selCol: '',
+                subColList: [
+                  {
+                    sign: '>',
+                    alarmVal: 0,
+                    alarmType: '正常'
+                  }
+                ],
+              }
+            ]
+          }
+        }
       }
     },
     mounted() {

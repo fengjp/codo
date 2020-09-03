@@ -205,7 +205,7 @@
         let l5 = []
         for (let i in queryObjList) {
           let _count = queryObjList[i].count
-          if (Object.keys(_count).length > 0) {
+          if (_count && Object.keys(_count).length > 0) {
             for (let j in _count) {
               if (j === '致命') {
                 l1.push(queryObjList[i])
