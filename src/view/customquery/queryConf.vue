@@ -108,7 +108,7 @@
           <RadioGroup v-model="formValidate.timesTy" vertical>
             <Radio label="timesTy1">
               <span style="margin-right: 15px;">每隔分钟数</span>
-              <InputNumber :max="60" :min="1" v-if="formValidate.timesTy==='timesTy1'"
+              <InputNumber :max="360" :min="1" v-if="formValidate.timesTy==='timesTy1'"
                            v-model="formValidate.timesTy1Val" size="small"></InputNumber>
             </Radio>
             <Radio label="timesTy2">

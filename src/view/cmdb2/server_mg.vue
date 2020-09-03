@@ -365,26 +365,26 @@
             align: 'center',
             render: (h, params) => {
               return h('div', [
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'success',
-                      size: 'small'
-                      // loading: this.SSHloading
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.webTerminnal(params, 'server')
-                        // window.open('/terminal/?id=' + params.row.id)
-                      }
-                    }
-                  },
-                  'SSH'
-                ),
+                // h(
+                //   'Button',
+                //   {
+                //     props: {
+                //       type: 'success',
+                //       size: 'small'
+                //       // loading: this.SSHloading
+                //     },
+                //     style: {
+                //       marginRight: '5px'
+                //     },
+                //     on: {
+                //       click: () => {
+                //         this.webTerminnal(params, 'server')
+                //         // window.open('/terminal/?id=' + params.row.id)
+                //       }
+                //     }
+                //   },
+                //   'SSH'
+                // ),
                 h(
                   'Button',
                   {

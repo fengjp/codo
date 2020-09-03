@@ -1,7 +1,7 @@
 <template>
   <div>
     <center> 
-     Copyright © 2019 运维系统
+     Copyright © 2020 IT运维管理系统
     </center>
   </div>
 </template>

@@ -202,9 +202,10 @@
         let l2 = []
         let l3 = []
         let l4 = []
+        let l5 = []
         for (let i in queryObjList) {
           let _count = queryObjList[i].count
-          if (_count) {
+          if (Object.keys(_count).length > 0) {
             for (let j in _count) {
               if (j === '致命') {
                 l1.push(queryObjList[i])
@@ -218,15 +219,19 @@
               } else if (j === '正常') {
                 l4.push(queryObjList[i])
                 break
+              } else {
+                l5.push(queryObjList[i])
+                break
               }
             }
           } else {
-            l4.push(queryObjList[i])
+            l5.push(queryObjList[i])
           }
         }
         l1.push(...l2)
         l1.push(...l3)
         l1.push(...l4)
+        l1.push(...l5)
         // console.log(queryObjList)
         // console.log(l1)
         let new_tList = []
