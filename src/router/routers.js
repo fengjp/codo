@@ -101,6 +101,16 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/user-manage/stakeholder.vue')
+      },
+      {
+        path: 'company',
+        name: 'company',
+        meta: {
+          icon: 'ios-people',
+          title: '单位列表'
+        },
+        component: () =>
+          import ('@/view/user-manage/company.vue')
       }
     ]
   },

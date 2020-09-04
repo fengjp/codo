@@ -64,11 +64,11 @@
         :title="modalMap.modalTitle"
         :loading=true
         :footer-hide=true
-        width="680"
+        width="525"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
-          <Card style="width:100%">
+
             <div v-if="editModalData && editModalData == 'put'">
               <FormItem label="脚本名" prop="name" style="width:350px;margin-right:20px">
                 <Input
@@ -125,7 +125,7 @@
               >重置
               </Button>
             </FormItem>
-          </Card>
+
         </Form>
       </Modal>
       <Modal

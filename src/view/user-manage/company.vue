@@ -1,7 +1,15 @@
 <template>
   <div style="height:100%">
-    <Card  style="margin-top: 20px;">
-       <p slot="title" >干系人列表</p>
+    <Card>
+      <p slot="title" >单位列表</p>
+<!--      <tables ref="tables" editable searchable search-place="top" v-model="tableData" :columns="columns"-->
+<!--              @on-delete="handleDelete" @on-save-edit="handleInput"-->
+<!--              @on-search-table="handleSearchTable"-->
+<!--              @on-selection-change="handleSelectChange">-->
+<!--        <div slot="new_btn" class="search-con search-col">-->
+<!--          <Button type="info" class="search-btn" @click="editModal('', 'post', '新建单位')">新建单位</Button>-->
+<!--        </div>-->
+<!--      </tables>-->
       <div  slot="extra">
         <Row>
         <Select v-model="searchKey" class="search-col"  style="width:150px;margin-right:5px">
@@ -9,8 +17,7 @@
         </Select>
           <Input @on-change="handleClear"  clearable placeholder="输入关键字搜索"  v-model="searchValue" style="width:150px;margin-right:5px"/>
       <Button @click="handleSearch" class="search-btn" type="primary" style="margin-right:5px">搜索</Button>
-       <Button type="info" class="search-btn" @click="editModal('', 'post', '新增干系人')" style="margin-right:5px">新建干系人</Button>
-          <Button type="info"  @click="editModal2" style="margin-right:5px">批量新建干系人</Button>
+       <Button type="info" class="search-btn" @click="editModal('', 'post', '新增单位')" style="margin-right:5px">新建单位</Button>
         </Row>
     </div>
       <Table
@@ -27,17 +34,15 @@
       </div>
     </Card>
     <Card  style="margin-top: 20px;">
-      <p slot="title" >个案列表</p>
+      <p slot="title" >干系人列表</p>
       <Table
         :columns="columns2"
         :data="tableData2"
+        id="table"
         ref="selection"
         size="small"
       ></Table>
     </Card>
-<!--    <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true>-->
-<!--      <form-group :list="formList" @on-submit-success="handleSubmit"></form-group>-->
-<!--    </Modal>-->
      <Modal
         v-model="modalMap.modalVisible"
         :title="modalMap.modalTitle"
@@ -48,46 +53,48 @@
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
           <div v-if="editModalData && editModalData == 'put'">
-              <FormItem label="用户名" prop="username" style="width:350px;">
+              <FormItem label="单位名" prop="company" style="width:350px;">
                 <Input
-                  v-model="formValidate.username"
+                  v-model="formValidate.company"
                   disabled
                   :maxlength="45"
-                  placeholder="请输入用户名"
+                  placeholder="请输入单位名"
                 ></Input>
               </FormItem>
             </div>
             <div v-else>
-              <FormItem label="用户名" prop="username" style="width:350px;">
+              <FormItem label="单位名" prop="company" style="width:350px;">
                 <Input
-                  v-model="formValidate.username"
+                  v-model="formValidate.company"
                   :maxlength="45"
-                  placeholder="请输入用户名"
+                  placeholder="请输入单位名"
                 ></Input>
               </FormItem>
             </div>
-          <FormItem label="单位" prop="company"  style="width:350px;">
-              <Select v-model="formValidate.company" placeholder="单位">
-                <Option v-for="item in allcompanyList" :value="item.v" :key="item.k">{{item.v}}</Option>
-              </Select>
-            </FormItem>
-          <FormItem label="部门" prop="department"  style="width:350px;">
-              <Select v-model="formValidate.department" placeholder="部门">
-                <Option v-for="item in alldepartmentList" :value="item.v" :key="item.k">{{item.v}}</Option>
-              </Select>
-            </FormItem>
-          <FormItem label="职位" prop="position" style="width:350px;">
-                <Input
-                  v-model="formValidate.position"
+<!--          <FormItem label="单位" prop="company"  style="width:350px;">-->
+<!--              <Select v-model="formValidate.company" placeholder="单位">-->
+<!--                <Option v-for="item in allcompanyList" :value="item.v" :key="item.k">{{item.v}}</Option>-->
+<!--              </Select>-->
+<!--            </FormItem>-->
+          <FormItem label="单位地址" prop="addr"  style="width:350px;">
+             <Input
+                  v-model="formValidate.addr"
                   :maxlength="45"
-                  placeholder="请输入职位"
+                  placeholder="请输入单位地址"
+                ></Input>
+            </FormItem>
+          <FormItem label="法人" prop="bossname" style="width:350px;">
+                <Input
+                  v-model="formValidate.bossname"
+                  :maxlength="45"
+                  placeholder="请输入法人姓名"
                 ></Input>
               </FormItem>
-          <FormItem label="职责范围" prop="duty" style="width:350px;">
+          <FormItem label="经营范围" prop="duty" style="width:350px;">
                 <Input
                   v-model="formValidate.duty"
                   :maxlength="45"
-                  placeholder="请输入职责范围"
+                  placeholder="请输入经营范围"
                 ></Input>
               </FormItem>
             <FormItem label="电话" prop="tel" style="width:350px;">
@@ -97,11 +104,11 @@
                   placeholder="请输入联系方式"
                 ></Input>
               </FormItem>
-            <FormItem label="地址" prop="addr" style="width:350px;">
+            <FormItem label="单位网址" prop="website" style="width:350px;">
                 <Input
-                  v-model="formValidate.addr"
+                  v-model="formValidate.website"
                   :maxlength="45"
-                  placeholder="请输入地址"
+                  placeholder="请输入网址"
                 ></Input>
               </FormItem>
             <FormItem label="邮箱" prop="email" style="width:350px;">
@@ -133,33 +140,6 @@
             </FormItem>
         </Form>
       </Modal>
-    <Modal
-        v-model="modalMap2.modalVisible"
-        :title="modalMap2.modalTitle"
-        :loading=true
-        :footer-hide=true
-        width="30%"
-      >
-      <div>
-        <Row>
-          <Col style="text-align: right;">
-            <Button @click="geturl()"  type="success">下载模板文件</Button>
-          </Col >
-        </Row>
-          <a :href=surl><span id="surl"></span></a>
-      </div>
-      <Upload
-        type="drag"
-        :action=UploadUrl
-        :on-success="handleSuccess"
-        :on-error="handleError"
-      >
-        <div style="padding: 20px 0">
-            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-            <p>请选择或拖拽一个文件上传</p>
-        </div>
-    </Upload>
-    </Modal>
   </div>
 </template>
 
@@ -167,14 +147,12 @@
 import Tables from '_c/tables'
 import FormGroup from '_c/form-group'
 import {
-  getStakeholderList,
+  getCompany,
   getList,
-  newStakeholder,
-  delStakeholder,
-  updateStakeholder,
-  UploadUrl,
-  geturl
-} from '@/api/stakeholder'
+  newCompany,
+  delCompany,
+  updateCompany
+} from '@/api/companylist'
 import { getDictConfList } from '@/api/app'
 
 export default {
@@ -187,39 +165,30 @@ export default {
       // 弹出框
       modalMap: {
         modalVisible: false,
-        modalTitle: '创建干系人'
-      },
-      modalMap2: {
-        modalVisible: false,
-        modalTitle: '批量创建干系人'
+        modalTitle: '创建单位'
       },
       isDisable: false,
       editModalData: '',
       tokey: '',
       tovalue: '',
-      searchValue: '',
-      searchKey: '用户名',
-      UploadUrl: '',
-      surl:'',
       formValidate: {
         id: 0,
-        username: '',
         company: "",
-        department: '',
-        position: '',
-        tel: '',
-        duty: '',
         addr:'',
+        bossname: '',
+        duty: '',
+        tel: '',
+        website: '',
+        email: '',
         remarks:'',
-        email: ''
       },
       allcompanyList: [],
       alldepartmentList: [],
       ruleValidate: {
-        username: [
+        bossname: [
           {
             required: true,
-            message: '请输入用户名',
+            message: '请输入法人名',
             trigger: 'blur'
           }
         ],
@@ -231,65 +200,9 @@ export default {
           }
         ]
       },
-      // // 渲染form数据
-      // formList: [
-      //   {
-      //     name: 'username',
-      //     type: 'i-input',
-      //     value: '',
-      //     label: '用户名',
-      //     placeholder: '英文字母',
-      //     rule: [
-      //       { required: true, message: '用户名不能为空', trigger: 'blur' }
-      //     ]
-      //   },
-      //   {
-      //     name: 'nickname',
-      //     type: 'i-input',
-      //     value: '',
-      //     label: '昵称',
-      //     placeholder: '中文',
-      //     rule: [
-      //       { required: true, message: '昵称不能为空', trigger: 'blur' }
-      //     ]
-      //   },
-      //   {
-      //     name: 'company',
-      //     type: 'i-input',
-      //     value: '',
-      //     label: '单位',
-      //     rule: [
-      //       { required: true, message: '单位名称不能为空', trigger: 'blur' }
-      //     ]
-      //   },
-      //   {
-      //     name: 'department',
-      //     type: 'i-input',
-      //     value: '',
-      //     label: '部门'
-      //   },
-      //   {
-      //     name: 'wechat',
-      //     type: 'i-input',
-      //     value: '',
-      //     label: '微信号码'
-      //   },
-      //   {
-      //     name: 'tel',
-      //     type: 'i-input',
-      //     value: '',
-      //     label: '手机号码'
-      //   },
-      //   {
-      //     name: 'email',
-      //     type: 'i-input',
-      //     value: '',
-      //     label: '邮箱'
-      //   }
-      // ],
       columns: [
-        // { type: 'selection', title: '', key: '', width: 60, align: 'center' },
-        { title: '用户名', key: 'username', sortable: true,render: (h, params) => {
+        { type: 'selection', title: '', key: '', width: 60, align: 'center'},
+        { title: '单位名', key: 'company', sortable: true ,render: (h, params) => {
               // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
               return h('a', {
                   on: {
@@ -297,15 +210,14 @@ export default {
                       this.handleDetail(params)
                     }
                   }
-                }, params.row.username
+                }, params.row.company
               )
-            } },
-        { title: '单位', key: 'company', sortable: true },
-        { title: '部门', key: 'department', editable: true },
-        { title: '职位', key: 'position', editable: true },
-        { title: '职责范围', key: 'duty', editable: true },
+            }},
+        { title: '单位地址', key: 'addr', editable: true },
+        { title: '法人', key: 'bossname', editable: true },
+        { title: '经营范围', key: 'duty', editable: true },
         { title: '电话', key: 'tel', editable: true },
-        { title: '地址', key: 'addr', editable: true },
+        { title: '单位网址', key: 'website', editable: true },
         { title: '邮箱', key: 'email', editable: true },
          { title: '备注', key: 'remarks', sortable: true },
         {
@@ -315,7 +227,7 @@ export default {
           key: 'handle',
           // options: ["delete"],
          render:
-            (h, params) => {
+           (h, params) => {
               return h('div', [
                 h(
                   'Button',
@@ -329,7 +241,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.editModal(params.row, 'put', '编辑干系人')
+                        this.editModal(params.row, 'put', '编辑单位')
                       }
                     }
                   },
@@ -349,47 +261,20 @@ export default {
                     }
                   },
                   '删除'
-                )
-              ])
+                )])
             }
-
         }
       ],
       columns2: [
-          {title: '个案', key: 'case_name', align: 'center', width: 200,},
-          {title: '类型', key: 'case_type', align: 'center', width: 100,},
-          {title: '状态', key: 'case_status', align: 'center', width: 100,},
-          {title: '项目', key: 'case_obj', align: 'center', width: 150,},
-          {title: '开始时间', key: 'case_stime',  align: 'center', width: 150,},
-          {title: '结束时间', key: 'case_etime',  align: 'center', width: 150,},
-          {title: '处理人', key: 'case_executor', align: 'center', width: 100,},
-          {title: '优先级', key: 'case_priority', align: 'center', width: 100,},
-          {title: '新建人', key: 'case_creator', align: 'center', width: 100,},
-          {title: '需求人', key: 'demander', align: 'center', width: 100,},
-         {title: '需求单位', key: 'demand_unit', align: 'center', width: 100,},
-           {
-            title: '描述',
-            key: 'case_details',
-            width: 205,
-            align: 'center',
-            render: (h, params) => {
-              let roleTitle = params.row.case_details
-              return h('div', [
-                h('span', {
-                  style: {
-                    display: 'inline-block',
-                    width: '100%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  },
-                  domProps: {
-                    title: roleTitle
-                  }
-                }, roleTitle)
-              ])
-            }
-          },
+        { title: '用户名', key: 'username', sortable: true },
+        { title: '单位', key: 'company', sortable: true },
+        { title: '部门', key: 'department', editable: true },
+        { title: '职位', key: 'position', editable: true },
+        { title: '职责范围', key: 'duty', editable: true },
+        { title: '电话', key: 'tel', editable: true },
+        { title: '地址', key: 'addr', editable: true },
+        { title: '邮箱', key: 'email', editable: true },
+        { title: '备注', key: 'remarks', sortable: true },
         ],
       // 搜索数据
       searchKey: '',
@@ -405,42 +290,7 @@ export default {
     }
   },
   methods: {
-    handleSuccess (res, file) {
-          console.log(file)
-          this.getStakeholderList(this.pageNum, this.pageSize)
-          this.modalMap2.modalVisible = false
-          this.$Message.success("文件上传成功")
-             },
-    handleError (error) {
-                console.log(error)
-                this.modalMap2.modalVisible = false
-                this.$Message.success("文件上传失败")
-             },
-      geturl () {
-        geturl().then(res => {
-        if (res.data.code === 0) {
-          this.$Message.success(`${res.data.msg}`)
-          this.surl = res.data.data
-          setTimeout(() => {
-              document.getElementById('surl').click()
-            }, 1000)
-        } else {
-          this.$Message.error(`${res.data.msg}`)
-        }
-      })
-    },
-    // 获取个案列表
-    getList (key,value) {
-      getList(key,value).then(res => {
-        if (res.data.code === 0) {
-          this.$Message.success(`${res.data.msg}`)
-          // this.pageTotal = res.data.count
-          this.tableData2 = res.data.data
-        } else {
-          this.$Message.error(`${res.data.msg}`)
-        }
-      })
-    },
+
      getDictConfList () {
       getDictConfList().then(res => {
         if (res.data.code === 0) {
@@ -461,10 +311,6 @@ export default {
         }
       })
     },
-    editModal2 () {
-      this.modalMap2.modalVisible = true
-      this.modalMap2.modalTitle = '上传文件'
-    },
     editModal (paramsRow, meth, mtitle) {
       this.modalMap.modalVisible = true
       this.modalMap.modalTitle = mtitle
@@ -473,62 +319,63 @@ export default {
         // put
         this.formValidate = {
           id: paramsRow.id,
-          username: paramsRow.username,
-          department: paramsRow.department,
           company: paramsRow.company,
-          position:paramsRow.position,
+          addr: paramsRow.addr,
+          bossname: paramsRow.bossname,
           duty:paramsRow.duty,
           tel: paramsRow.tel,
-          addr: paramsRow.addr,
+          website: paramsRow.website,
           email: paramsRow.email,
           remarks:paramsRow.remarks
         }
       }else {
         // post
         this.formValidate = {
-          username: "",
-          department: "",
           company: "",
-          position:"",
+          addr: "",
+          bossname:"",
           duty:"",
           tel: "",
-          addr: "",
+          website:"",
           email: "",
           remarks:""
         }
       }
     },
     handleDelete (params) {
-      if (confirm(`确定要删除 ${params.row.username}`)) {
-        delStakeholder({id: params.row.id}).then(res => {
-          if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
-            this.getStakeholderList(this.pageNum, this.pageSize,this.tokey,this.tovalue)
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
+      if (confirm(`确定要删除 ${params.row.company}`)) {
+        delCompany({ id: params.row.id }).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+          this.getCompany(this.pageNum, this.pageSize,this.tokey,this.tovalue)
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
       }
+    },
+    handleSearch() {
+        this.getCompany(1, this.pageSize, this.searchKey, this.searchValue)
+      },
+    handleClear (e) {
+      // if (e.target.value === '') this.tableData = this.value
     },
     handleReset (name) {
       this.$refs[name].resetFields()
     },
     changePage (value) {
       this.pageNum = value
-      this.getStakeholderList(
+      this.getCompany(
         this.pageNum,
         this.pageSize,
         this.searchKey,
         this.searchValue
       )
     },
-    handleSearch() {
-        this.getStakeholderList(1, this.pageSize, this.searchKey, this.searchValue)
-      },
     // 每页条数
     handlePageSize (value) {
       this.pageSize = value
-      this.getStakeholderList(1, this.pageSize, this.searchKey, this.searchValue)
+      this.getCompany(1, this.pageSize, this.searchKey, this.searchValue)
     },
     exportExcel () {
       this.$refs.tables.exportCsv({
@@ -539,7 +386,7 @@ export default {
       this.pageNum = 1
       this.searchKey = key
       this.searchValue = val
-      this.getStakeholderList(
+      this.getCompany(
         this.pageNum,
         this.pageSize,
         this.searchKey,
@@ -547,15 +394,25 @@ export default {
       )
     },
     // 获取用户列表
-    getStakeholderList (page, limit, key, value) {
-      getStakeholderList(page, limit, key, value).then(res => {
+    getCompany (page, limit, key, value) {
+      getCompany(page, limit, key, value).then(res => {
         if (res.data.code === 0) {
           this.$Message.success(`${res.data.msg}`)
           this.pageTotal = res.data.count
           this.tableData = res.data.data
-
         } else {
-          this.tableData = []
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+     // 获取用户列表
+    getList (data) {
+      getList(data).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+          // this.pageTotal = res.data.count
+          this.tableData2 = res.data.data
+        } else {
           this.$Message.error(`${res.data.msg}`)
         }
       })
@@ -568,12 +425,12 @@ export default {
           {this.$Message.error("请输入正确的手机号")}
           setTimeout(() => {
             if(this.editModalData == "post"){
-                  newStakeholder(this.formValidate).then(res => {
+                  newCompany(this.formValidate).then(res => {
                        const data = res.data
                        if (res.data.code === 0) {
                                this.$Message.info(`${data.msg}`)
                                // 重新获取数据
-                               this.getStakeholderList(this.pageNum, this.pageSize)
+                               this.getCompany(this.pageNum, this.pageSize)
                        } else {
                             this.$Message.error(`${data.msg}`)
                        }
@@ -582,12 +439,12 @@ export default {
                   })
             }
             if (this.editModalData == "put"){
-                  updateStakeholder(this.formValidate).then(res => {
+                  updateCompany(this.formValidate).then(res => {
                             const data = res.data
                             if (res.data.code === 0) {
                                     this.$Message.info(`${data.msg}`)
                                     // 重新获取数据
-                                    this.getStakeholderList(this.pageNum, this.pageSize)
+                                    this.getCompany(this.pageNum, this.pageSize)
                             } else {
                                     this.$Message.error(`${data.msg}`)
                             }
@@ -610,7 +467,7 @@ export default {
         key: editData.column.key,
         value: editData.value
       }
-      updateStakeholder(EditData).then(res => {
+      updateCompany(EditData).then(res => {
         if (res.data.code === 0) {
           this.$Message.success(`${res.data.msg}`)
         } else {
@@ -618,14 +475,9 @@ export default {
         }
       })
     },
-    handleClear (e) {
-      // if (e.target.value === '') this.tableData = this.value
-    },
     handleDetail(params) {
-
         console.log(params.row.company)
-        console.log(params.row.username)
-        this.getList(params.row.company,params.row.username)
+        this.getList(params.row.company)
       },
     handleSelectChange (val) {
       let userList = []
@@ -636,8 +488,7 @@ export default {
     }
   },
   mounted () {
-    this.UploadUrl = UploadUrl
-    this.getStakeholderList(this.pageNum, this.pageSize)
+    this.getCompany(this.pageNum, this.pageSize)
     this.getDictConfList()
   }
 }

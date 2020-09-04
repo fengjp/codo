@@ -236,8 +236,8 @@
         width="680"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
-        <Form :inline="true" :label-width="69" :model="formValidate" :rules="ruleValidate" ref="formValidate">
-          <Card style="width:100%">
+        <Form :inline="true" :label-width="80" :model="formValidate" :rules="ruleValidate" ref="formValidate">
+<!--          <Card style="width:100%">-->
             <div v-if="editModalData && editModalData == 'put'">
               <FormItem label="个案" prop="case_name" style="width:350px;margin-right:20px">
                 <Input
@@ -258,24 +258,24 @@
               </FormItem>
             </div>
             <Row :gutter="10" style="margin-bottom: 5px">
-              <Col span="6">
-                <FormItem label="类型" prop="case_type" style="width:150px;margin-right:30px">
+              <Col span="8">
+                <FormItem label="类型" prop="case_type" style="width:200px;">
                   <Select placeholder="类型" v-model="formValidate.case_type">
                     <Option :key="item.k" :value="item.v" v-for="item in allTypeList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
-              <Col span="6">
-                <FormItem label="状态" prop="case_status" style="width:150px;margin-right:30px">
+              <Col span="8">
+                <FormItem label="状态" prop="case_status" style="width:200px;">
                   <Select placeholder="状态" v-model="formValidate.case_status">
                     <Option :key="item.k" :value="item.v" v-for="item in allstatusList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
-              <Col span="6">
-                <FormItem label="项目" prop="case_obj" style="width:220px;margin-right:30px">
+              <Col span="8">
+                <FormItem label="项目" prop="case_obj" style="width:200px;">
                   <Select placeholder="项目" v-model="formValidate.case_obj">
                     <Option :key="item.k" :value="item.v" v-for="item in allobjecList">{{item.v}}
                     </Option>
@@ -284,26 +284,26 @@
               </Col>
             </Row>
             <Row :gutter="10" style="margin-bottom: 5px">
-              <Col span="6">
-                <FormItem label="优先级" prop="case_priority" style="width:150px;margin-right:30px">
+              <Col span="8">
+                <FormItem label="优先级" prop="case_priority" style="width:200px;">
                   <Select placeholder="优先级" v-model="formValidate.case_priority">
                     <Option :key="item.k" :value="item.v" v-for="item in allpriorityList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
-              <Col span="6">
-                <FormItem label="来源" prop="case_source" style="width:150px;margin-right:30px">
+              <Col span="8">
+                <FormItem label="来源" prop="case_source" style="width:200px;">
                   <Select placeholder="来源" v-model="formValidate.case_source">
                     <Option :key="item.k" :value="item.v" v-for="item in allsourceList">{{item.v}}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="8">
                 <FormItem
                   label="新建人"
-                  prop="case_creator" style="width:220px;margin-right:30px"
+                  prop="case_creator" style="width:200px;"
                 >
                   <Input
                     disabled
@@ -314,46 +314,40 @@
               </Col>
             </Row>
             <Row :gutter="10" style="margin-bottom: 5px">
-              <Col span="6">
-                <FormItem label="处理人" prop="case_executor" style="width:150px;margin-right:30px">
+              <Col span="8">
+                <FormItem label="处理人" prop="case_executor" style="width:200px;">
                   <Select placeholder="处理人，接手人，参与人" v-model="formValidate.case_executor">
                     <Option :key="item.user_id" :value="item.nickname" v-for="item in allNameList">{{ item.nickname }}
                     </Option>
                   </Select>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="8">
                 <FormItem
                   label="需求单位"
-                  prop="demand_unit" style="width:220px;margin-left:15px"
+                  prop="demand_unit" style="width:200px;"
                 >
                   <Input
-                    :autosize="{minRows: 2,maxRows: 5}"
-                    :maxlength="200"
                     placeholder="需求单位"
                     v-model="formValidate.demand_unit"
                   ></Input>
                 </FormItem>
               </Col>
-              <Col span="6">
-                <FormItem
-                  label="需求人"
-                  prop="demander" style="width:140px;margin-left:80px"
-                >
-                  <Input
-                    :maxlength="200"
-                    placeholder="需求人"
-                    v-model="formValidate.demander"
-                  ></Input>
+              <Col span="8">
+                <FormItem label="需求人" prop="demander" style="width:200px;">
+                  <Select placeholder="需求人" v-model="formValidate.demander"  @on-change="getstakeholder()">
+                    <Option  :key="item.k" :value="item.v" v-for="item in alldemanderList">{{item.v}}
+                    </Option>
+                  </Select>
                 </FormItem>
               </Col>
 
             </Row>
             <Row :gutter="10" style="margin-bottom: 5px">
-              <Col span="10">
+              <Col span="12">
                 <FormItem
                   label="开始时间"
-                  prop="case_stime" style="width:240px;margin-right:50px"
+                  prop="case_stime" style="width:250px;margin-right:50px"
                 >
                   <DatePicker :clearable="false" :options="optionsDate"
                               :value="formValidate.case_stime" @on-change="changestime"
@@ -364,10 +358,10 @@
                   </DatePicker>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="8">
                 <FormItem
                   label="结束时间"
-                  prop="case_etime" style="width:240px;margin-right:50px"
+                  prop="case_etime" style="width:250px;margin-right:50px"
                 >
                   <DatePicker :options="optionsDate" :value="formValidate.case_etime"
                               @on-change="changeetime" format="yyyy-MM-dd HH:mm:ss"
@@ -424,7 +418,7 @@
               >重置
               </Button>
             </FormItem>
-          </Card>
+<!--          </Card>-->
         </Form>
       </Modal>
       <div style="margin: 10px;overflow: hidden">
@@ -443,7 +437,7 @@
   import XLSX from 'xlsx'
   import FileSaver from 'file-saver'
 
-  import {CaseAdd, getCase, getCaseList, getname, caseDelete, getCaseFile} from '@/api/problem'
+  import {CaseAdd, getCase, getCaseList, getname, caseDelete, getCaseFile,stakeholderlist} from '@/api/problem'
   import {getuserlist} from '@/api/user'
   import {getDate} from '@/libs/tools'
   import excel from '@/libs/excel'
@@ -525,7 +519,7 @@
           demand_unit: '',
           demander: '',
           case_id: 0,
-          case_creator: ''
+          case_creator: '',
         },
         formValidate2: {
           case_name: '',
@@ -657,8 +651,8 @@
           {title: '类型', key: 'case_type', align: 'center', width: 100,fixed: 'left'},
           {title: '状态', key: 'case_status', align: 'center', width: 100,},
           {title: '项目', key: 'case_obj', align: 'center', width: 150,},
-          {title: '开始时间', key: 'case_stime', width: 100, align: 'center', width: 150,},
-          {title: '结束时间', key: 'case_etime', width: 100, align: 'center', width: 150,},
+          {title: '开始时间', key: 'case_stime',  align: 'center', width: 150,},
+          {title: '结束时间', key: 'case_etime',  align: 'center', width: 150,},
           {title: '处理人', key: 'case_executor', align: 'center', width: 100,},
           {title: '优先级', key: 'case_priority', align: 'center', width: 100,},
           {title: '新建人', key: 'case_creator', align: 'center', width: 100,},
@@ -796,10 +790,16 @@
           {'k': 0, 'v': '特急'},
           {'k': 1, 'v': '紧急'},
           {'k': 2, 'v': '一般'}
-        ]
+        ],
+        alldemanderList: []
       }
     },
     methods: {
+      getstakeholder(){
+        console.log(this.formValidate.demander.split("--")[0])
+        console.log(this.formValidate.demander.split("--")[1])
+        this.formValidate.demand_unit =  this.formValidate.demander.split("--")[1]
+      },
       changestime(data) {
         this.formValidate.case_stime = data
       },
@@ -858,6 +858,19 @@
       //     }
       //   })
       // },
+      stakeholderlist() {
+        stakeholderlist().then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            // this.tableData = res.data.data
+            console.log(res.data.data)
+            this.alldemanderList  = res.data.data
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
+
       // 获取用户列表
       getUserList() {
         getuserlist(1, 2000).then(res => {
@@ -924,7 +937,6 @@
         this.editModalData = meth
         this.getUserList()
         let loginUser = JSON.parse(sessionStorage.vuex).user.nickName
-        console.log(loginUser)
         if (paramsRow && paramsRow.id) {
           // put
           this.formValidate = {
@@ -942,7 +954,7 @@
             case_obj: paramsRow.case_obj,
             case_source: paramsRow.case_source,
             demand_unit: paramsRow.demand_unit,
-            demander: paramsRow.demander,
+            demander: paramsRow.demander + "--" + paramsRow.demand_unit,
             case_ltime: paramsRow.case_ltime
           }
         } else {
@@ -1081,6 +1093,7 @@
     mounted() {
       this.getCaseList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
       this.getDictConfList()
+      this.stakeholderlist()
     }
   }
 </script>

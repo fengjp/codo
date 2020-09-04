@@ -71,12 +71,18 @@ export const getCaseFile = (startdate,enddate) => {
 };
 
 export const getSoftUpdateList2 = (key,value) => {
+  return axios.request({
+    url: '/pb/v2/case/username/',
+    method: 'get',
+    params: {
+      key,
+      value,
+    }
+  });
+};
+export const stakeholderlist = () => {
     return axios.request({
-        url: '/pb/v2/case/username/',
-        method: 'get',
-        params: {
-            key,
-            value,
-        }
+        url: '/mg/v2/accounts/redislist/',
+        method: 'get'
     });
 };
