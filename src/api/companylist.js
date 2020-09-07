@@ -21,6 +21,17 @@ export const getList = (value) => {
         }
     })
 }
+
+export const getcaseList = (key,value) => {
+    return axios.request({
+        url: '/pb/v2/case/demanderlist/',
+        method: 'get',
+        params: {
+            key,
+            value
+        }
+    })
+}
 export const newCompany = (data) => {
     return axios.request({
         url: '/mg/v2/accounts/company/',

@@ -1,30 +1,50 @@
 <template>
   <div>
-    <Card>
-      <Form autocomplete="off" label-colon=":" class="case-form" ref="formValidate2" :model="formValidate2">
-        <Row :gutter="1"  style="margin-bottom: -25px">
-          <Col span="8">
+<!--    <Card>-->
+<!--      <Form autocomplete="off" label-colon=":" class="case-form" ref="formValidate2" :model="formValidate2">-->
+<!--        <Row :gutter="1"  style="margin-bottom: -25px">-->
+<!--          <Col span="8">-->
+<!--            <FormItem label="脚本名称" prop="name" :label-width="100">-->
+<!--              <Input-->
+<!--                v-model="formValidate2.name"-->
+<!--                placeholder="请输入脚本名称"-->
+<!--              ></Input>-->
+<!--            </FormItem>-->
+<!--            </Col>-->
+<!--          <Col span="8">-->
+<!--            <FormItem label="详情描述" prop="remarks" :label-width="100">-->
+<!--              <Input-->
+<!--                v-model="formValidate2.remarks"-->
+<!--                placeholder="详细描述"-->
+<!--              ></Input>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Form>-->
+<!--    </Card>-->
+    <Card style="margin-top: 5px">
+      <Row>
+        <Col span="12">
+         <Form autocomplete="off" label-colon=":" class="case-form" ref="formValidate2" :model="formValidate2">
+           <Col span="12">
             <FormItem label="脚本名称" prop="name" :label-width="100">
               <Input
                 v-model="formValidate2.name"
                 placeholder="请输入脚本名称"
               ></Input>
             </FormItem>
-            </Col>
-          <Col span="8">
+             </Col>
+             <Col span="12">
             <FormItem label="详情描述" prop="remarks" :label-width="100">
               <Input
                 v-model="formValidate2.remarks"
                 placeholder="详细描述"
               ></Input>
             </FormItem>
-          </Col>
-        </Row>
-      </Form>
-    </Card>
-    <Card style="margin-top: 5px">
-      <Row>
-        <Col span="10" offset="14" style="text-align: right; margin-bottom: 5px">
+               </Col>
+          </Form>
+        </Col>
+        <Col span="12"  style="text-align: right; margin-bottom: 5px">
           <Button
             @click="handleSearch" class="case-btn"
             type="primary"

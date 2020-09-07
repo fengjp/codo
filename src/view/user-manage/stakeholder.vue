@@ -1,6 +1,6 @@
 <template>
   <div style="height:100%">
-    <Card  style="margin-top: 20px;">
+    <Card  style="margin-top: 5px;">
        <p slot="title" >干系人列表</p>
       <div  slot="extra">
         <Row>
@@ -18,6 +18,7 @@
         :data="tableData"
         ref="selection"
         size="small"
+        height="300"
       ></Table>
       <div style="margin: 10px; overflow: hidden">
         <div style="float: left;">
@@ -26,13 +27,14 @@
         </div>
       </div>
     </Card>
-    <Card  style="margin-top: 20px;">
+    <Card  style="margin-top: 5px;">
       <p slot="title" >个案列表</p>
       <Table
         :columns="columns2"
         :data="tableData2"
         ref="selection"
         size="small"
+        height="320"
       ></Table>
     </Card>
 <!--    <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true>-->
@@ -135,17 +137,10 @@
       </Modal>
     <Modal
         v-model="modalMap2.modalVisible"
-        :title="modalMap2.modalTitle"
-        :loading=true
-        :footer-hide=true
         width="30%"
       >
-      <div>
-        <Row>
-          <Col style="text-align: right;">
-            <Button @click="geturl()"  type="success">下载模板文件</Button>
-          </Col >
-        </Row>
+      <div slot="header">
+        <Button @click="geturl()"  >下载模板文件</Button>
           <a :href=surl><span id="surl"></span></a>
       </div>
       <Upload
