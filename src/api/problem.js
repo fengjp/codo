@@ -82,7 +82,7 @@ export const getSoftUpdateList2 = (key,value) => {
 };
 export const stakeholderlist = () => {
     return axios.request({
-        url: '/mg/v2/accounts/redislist/',
+        url: '/mg/v2/accounts/stakeholderredislist/',
         method: 'get'
     });
 };
