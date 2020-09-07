@@ -45,7 +45,7 @@
         :title="modalMap.modalTitle"
         :loading=true
         :footer-hide=true
-        width="21%"
+        width="385px"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
@@ -137,6 +137,8 @@
       </Modal>
     <Modal
         v-model="modalMap2.modalVisible"
+        :loading=true
+        :footer-hide=true
         width="30%"
       >
       <div slot="header">

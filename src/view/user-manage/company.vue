@@ -63,7 +63,7 @@
       :loading=true
       :title="modalMap.modalTitle"
       v-model="modalMap.modalVisible"
-      width="21%"
+      width="385px"
     >
       <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
       <Form :inline="true" :label-width="69" :model="formValidate" :rules="ruleValidate" ref="formValidate">
