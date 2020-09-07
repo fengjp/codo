@@ -46,6 +46,7 @@
         :loading=true
         :footer-hide=true
         width="385px"
+        :styles="{top: '20px'}"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
