@@ -47,15 +47,15 @@
               <a style="font-size: 12px" @click="handleUpDetail(tableData[0].uploadList)">查看附件</a>
             </FormItem>
             <FormItem label="操作" style="margin-bottom: 1px;width: 30%">
-              <div style="width: 200px;" v-show="tableData[0].id">
-                <Button type="warning" size="small" style="marginRight: 2px;"
+              <div style="width: 240px;" v-show="tableData[0].id">
+                <Button type="text" size="small" style="marginRight: 2px; color: #409eff;" icon="ios-hammer-outline"
                         @click="handlerSysUpdate(tableData[0],'post', '升级记录')">升级记录
                 </Button>
-                <Button type="primary" size="small" style="marginRight: 2px;"
+                <Button type="text" size="small" style="marginRight: 2px; color: #409eff;" icon="ios-create-outline"
                         @click="handlerSys(tableData[0],'put', '编辑')">编辑
                 </Button>
-                <Button type="error" size="small" style="marginRight: 2px;" @click="handlerDeleteSys(tableData[0])">
-                  删除
+                <Button type="text" size="small" style="marginRight: 2px; color: #ed4014;" icon="ios-trash-outline"
+                        @click="handlerDeleteSys(tableData[0])"> 删除
                 </Button>
               </div>
             </FormItem>
@@ -1002,11 +1002,14 @@
                 h('Button',
                   {
                     props: {
-                      type: 'primary',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
+
                     },
                     style: {
-                      marginRight: '2px'
+                      marginRight: '2px',
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
