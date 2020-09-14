@@ -40,12 +40,12 @@
             <FormItem label="系统负责人" style="margin-bottom: 1px;width: 30%">
               <a style="font-size: 12px" @click="handleDetail(tableData[0].sys_manager_list)">查看负责人</a>
             </FormItem>
-            <FormItem label="文档" style="margin-bottom: 1px;width: 30%">
-              <a style="font-size: 12px" @click="handleDocxDetail(tableData[0].sys_docx_list)">查看文档</a>
-            </FormItem>
-            <FormItem label="附件" style="margin-bottom: 1px;width: 30%">
-              <a style="font-size: 12px" @click="handleUpDetail(tableData[0].uploadList)">查看附件</a>
-            </FormItem>
+            <!--<FormItem label="文档" style="margin-bottom: 1px;width: 30%">-->
+            <!--<a style="font-size: 12px" @click="handleDocxDetail(tableData[0].sys_docx_list)">查看文档</a>-->
+            <!--</FormItem>-->
+            <!--<FormItem label="附件" style="margin-bottom: 1px;width: 30%">-->
+            <!--<a style="font-size: 12px" @click="handleUpDetail(tableData[0].uploadList)">查看附件</a>-->
+            <!--</FormItem>-->
             <FormItem label="操作" style="margin-bottom: 1px;width: 30%">
               <div style="width: 240px;" v-show="tableData[0].id">
                 <Button type="text" size="small" style="marginRight: 2px; color: #409eff;" icon="ios-hammer-outline"
@@ -63,7 +63,7 @@
         </Card>
         <Card :bordered="false" dis-hover style="margin-top: 5px">
           <Tabs>
-            <TabPane label="系统组件列表" icon="md-apps">
+            <TabPane label="组件列表" icon="md-apps">
               <!--<p slot="title">系统组件列表</p>-->
               <tables ref="selection1"
                       v-model="tableData1"
@@ -72,7 +72,7 @@
               >
               </tables>
             </TabPane>
-            <TabPane label="系统URL地址" icon="ios-list">
+            <TabPane label="URL地址" icon="ios-list">
               <tables ref="selection2"
                       v-model="tableData5"
                       :columns="columns6"
@@ -80,51 +80,32 @@
               >
               </tables>
             </TabPane>
-            <TabPane label="系统升级历史" icon="md-list">
-              <!--<p slot="title">系统升级历史</p>-->
-              <!--<p slot="extra" style="font-size: 12px;">-->
-              <!--<span class="search-con search-con-top">-->
-              <!--<Select v-model="searchSysValue" class="search-col" size="small" clearable placeholder="系统名称">-->
-              <!--<Option v-for="item in sysNameList" :value="item.id" :key="item.id">{{ item.sys_name }}</Option>-->
-              <!--</Select>-->
-              <!--<Button @click="handleSearchSysUpgrade" type="primary" size="small">搜索</Button>-->
-              <!--</span>-->
-              <!--</p>-->
-              <tables ref="selection2"
+            <TabPane label="升级历史" icon="md-list">
+              <tables ref="selection3"
                       v-model="tableData2"
                       :columns="columns2"
                       height="400"
               >
               </tables>
             </TabPane>
+            <TabPane label="文档" icon="ios-document-outline">
+              <tables ref="selection4"
+                      v-model="tableData[0].sys_docx_list"
+                      :columns="columnsUpDetail"
+                      height="400"
+              >
+              </tables>
+            </TabPane>
+            <TabPane label="附件" icon="ios-document-outline">
+              <tables ref="selection5"
+                      v-model="tableData[0].uploadList"
+                      :columns="columnsUpDetail"
+                      height="400"
+              >
+              </tables>
+            </TabPane>
           </Tabs>
         </Card>
-        <!--<Card :bordered="false" style="margin-top: 5px">-->
-        <!--<p slot="title">系统组件列表</p>-->
-        <!--<tables ref="selection1"-->
-        <!--v-model="tableData1"-->
-        <!--:columns="columns1"-->
-        <!--height="300"-->
-        <!--&gt;-->
-        <!--</tables>-->
-        <!--</Card>-->
-        <!--<Card :bordered="false" style="margin-top: 5px">-->
-        <!--<p slot="title">系统升级历史</p>-->
-        <!--<p slot="extra" style="font-size: 12px;">-->
-        <!--<span class="search-con search-con-top">-->
-        <!--<Select v-model="searchSysValue" class="search-col" size="small" clearable placeholder="系统名称">-->
-        <!--<Option v-for="item in sysNameList" :value="item.id" :key="item.id">{{ item.sys_name }}</Option>-->
-        <!--</Select>-->
-        <!--<Button @click="handleSearchSysUpgrade" type="primary" size="small">搜索</Button>-->
-        <!--</span>-->
-        <!--</p>-->
-        <!--<tables ref="selection2"-->
-        <!--v-model="tableData2"-->
-        <!--:columns="columns2"-->
-        <!--height="400"-->
-        <!--&gt;-->
-        <!--</tables>-->
-        <!--</Card>-->
       </Col>
     </Row>
 
@@ -241,7 +222,7 @@
     </Modal>
 
     <Modal v-model="modalMap2.modalVisible" :title="modalMap2.modalTitle" :loading=true :footer-hide=true width="540"
-           :mask-closable=false>
+           :mask-closable=false :styles="{top: '20px'}">
       <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate2" :label-width="140">
         <!--<alert>温馨提示：xxx</alert>-->
         <FormItem label="系统名称" prop="sys_name" style="margin-right:30px">
@@ -526,7 +507,25 @@
           {title: '类型', key: 'soft_type', align: 'center'},
           {title: '软件名称', key: 'soft_name', align: 'center'},
           {title: '版本号', key: 'soft_version', align: 'center'},
-          {title: 'IP', key: 'soft_ip', align: 'center'},
+          {
+            title: 'IP',
+            key: 'soft_ip',
+            align: 'center',
+            render: (h, params) => {
+              return h('a',
+                {
+                  props: {},
+                  on: {
+                    click: () => {
+                      this.$router.push({
+                        name: 'asset_server',
+                        params: {key: params.row.soft_ip}
+                      })
+                    }
+                  }
+                }, params.row.soft_ip)
+            }
+          },
           {title: '主机名', key: 'soft_hostname', align: 'center'},
           {title: '用途', key: 'soft_usage', align: 'center'}
           // {title: '操作', key: 'handle1', width: 80, align: 'center'}

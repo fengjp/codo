@@ -844,7 +844,9 @@
     },
 
     mounted() {
-      this.getServerList()
+      // console.log(this.$route.params)
+      this.searchValue = this.$route.params.key
+      this.getServerList(this.searchValue)
       this.getTagList()
       this.getAdminUserList()
       this.getTagTree()
