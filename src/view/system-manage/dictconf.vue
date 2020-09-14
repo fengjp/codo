@@ -31,30 +31,30 @@
           <Input v-model="formDynamic.dictkey" :maxlength="50" placeholder="请输入字典KEY"></Input>
         </FormItem>
         <FormItem label="设置字段" style="width: 100%">
-            <Row v-for="(item, index) in formDynamic.dictvalue">
-                <Col span="12">
-                    <Input style="width: 80px" type="text" v-model="item.k"  placeholder="请输入字段key"></Input>:
-                    <Input style="width: 100px" type="text" v-model="item.v"   placeholder="请输入字段值"></Input>
-                </Col>
-                <Col span="4" offset="1">
-                    <Button  @click="handleRemove(index)">删除</Button>
-                </Col>
-            </Row>
+          <Row v-for="(item, index) in formDynamic.dictvalue">
+            <Col span="12">
+              <Input style="width: 80px" type="text" v-model="item.k" placeholder="请输入字段key"></Input>:
+              <Input style="width: 100px" type="text" v-model="item.v" placeholder="请输入字段值"></Input>
+            </Col>
+            <Col span="4" offset="1">
+              <Button @click="handleRemove(index)">删除</Button>
+            </Col>
+          </Row>
         </FormItem>
         <FormItem>
-            <Row>
-                <Col span="12">
-                    <Button style="width: 80px"  long @click="handleAdd" icon="md-add">添加</Button>
-                </Col>
-            </Row>
+          <Row>
+            <Col span="12">
+              <Button style="width: 80px" long @click="handleAdd" icon="md-add">添加</Button>
+            </Col>
+          </Row>
         </FormItem>
         <Row>
-        <FormItem>
+          <FormItem>
             <Button type="primary" @click="handleSubmitDict('formDynamic')">提交</Button>
             <Button @click="handleReset('formDynamic')" style="margin-left: 8px">重置</Button>
-        </FormItem>
-          </Row>
-    </Form>
+          </FormItem>
+        </Row>
+      </Form>
     </Modal>
   </div>
 </template>
@@ -94,11 +94,13 @@
                 h('Button',
                   {
                     props: {
-                      type: 'info',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
                     },
                     style: {
-                      marginRight: '2px'
+                      marginRight: '2px',
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
@@ -111,8 +113,12 @@
                   'Button',
                   {
                     props: {
-                      type: 'error',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
+                    },
+                    style: {
+                      color: '#ed4014'
                     },
                     on: {
                       click: () => {
@@ -132,16 +138,16 @@
         //
         index: 0,
         formDynamic: {
-                    id: null,
-                    dictname: '',
-                    dictkey: '',
-                    dictvalue: [
-                        {
-                            k: 0,
-                            v: '',
-                        }
-                    ]
-                },
+          id: null,
+          dictname: '',
+          dictkey: '',
+          dictvalue: [
+            {
+              k: 0,
+              v: '',
+            }
+          ]
+        },
         searchKey: 'dictkey',
         searchValue: '',
         //
@@ -162,26 +168,26 @@
       }
     },
     methods: {
-      handleSubmit (name) {
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        this.$Message.success('Success!');
-                    } else {
-                        this.$Message.error('Fail!');
-                    }
-                })
-            },
-            handleAdd () {
-                // this.index++;
-                this.index = this.formDynamic.dictvalue.length
-                this.formDynamic.dictvalue.push({
-                    v: '',
-                    k: this.index,
-                });
-            },
-            handleRemove (index) {
-                this.formDynamic.dictvalue.splice(index, 1);//(下标index开始，删除1个)
-            },
+      handleSubmit(name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            this.$Message.success('Success!');
+          } else {
+            this.$Message.error('Fail!');
+          }
+        })
+      },
+      handleAdd() {
+        // this.index++;
+        this.index = this.formDynamic.dictvalue.length
+        this.formDynamic.dictvalue.push({
+          v: '',
+          k: this.index,
+        });
+      },
+      handleRemove(index) {
+        this.formDynamic.dictvalue.splice(index, 1);//(下标index开始，删除1个)
+      },
       // 添加字典
       handlerDict(paramsRow, meth, mtitle) {
         this.modalMap.modalVisible = true
@@ -278,9 +284,9 @@
       handleReset(name) {
         this.$refs[name].resetFields();
         this.formDynamic.dictvalue = [{
-                v: '',
-                k: 0,
-              }]
+          v: '',
+          k: 0,
+        }]
       },
       handleClear(e) {
         if (e.target.value === '') this.tableData = this.value

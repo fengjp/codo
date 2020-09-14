@@ -167,7 +167,7 @@
           {
             title: '操作',
             align: 'center',
-            width: 80,
+            width: 100,
             key: 'handle',
             // options: ["delete"],
             button: [
@@ -198,9 +198,13 @@
                       'Button',
                       {
                         props: {
-                          type: 'error',
-                          size: 'small'
-                        }
+                          type: 'text',
+                          size: 'small',
+                          icon: 'ios-trash-outline',
+                        },
+                        style: {
+                          color: '#ed4014'
+                        },
                       },
                       '删除'
                     )

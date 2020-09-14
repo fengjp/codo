@@ -227,11 +227,13 @@
                 h('Button',
                   {
                     props: {
-                      type: 'primary',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
                     },
                     style: {
-                      marginRight: '2px'
+                      marginRight: '2px',
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
@@ -244,8 +246,12 @@
                   'Button',
                   {
                     props: {
-                      type: 'error',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
+                    },
+                    style: {
+                      color: '#ed4014'
                     },
                     on: {
                       click: () => {

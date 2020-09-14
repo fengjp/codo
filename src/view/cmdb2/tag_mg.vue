@@ -48,7 +48,6 @@
         <Table
           size="small"
           ref="selection"
-          border
           :columns="columns2"
           :data="tableData"
           @on-selection-change="handleSelectChange"
@@ -102,44 +101,44 @@
         </FormItem>
       </Form>
     </Modal>
-    <Modal v-model="modalMap3.modalVisible" :title="modalMap3.modalTitle" :loading=true :footer-hide=true width="600"
-           :mask-closable=false>
-      <Form ref="formValidateTagrule" :model="formValidateTagrule" :rules="ruleValidate3" :label-width="100">
-        <alert>提示：IDC/主机名2个必填一个规则</alert>
-        <FormItem label="规则名称" prop="name">
-          <div v-if="formValidateTagrule.id">
-            <Input v-model="formValidateTagrule.name" :maxlength="20" disabled placeholder='请输入名称'></Input>
-          </div>
-          <div v-else>
-            <Input v-model="formValidateTagrule.name" :maxlength="20" placeholder='请输入名称'></Input>
-          </div>
-        </FormItem>
-        <FormItem label="标签名称" prop="tag_name">
-          <Select class="search-input-long" v-model="formValidateTagrule.tag_name" filterable placeholder="请选择关联的标签">
-            <Option v-for="item in allTagList" :value="item.tag_name" :key="item.id">{{ item.tag_name }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="IDC匹配" prop="idc_rule">
-          <Input v-model="formValidateTagrule.idc_rule" :maxlength="100" placeholder='请输入IDC名称,全匹配,如：AWS'></Input>
-        </FormItem>
-        <FormItem label="主机名匹配" prop="hostname_rule">
-          <Input v-model="formValidateTagrule.hostname_rule" :maxlength="100"
-                 placeholder='主机名模糊匹配如:ops- 会匹配ops开头的所有主机'></Input>
-        </FormItem>
-        <FormItem>
-          <Button type="primary" @click="handleSubmitTagrule('formValidateTagrule')">提交</Button>
-          <Button @click="handleReset('formValidateTagrule')" style="margin-left: 8px">重置</Button>
-        </FormItem>
-      </Form>
-    </Modal>
-    <Drawer v-model="ruleModal" :closable="false" style="background-color: #f8f8f9" width="1020">
-      <alert>小提示：标签规则会根据IDC='XXX'/hostname='ops-%'模糊匹配自动关联到Tag</alert>
-      <Button type="primary" @click="handlerTagrule('', 'post', '新增规则')" class="search-btn">新增规则</Button>
-      &nbsp;
-      <Button type="success" @click="handUpdateAlltagRule" class="search-btn">刷新所有规则</Button>
-      <Table size="small" ref="selection" border :columns="columnsTagrule" :data="tableDataTagrule"
-             @on-selection-change="handleSelectChange"></Table>
-    </Drawer>
+    <!--<Modal v-model="modalMap3.modalVisible" :title="modalMap3.modalTitle" :loading=true :footer-hide=true width="600"-->
+           <!--:mask-closable=false>-->
+      <!--<Form ref="formValidateTagrule" :model="formValidateTagrule" :rules="ruleValidate3" :label-width="100">-->
+        <!--<alert>提示：IDC/主机名2个必填一个规则</alert>-->
+        <!--<FormItem label="规则名称" prop="name">-->
+          <!--<div v-if="formValidateTagrule.id">-->
+            <!--<Input v-model="formValidateTagrule.name" :maxlength="20" disabled placeholder='请输入名称'></Input>-->
+          <!--</div>-->
+          <!--<div v-else>-->
+            <!--<Input v-model="formValidateTagrule.name" :maxlength="20" placeholder='请输入名称'></Input>-->
+          <!--</div>-->
+        <!--</FormItem>-->
+        <!--<FormItem label="标签名称" prop="tag_name">-->
+          <!--<Select class="search-input-long" v-model="formValidateTagrule.tag_name" filterable placeholder="请选择关联的标签">-->
+            <!--<Option v-for="item in allTagList" :value="item.tag_name" :key="item.id">{{ item.tag_name }}</Option>-->
+          <!--</Select>-->
+        <!--</FormItem>-->
+        <!--<FormItem label="IDC匹配" prop="idc_rule">-->
+          <!--<Input v-model="formValidateTagrule.idc_rule" :maxlength="100" placeholder='请输入IDC名称,全匹配,如：AWS'></Input>-->
+        <!--</FormItem>-->
+        <!--<FormItem label="主机名匹配" prop="hostname_rule">-->
+          <!--<Input v-model="formValidateTagrule.hostname_rule" :maxlength="100"-->
+                 <!--placeholder='主机名模糊匹配如:ops- 会匹配ops开头的所有主机'></Input>-->
+        <!--</FormItem>-->
+        <!--<FormItem>-->
+          <!--<Button type="primary" @click="handleSubmitTagrule('formValidateTagrule')">提交</Button>-->
+          <!--<Button @click="handleReset('formValidateTagrule')" style="margin-left: 8px">重置</Button>-->
+        <!--</FormItem>-->
+      <!--</Form>-->
+    <!--</Modal>-->
+    <!--<Drawer v-model="ruleModal" :closable="false" style="background-color: #f8f8f9" width="1020">-->
+      <!--<alert>小提示：标签规则会根据IDC='XXX'/hostname='ops-%'模糊匹配自动关联到Tag</alert>-->
+      <!--<Button type="primary" @click="handlerTagrule('', 'post', '新增规则')" class="search-btn">新增规则</Button>-->
+      <!--&nbsp;-->
+      <!--<Button type="success" @click="handUpdateAlltagRule" class="search-btn">刷新所有规则</Button>-->
+      <!--<Table size="small" ref="selection" border :columns="columnsTagrule" :data="tableDataTagrule"-->
+             <!--@on-selection-change="handleSelectChange"></Table>-->
+    <!--</Drawer>-->
   </div>
 </template>
 <script>
@@ -225,67 +224,67 @@
           name: [{required: true, message: "名称不能为空", trigger: "blur"}],
         },
 
-        columnsTagrule: [
-          {title: '规则名称', key: 'name', align: 'center'},
-          {title: 'IDC(等于)', key: 'idc_rule', align: 'center'},
-          {title: 'hostname(等于%)', key: 'hostname_rule', align: 'center'},
-          {title: '关联标签名称', key: 'tag_name', align: 'center'},
-          {
-            title: '操作', key: 'handle', width: 180, align: 'center',
-            render: (h, params) => {
-              return h('div', [
-                h('Button',
-                  {
-                    props: {
-                      type: 'success',
-                      size: 'small',
-                      loading: this.ruleLoading
-                    },
-                    style: {
-                      marginRight: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.handUpdateTagRule(params.row.name)
-                      }
-                    }
-                  }, '测试'
-                ),
-                h('Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerTagrule(params.row, 'put', '更新规则')
-                      }
-                    }
-                  }, '编辑'
-                ),
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'error',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerDeleteTagrule(params)
-                      }
-                    }
-                  },
-                  '删除'
-                )
-              ])
-            }
-          }
-        ],
+        // columnsTagrule: [
+        //   {title: '规则名称', key: 'name', align: 'center'},
+        //   {title: 'IDC(等于)', key: 'idc_rule', align: 'center'},
+        //   {title: 'hostname(等于%)', key: 'hostname_rule', align: 'center'},
+        //   {title: '关联标签名称', key: 'tag_name', align: 'center'},
+        //   {
+        //     title: '操作', key: 'handle', width: 180, align: 'center',
+        //     render: (h, params) => {
+        //       return h('div', [
+        //         h('Button',
+        //           {
+        //             props: {
+        //               type: 'success',
+        //               size: 'small',
+        //               loading: this.ruleLoading
+        //             },
+        //             style: {
+        //               marginRight: '2px'
+        //             },
+        //             on: {
+        //               click: () => {
+        //                 this.handUpdateTagRule(params.row.name)
+        //               }
+        //             }
+        //           }, '测试'
+        //         ),
+        //         h('Button',
+        //           {
+        //             props: {
+        //               type: 'primary',
+        //               size: 'small'
+        //             },
+        //             style: {
+        //               marginRight: '2px'
+        //             },
+        //             on: {
+        //               click: () => {
+        //                 this.handlerTagrule(params.row, 'put', '更新规则')
+        //               }
+        //             }
+        //           }, '编辑'
+        //         ),
+        //         h(
+        //           'Button',
+        //           {
+        //             props: {
+        //               type: 'error',
+        //               size: 'small'
+        //             },
+        //             on: {
+        //               click: () => {
+        //                 this.handlerDeleteTagrule(params)
+        //               }
+        //             }
+        //           },
+        //           '删除'
+        //         )
+        //       ])
+        //     }
+        //   }
+        // ],
 
         columns2: [
           {type: 'selection', key: 'id', width: 80, align: 'center'},
@@ -310,17 +309,19 @@
           {title: '主机', key: 'server_len', align: 'center'},
           {title: '数据库', key: 'db_len', align: 'center'},
           {
-            title: '操作', key: 'handle', width: 140, align: 'center',
+            title: '操作', key: 'handle', width: 180, align: 'center',
             render: (h, params) => {
               return h('div', [
                 h('Button',
                   {
                     props: {
-                      type: 'primary',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
                     },
                     style: {
-                      marginRight: '2px'
+                      marginRight: '2px',
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
@@ -333,8 +334,12 @@
                   'Button',
                   {
                     props: {
-                      type: 'error',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
+                    },
+                    style: {
+                      color: '#ed4014'
                     },
                     on: {
                       click: () => {

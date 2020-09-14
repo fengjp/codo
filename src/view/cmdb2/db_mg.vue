@@ -322,7 +322,7 @@
           {
             title: '操作',
             key: 'handle',
-            width: 130,
+            width: 180,
             align: 'center',
             render: (h, params) => {
               return h('div', [
@@ -330,11 +330,13 @@
                   'Button',
                   {
                     props: {
-                      type: 'primary',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
                     },
                     style: {
-                      marginRight: '2px'
+                      marginRight: '2px',
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
@@ -346,7 +348,14 @@
                 ),
                 h('Button',
                   {
-                    props: {type: 'error', size: 'small'},
+                    props: {
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
+                    },
+                    style: {
+                      color: '#ed4014'
+                    },
                     on: {
                       click: () => {
                         this.handlerDeleteDB(params)

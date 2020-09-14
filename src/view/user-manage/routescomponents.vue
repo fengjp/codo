@@ -130,6 +130,7 @@
             title: "操作",
             align: "center",
             key: "handle",
+            width: 180,
             button: [
               (h, params, vm) => {
                 return h("div", [
@@ -137,11 +138,13 @@
                     "Button",
                     {
                       props: {
-                        type: "primary",
-                        size: "small"
+                        type: 'text',
+                        size: 'small',
+                        icon: 'ios-create-outline',
                       },
                       style: {
-                        marginRight: "5px"
+                        marginRight: '2px',
+                        color: '#409eff'
                       },
                       on: {
                         click: () => {
@@ -155,11 +158,12 @@
                     "Button",
                     {
                       props: {
-                        type: "error",
-                        size: "small"
+                        type: 'text',
+                        size: 'small',
+                        icon: 'ios-trash-outline',
                       },
                       style: {
-                        // marginRight: "10px"
+                        color: '#ed4014'
                       },
                       on: {
                         click: () => {
@@ -208,6 +212,7 @@
             title: "操作",
             align: "center",
             key: "handle",
+            width: 180,
             button: [
               (h, params, vm) => {
                 return h("div", [
@@ -215,11 +220,13 @@
                     "Button",
                     {
                       props: {
-                        type: "primary",
-                        size: "small"
+                        type: 'text',
+                        size: 'small',
+                        icon: 'ios-create-outline',
                       },
                       style: {
-                        marginRight: "5px"
+                        marginRight: '2px',
+                        color: '#409eff'
                       },
                       on: {
                         click: () => {
@@ -238,11 +245,12 @@
                     "Button",
                     {
                       props: {
-                        type: "error",
-                        size: "small"
+                        type: 'text',
+                        size: 'small',
+                        icon: 'ios-trash-outline',
                       },
                       style: {
-                        // marginRight: "10px"
+                        color: '#ed4014'
                       },
                       on: {
                         click: () => {

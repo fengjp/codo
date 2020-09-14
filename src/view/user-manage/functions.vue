@@ -56,6 +56,7 @@
           {
             title: '权限名称',
             key: 'func_name',
+            align: 'center',
             sortable: true
           },
           {
@@ -130,6 +131,7 @@
           },
           {
             title: '请求路径',
+            align: 'center',
             key: 'uri'
           },
           {
@@ -158,6 +160,7 @@
           },
           {
             title: '更新时间',
+            align: 'center',
             key: 'utime',
             width: 170,
           },
@@ -166,20 +169,23 @@
           //   key: 'ctime'
           // },
           {
-            title: ' ',
+            title: '操作',
             key: 'handle',
-            width: 150,
+            align: 'center',
+            width: 180,
             render: (h, params) => {
               return h('div', [
                 h(
                   'Button',
                   {
                     props: {
-                      type: 'primary',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '2px',
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
@@ -193,8 +199,12 @@
                   'Button',
                   {
                     props: {
-                      type: 'error',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
+                    },
+                    style: {
+                      color: '#ed4014'
                     },
                     on: {
                       click: () => {

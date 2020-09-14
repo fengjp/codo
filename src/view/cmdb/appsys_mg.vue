@@ -552,6 +552,7 @@
           {
             title: '软件名称',
             key: 'soft_name',
+            minwidth: 160,
             align: 'center',
             render: (h, params) => {
               if (this.formValidate._editing) {
@@ -565,7 +566,9 @@
                       transfer: true,
                       value: params.row.soft_type_name
                     },
-                    style: {},
+                    style: {
+                      width: '100%'
+                    },
                     on: {
                       'on-change': val => {
                         this.formValidate.soft_list[params.index].soft_type_name = val
@@ -580,6 +583,7 @@
           {
             title: '版本号',
             key: 'soft_version',
+            width: 80,
             align: 'center',
             render: (h, params) => {
               if (this.formValidate._editing) {
@@ -592,7 +596,7 @@
                       clearable: true
                     },
                     style: {
-                      width: '100px'
+                      width: '100%'
                     },
                     on: {
                       input: val => {
@@ -608,6 +612,7 @@
           {
             title: 'IP',
             key: 'soft_ip',
+            miniwidth: 130,
             align: 'center',
             render: (h, params) => {
               if (this.formValidate._editing) {
@@ -620,7 +625,7 @@
                     placement: 'top-start'
                   },
                   style: {
-                    width: '130px'
+                    width: '100%'
                   },
                   on: {
                     'on-search': val => {
@@ -647,6 +652,7 @@
             title: '主机名',
             key: 'soft_hostname',
             align: 'center',
+            miniwidth: 120,
             render: (h, params) => {
               if (this.formValidate._editing) {
                 return h('Input',
@@ -658,7 +664,7 @@
                       clearable: true
                     },
                     style: {
-                      width: '120px'
+                      width: '100%'
                     },
                     on: {
                       input: val => {
@@ -675,6 +681,7 @@
             title: '用途',
             key: 'soft_usage',
             align: 'center',
+            miniwidth: 120,
             render: (h, params) => {
               if (this.formValidate._editing) {
                 return h('Input',
@@ -686,7 +693,7 @@
                       clearable: true
                     },
                     style: {
-                      width: '150px'
+                      width: '100%'
                     },
                     on: {
                       input: val => {
@@ -702,7 +709,7 @@
           {
             title: '操作',
             key: 'handle1',
-            width: 80,
+            width: 100,
             align: 'center',
             render: (h, params) => {
               if (this.formValidate._editing) {
@@ -711,8 +718,12 @@
                     'Button',
                     {
                       props: {
-                        type: 'error',
-                        size: 'small'
+                        type: 'text',
+                        size: 'small',
+                        icon: 'ios-trash-outline',
+                      },
+                      style: {
+                        color: '#ed4014'
                       },
                       on: {
                         click: () => {
@@ -816,7 +827,7 @@
           {
             title: '操作',
             key: 'sysmg_handle',
-            width: 80,
+            width: 100,
             align: 'center',
             render: (h, params) => {
               if (this.formValidate._editing) {
@@ -825,8 +836,12 @@
                     'Button',
                     {
                       props: {
-                        type: 'error',
-                        size: 'small'
+                        type: 'text',
+                        size: 'small',
+                        icon: 'ios-trash-outline',
+                      },
+                      style: {
+                        color: '#ed4014'
                       },
                       on: {
                         click: () => {
