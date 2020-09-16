@@ -19,6 +19,13 @@ export const operationCommand = (data, meth) => {
         data
     })
 }
+export const customizedAdd = (data) => {
+    return axios.request({
+        url: '/tk/v2/accounts/customized/',
+        method: 'post',
+        data
+    })
+}
 
 // 参数对照表
 export const getArgslist = (key, value) => {

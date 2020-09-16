@@ -80,9 +80,23 @@ export const getSoftUpdateList2 = (key,value) => {
     }
   });
 };
-export const stakeholderlist = () => {
+export const stakeholderlist = (key,value) => {
     return axios.request({
-        url: '/mg/v2/accounts/stakeholderredislist/',
-        method: 'get'
+        url: '/mg/v2/accounts/stakeholderlist/',
+        method: 'get',
+        params: {
+            key,
+            value
+        }
+    });
+};
+export const companylist = (key,value) => {
+    return axios.request({
+        url: '/mg/v2/accounts/company_department/',
+        method: 'get',
+        params: {
+            key,
+            value
+        }
     });
 };

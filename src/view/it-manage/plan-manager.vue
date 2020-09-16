@@ -679,18 +679,20 @@
           },
 
           {
-            title: "操作", key: "handle", align: "center", width: 150,
+            title: "操作", key: "handle", align: "center", width: 180,
             render: (h, params) => {
               return h("div", [
                 h(
                   "Button",
                   {
                     props: {
-                      type: "primary",
-                      size: "small"
+                      type: "text",
+                      size: "small",
+                      icon: 'ios-create-outline',
                     },
                     style: {
-                      marginRight: "5px"
+                      marginRight: "1px",
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
@@ -704,9 +706,15 @@
                   "Button",
                   {
                     props: {
-                      type: "error",
-                      size: "small"
+                      type: "text",
+                      size: "small",
+                      icon: 'ios-trash-outline',
+                      color: '#ed4014'
                     },
+                    style: {
+                        marginRight: '1px',
+                         color: '#ed4014'
+                      },
                     on: {
                       click: () => {
                         this.delData(params);

@@ -5,7 +5,7 @@
       <div  slot="extra">
         <Row>
         <Select v-model="searchKey" class="search-col"  style="width:150px;margin-right:5px">
-          <Option v-for="item in columns"  :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
+          <Option v-for="item in columnslist"  :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
         </Select>
           <Input @on-change="handleClear"  clearable placeholder="输入关键字搜索"  v-model="searchValue" style="width:150px;margin-right:5px"/>
       <Button @click="handleSearch" class="search-btn" type="primary" style="margin-right:5px">搜索</Button>
@@ -71,7 +71,7 @@
             </div>
           <FormItem label="单位" prop="company"  style="width:350px;">
               <Select v-model="formValidate.company" placeholder="单位">
-                <Option v-for="item in allcompanyList" :value="item.v" :key="item.k">{{item.v}}</Option>
+                <Option v-for="item in alldemand_unit" :value="item.v" :key="item.k">{{item.v}}</Option>
               </Select>
             </FormItem>
           <FormItem label="部门" prop="department"  style="width:350px;">
@@ -162,7 +162,9 @@
 </template>
 
 <script>
+
 import Tables from '_c/tables'
+import {companylist} from '@/api/problem'
 import FormGroup from '_c/form-group'
 import {
   getStakeholderList,
@@ -212,6 +214,7 @@ export default {
         email: ''
       },
       allcompanyList: [],
+      alldemand_unit: [],
       alldepartmentList: [],
       ruleValidate: {
         username: [
@@ -285,6 +288,17 @@ export default {
       //     label: '邮箱'
       //   }
       // ],
+      columnslist: [
+        { title: '用户名', key: 'username',editable: true },
+        { title: '单位', key: 'company', editable: true },
+        { title: '部门', key: 'department', editable: true },
+        { title: '职位', key: 'position', editable: true },
+        { title: '职责范围', key: 'duty', editable: true },
+        { title: '电话', key: 'tel', editable: true },
+        { title: '地址', key: 'addr', editable: true },
+        { title: '邮箱', key: 'email', editable: true },
+         { title: '备注', key: 'remarks', sortable: true },
+            ],
       columns: [
         // { type: 'selection', title: '', key: '', width: 60, align: 'center' },
         { title: '用户名', key: 'username', sortable: true,render: (h, params) => {
@@ -309,7 +323,7 @@ export default {
         {
           title: '操作',
           align: 'center',
-          width: 150,
+          width: 180,
           key: 'handle',
           // options: ["delete"],
          render:
@@ -319,11 +333,13 @@ export default {
                   'Button',
                   {
                     props: {
-                      type: 'primary',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '1px',
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
@@ -337,9 +353,14 @@ export default {
                   'Button',
                   {
                     props: {
-                      type: 'error',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
                     },
+                    style: {
+                        marginRight: '1px',
+                         color: '#ed4014'
+                      },
                     on: {
                       click: () => {
                         this.handleDelete(params)
@@ -616,6 +637,17 @@ export default {
         }
       })
     },
+    companylist(key,value) {
+        companylist(key,value).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            console.log(res.data.data)
+            this.alldemand_unit  = res.data.data
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
     handleClear (e) {
       // if (e.target.value === '') this.tableData = this.value
     },
@@ -637,6 +669,7 @@ export default {
     this.UploadUrl = UploadUrl
     this.getStakeholderList(this.pageNum, this.pageSize)
     this.getDictConfList()
+    this.companylist("company","")
   }
 }
 </script>

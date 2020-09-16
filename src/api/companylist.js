@@ -12,11 +12,22 @@ export const getCompany = (page, limit, key, value) => {
         }
     })
 }
-export const getList = (value) => {
+export const getCompanyDepartment = (key,value) => {
+    return axios.request({
+        url: '/mg/v2/accounts/company_department/',
+        method: 'get',
+        params: {
+            key,
+            value
+        }
+    })
+}
+export const getList = (key,value) => {
     return axios.request({
         url: '/mg/v2/accounts/stakeholderlist/',
         method: 'get',
         params: {
+            key,
             value
         }
     })

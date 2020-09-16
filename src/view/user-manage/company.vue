@@ -2,18 +2,10 @@
   <div style="height:100%">
     <Card>
       <p slot="title">单位列表</p>
-      <!--      <tables ref="tables" editable searchable search-place="top" v-model="tableData" :columns="columns"-->
-      <!--              @on-delete="handleDelete" @on-save-edit="handleInput"-->
-      <!--              @on-search-table="handleSearchTable"-->
-      <!--              @on-selection-change="handleSelectChange">-->
-      <!--        <div slot="new_btn" class="search-con search-col">-->
-      <!--          <Button type="info" class="search-btn" @click="editModal('', 'post', '新建单位')">新建单位</Button>-->
-      <!--        </div>-->
-      <!--      </tables>-->
       <div slot="extra">
         <Row>
           <Select class="search-col" style="width:150px;margin-right:5px" v-model="searchKey">
-            <Option :key="`search-col-${item.key}`" :value="item.key" v-for="item in columns">{{ item.title }}</Option>
+            <Option :key="`search-col-${item.key}`" :value="item.key" v-for="item in columnslist">{{ item.title }}</Option>
           </Select>
           <Input @on-change="handleClear" clearable placeholder="输入关键字搜索" style="width:150px;margin-right:5px"
                  v-model="searchValue"/>
@@ -25,19 +17,20 @@
       <Table
         :columns="columns"
         :data="tableData"
-        height="300"
-        ref="selection"
+        :load-data="handleLoadData"
+        max-height="300"
+        row-key="id"
       ></Table>
       <div style="margin: 10px; overflow: hidden">
         <div style="float: left;">
-          <Page :current="pageNum" :page-size="pageSize" :page-size-opts=[10,15,25,35,50,100] :total="pageTotal"
+          <Page :current="pageNum" :page-size="pageSize" :page-size-opts=[5,10,15,25,35,50,100] :total="pageTotal"
                 @on-change="changePage" @on-page-size-change="handlePageSize" show-sizer show-total></Page>
         </div>
       </div>
     </Card>
     <Card style="margin-top: 5px;">
-    <Tabs value="name1">
-      <TabPane label="干系人列表" icon="ios-apps" name="name1">
+      <Tabs value="name1">
+        <TabPane icon="ios-apps" label="干系人列表" name="name1">
           <Table
             :columns="columns2"
             :data="tableData2"
@@ -46,8 +39,8 @@
             ref="selection"
             size="small"
           ></Table>
-      </TabPane>
-      <TabPane label="个案列表"  icon="md-list" name="name2">
+        </TabPane>
+        <TabPane icon="md-list" label="个案列表" name="name2">
           <Table
             :columns="columns3"
             :data="tableData3"
@@ -55,9 +48,9 @@
             ref="selection"
             size="small"
           ></Table>
-      </TabPane>
-    </Tabs>
-      </Card>
+        </TabPane>
+      </Tabs>
+    </Card>
     <Modal
       :footer-hide=true
       :loading=true
@@ -66,52 +59,34 @@
       width="385px"
     >
       <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
-      <Form :inline="true" :label-width="69" :model="formValidate" :rules="ruleValidate" ref="formValidate">
-        <div v-if="editModalData && editModalData == 'put'">
-          <FormItem label="单位名" prop="company" style="width:350px;">
-            <Input
-              :maxlength="45"
-              disabled
-              placeholder="请输入单位名"
-              v-model="formValidate.company"
-            ></Input>
-          </FormItem>
-        </div>
-        <div v-else>
-          <FormItem label="单位名" prop="company" style="width:350px;">
-            <Input
-              :maxlength="45"
-              placeholder="请输入单位名"
-              v-model="formValidate.company"
-            ></Input>
-          </FormItem>
-        </div>
-        <!--          <FormItem label="单位" prop="company"  style="width:350px;">-->
-        <!--              <Select v-model="formValidate.company" placeholder="单位">-->
-        <!--                <Option v-for="item in allcompanyList" :value="item.v" :key="item.k">{{item.v}}</Option>-->
-        <!--              </Select>-->
-        <!--            </FormItem>-->
-        <FormItem label="单位地址" prop="addr" style="width:350px;">
+      <Form :inline="true" :label-width="80" :model="formValidate" :rules="ruleValidate" ref="formValidate">
+
+        <FormItem label="上级部门" prop="company" style="width:350px;">
+<!--          <Select @on-create="handleCreate" allow-create  filterable placeholder="上级部门" v-model="formValidate.company">-->
+<!--            <Option :key="item.k" :value="item.v" v-for="item in allcompanyList">{{item.v}}</Option>-->
+<!--          </Select>-->
           <Input
             :maxlength="45"
-            placeholder="请输入单位地址"
-            v-model="formValidate.addr"
+            placeholder="请输入上级部门姓名"
+            v-model="formValidate.company"
           ></Input>
         </FormItem>
-        <FormItem label="法人" prop="bossname" style="width:350px;">
+        <FormItem label="部门名称" prop="department" style="width:350px;">
+          <Select @on-create="handleCreate2" allow-create  filterable placeholder="部门名称" v-model="formValidate.department">
+            <Option :key="item.k" :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
+          </Select>
+        </FormItem>
+<!--        <FormItem label="部门级别" prop="level" style="width:350px;">-->
+<!--          <InputNumber :max="9" :min="1" placeholder="请选择部门级别" v-model="formValidate.level"></InputNumber>-->
+<!--        </FormItem>-->
+        <FormItem label="负责人" prop="bossname" style="width:350px;">
           <Input
             :maxlength="45"
-            placeholder="请输入法人姓名"
+            placeholder="请输入负责人姓名"
             v-model="formValidate.bossname"
           ></Input>
         </FormItem>
-        <FormItem label="经营范围" prop="duty" style="width:350px;">
-          <Input
-            :maxlength="45"
-            placeholder="请输入经营范围"
-            v-model="formValidate.duty"
-          ></Input>
-        </FormItem>
+
         <FormItem label="电话" prop="tel" style="width:350px;">
           <Input
             :maxlength="45"
@@ -119,13 +94,7 @@
             v-model="formValidate.tel"
           ></Input>
         </FormItem>
-        <FormItem label="单位网址" prop="website" style="width:350px;">
-          <Input
-            :maxlength="45"
-            placeholder="请输入网址"
-            v-model="formValidate.website"
-          ></Input>
-        </FormItem>
+
         <FormItem label="邮箱" prop="email" style="width:350px;">
           <Input
             :maxlength="45"
@@ -163,6 +132,7 @@
   import FormGroup from '_c/form-group'
   import {
     getCompany,
+    getCompanyDepartment,
     getList,
     getcaseList,
     newCompany,
@@ -190,9 +160,12 @@
         formValidate: {
           id: 0,
           company: "",
+          company_id: "",
           addr: '',
           bossname: '',
           duty: '',
+          department: '',
+          level: 1,
           tel: '',
           website: '',
           email: '',
@@ -201,13 +174,6 @@
         allcompanyList: [],
         alldepartmentList: [],
         ruleValidate: {
-          bossname: [
-            {
-              required: true,
-              message: '请输入法人名',
-              trigger: 'blur'
-            }
-          ],
           company: [
             {
               required: true,
@@ -216,10 +182,17 @@
             }
           ]
         },
+        columnslist: [
+          {title: '单位名', key: 'department',editable: true},
+          {title: '负责人', key: 'bossname', editable: true},
+          {title: '电话', key: 'tel', editable: true},
+          {title: '邮箱', key: 'email', editable: true},
+          {title: '备注', key: 'remarks', sortable: true},
+        ],
+
         columns: [
-          {type: 'selection', title: '', key: '', width: 60, align: 'center'},
           {
-            title: '单位名', key: 'company', sortable: true, render: (h, params) => {
+            title: '单位/部门', key: 'department', tree: true, sortable: true, render: (h, params) => {
               // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
               return h('a', {
                   on: {
@@ -227,21 +200,18 @@
                       this.handleDetail(params)
                     }
                   }
-                }, params.row.company
+                }, params.row.department
               )
             }
           },
-          {title: '单位地址', key: 'addr', editable: true},
-          {title: '法人', key: 'bossname', editable: true},
-          {title: '经营范围', key: 'duty', editable: true},
+          {title: '负责人', key: 'bossname', editable: true},
           {title: '电话', key: 'tel', editable: true},
-          {title: '单位网址', key: 'website', editable: true},
           {title: '邮箱', key: 'email', editable: true},
           {title: '备注', key: 'remarks', sortable: true},
           {
             title: '操作',
             align: 'center',
-            width: 150,
+            width: 280,
             key: 'handle',
             // options: ["delete"],
             render:
@@ -251,11 +221,16 @@
                     'Button',
                     {
                       props: {
-                        type: 'primary',
+                        type: 'text',
                         size: 'small'
                       },
                       style: {
-                        marginRight: '5px'
+                        marginRight: '1px',
+                        color: '#409eff'
+                      },
+                      //正常的html特性
+                      attrs:{
+                        icon: 'ios-create-outline',
                       },
                       on: {
                         click: () => {
@@ -263,14 +238,43 @@
                         }
                       }
                     },
-                    '编辑'
+                    '修改'
                   ),
                   h(
                     'Button',
                     {
                       props: {
-                        type: 'error',
+                        type: 'text',
                         size: 'small'
+                      },
+                      style: {
+                        marginRight: '1px',
+                          color: '#409eff'
+                      },
+                      attrs:{
+                        icon:"ios-add"
+                      },
+                      on: {
+                        click: () => {
+                          this.editModal(params.row, 'post', '新增部门')
+                        }
+                      }
+                    },
+                    '新增部门'
+                  ),
+                  h(
+                    'Button',
+                    {
+                      props: {
+                        type: 'text',
+                        size: 'small'
+                      },
+                      style: {
+                        marginRight: '1px',
+                         color: '#ed4014'
+                      },
+                      attrs:{
+                        icon: 'ios-trash-outline',
                       },
                       on: {
                         click: () => {
@@ -337,14 +341,42 @@
         tableData: [],
         tableData2: [],
         tableData3: [],
+        departmentData: [],
+        departmentData_flag: 0,
         pageTotal: 0, // 数据总数
         pageNum: 1, // 当前页码
-        pageSize: 15, // 每页条数
+        pageSize: 5, // 每页条数
         // select
         selectionList: []
       }
     },
     methods: {
+      handleCreate (val) {
+                this.allcompanyList.push({
+                    k: 999,
+                    v: val
+                });
+                this.formValidate.company = val
+            },
+      handleCreate2 (val) {
+                this.alldepartmentList.push({
+                    k: val,
+                    v: val
+                });
+                this.formValidate.department = val
+            },
+      handleLoadData(item, callback) {
+        this.tovalue = item["id"]
+        this.tokey = "company_id"
+        this.getCompanyDepartment(this.tokey,this.tovalue)
+        setTimeout(() => {
+          if(this.departmentData_flag == 1){
+            callback(this.departmentData);
+          }else{
+            callback([]);
+          }
+        }, 2000);
+      },
 // 获取个案列表
       getcaseList(key, value) {
         getcaseList(key, value).then(res => {
@@ -382,25 +414,59 @@
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
         if (paramsRow && paramsRow.id) {
-          // put
-          this.formValidate = {
-            id: paramsRow.id,
-            company: paramsRow.company,
-            addr: paramsRow.addr,
-            bossname: paramsRow.bossname,
-            duty: paramsRow.duty,
-            tel: paramsRow.tel,
-            website: paramsRow.website,
-            email: paramsRow.email,
-            remarks: paramsRow.remarks
+          if (this.editModalData == "post") {
+              // post
+              // let to_company_id = ''
+              // if(paramsRow.company_id == "/"){
+              //    to_company_id = paramsRow.id
+              // }else{
+              //    to_company_id = paramsRow.company_id //限制在2级
+              // }
+              this.formValidate = {
+                id: "",
+                company_id: paramsRow.id,
+                company: paramsRow.department,
+                addr: '',
+                bossname: '',
+                duty: '',
+                department: '',
+                tel: '',
+                website: '',
+                level: parseInt(paramsRow.level) + 1,
+                email: '',
+                remarks: ''
+              }
+
           }
+          else {
+            // put
+              this.formValidate = {
+                id: paramsRow.id,
+                company_id: paramsRow.company_id,
+                company: paramsRow.company,
+                addr: paramsRow.addr,
+                bossname: paramsRow.bossname,
+                duty: paramsRow.duty,
+                department:paramsRow.department,
+                tel: paramsRow.tel,
+                website: paramsRow.website,
+                level:parseInt(paramsRow.level),
+                email: paramsRow.email,
+                remarks: paramsRow.remarks
+              }
+          }
+
         } else {
           // post
           this.formValidate = {
+            id:"",
+            company_id: "",
             company: "",
             addr: "",
             bossname: "",
             duty: "",
+            department:'',
+            level:1,
             tel: "",
             website: "",
             email: "",
@@ -409,11 +475,13 @@
         }
       },
       handleDelete(params) {
-        if (confirm(`确定要删除 ${params.row.company}`)) {
+        if (confirm(`确定要删除 ${params.row.department}`)) {
           delCompany({id: params.row.id}).then(res => {
             if (res.data.code === 0) {
               this.$Message.success(`${res.data.msg}`)
               this.getCompany(this.pageNum, this.pageSize, this.tokey, this.tovalue)
+              this.tokey = "company_id"
+              this.getCompanyDepartment(this.tokey,this.tovalue)
             } else {
               this.$Message.error(`${res.data.msg}`)
             }
@@ -467,13 +535,32 @@
             this.pageTotal = res.data.count
             this.tableData = res.data.data
           } else {
+            this.tableData =  []
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
+      // 获取部门列表
+      getCompanyDepartment(value) {
+        getCompanyDepartment(value).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            this.departmentData = res.data.data
+            this.departmentData_flag = 1
+            for (let i = 0, len = this.departmentData.length; i < len; i++) {
+              this.departmentData[i]["_loading"] = false
+              this.departmentData[i]["children"] = []
+            }
+          } else {
+            this.departmentData =  []
+            this.departmentData_flag = 0
             this.$Message.error(`${res.data.msg}`)
           }
         })
       },
       // 获取用户列表
-      getList(data) {
-        getList(data).then(res => {
+      getList(key,value) {
+        getList(key,value).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
             // this.pageTotal = res.data.count
@@ -492,12 +579,14 @@
             }
             setTimeout(() => {
               if (this.editModalData == "post") {
+                console.log(this.formValidate)
                 newCompany(this.formValidate).then(res => {
                   const data = res.data
                   if (res.data.code === 0) {
                     this.$Message.info(`${data.msg}`)
                     // 重新获取数据
                     this.getCompany(this.pageNum, this.pageSize)
+                    // this.getCompanyDepartment(this.tovalue)
                   } else {
                     this.$Message.error(`${data.msg}`)
                   }
@@ -544,8 +633,14 @@
       },
       handleDetail(params) {
         console.log(params.row.company)
-        this.getList(params.row.company)
-        this.getcaseList(params.row.company, "")
+        if(params.row.company_id === "/"){
+        this.getList("company",params.row.company)
+        this.getcaseList("company",params.row.company,)
+        }else{
+          this.$Message.info("目前只支持单位级别查询")
+          // this.getList("department",params.row.department)
+          // this.getcaseList("department",params.row.department,)
+        }
       },
       handleSelectChange(val) {
         let userList = []

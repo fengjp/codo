@@ -15,6 +15,12 @@ export const getSqlList = (page, limit, key, value, isExport = false) => {
     }
   })
 }
+export const getSqlIdList = () => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/Idlist/',
+    method: 'get',
+  })
+}
 
 export const SqlAdd = (data, meth) => {
   return axios.request({

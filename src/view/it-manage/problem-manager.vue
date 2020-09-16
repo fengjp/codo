@@ -327,15 +327,15 @@
                   label="需求单位"
                   prop="demand_unit" style="width:200px;"
                 >
-                  <Input
-                    placeholder="需求单位"
-                    v-model="formValidate.demand_unit"
-                  ></Input>
+                  <Select placeholder="需求单位" v-model="formValidate.demand_unit" @on-change="getstakeholder" >
+                    <Option  :key="item.k" :value="item.v" v-for="item in alldemand_unit">{{item.v}}
+                    </Option>
+                  </Select>
                 </FormItem>
               </Col>
               <Col span="8">
                 <FormItem label="需求人" prop="demander" style="width:200px;">
-                  <Select placeholder="需求人" v-model="formValidate.demander"  @on-change="getstakeholder()">
+                  <Select placeholder="需求人" v-model="formValidate.demander"  >
                     <Option  :key="item.k" :value="item.v" v-for="item in alldemanderList">{{item.v}}
                     </Option>
                   </Select>
@@ -437,7 +437,7 @@
   import XLSX from 'xlsx'
   import FileSaver from 'file-saver'
 
-  import {CaseAdd, getCase, getCaseList, getname, caseDelete, getCaseFile,stakeholderlist} from '@/api/problem'
+  import {CaseAdd, getCase, getCaseList, getname, caseDelete, getCaseFile,stakeholderlist,companylist} from '@/api/problem'
   import {getuserlist} from '@/api/user'
   import {getDate} from '@/libs/tools'
   import excel from '@/libs/excel'
@@ -687,18 +687,20 @@
             key: 'handle',
             align: 'center',
             fixed: 'right',
-            width: 150,
+            width: 180,
             render: (h, params) => {
               return h('div', [
                 h(
                   'Button',
                   {
                     props: {
-                      type: 'primary',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '1px',
+                      color: '#409eff'
                     },
                     on: {
                       click: () => {
@@ -712,8 +714,13 @@
                   'Button',
                   {
                     props: {
-                      type: 'error',
-                      size: 'small'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
+                    },
+                    style: {
+                      marginRight: '1px',
+                      color: '#ed4014'
                     },
                     on: {
                       click: () => {
@@ -791,14 +798,14 @@
           {'k': 1, 'v': '紧急'},
           {'k': 2, 'v': '一般'}
         ],
-        alldemanderList: []
+        alldemanderList: [],
+        alldemand_unit: [],
       }
     },
     methods: {
       getstakeholder(){
-        console.log(this.formValidate.demander.split("--")[0])
-        console.log(this.formValidate.demander.split("--")[1])
-        this.formValidate.demand_unit =  this.formValidate.demander.split("--")[1]
+        console.log(this.formValidate.demand_unit)
+        this.stakeholderlist("company",this.formValidate.demand_unit)
       },
       changestime(data) {
         this.formValidate.case_stime = data
@@ -858,13 +865,27 @@
       //     }
       //   })
       // },
-      stakeholderlist() {
-        stakeholderlist().then(res => {
+      companylist(key,value) {
+        companylist(key,value).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            console.log(res.data.data)
+            this.alldemand_unit  = res.data.data
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
+      stakeholderlist(key,value) {
+        stakeholderlist(key,value).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
             // this.tableData = res.data.data
             console.log(res.data.data)
-            this.alldemanderList  = res.data.data
+            this.alldemanderList  = []
+            for (let i = 0, len = res.data.data.length; i < len; i++) {
+              this.alldemanderList.push({"k":i,"v":res.data.data[i]["username"]})
+            }
           } else {
             this.$Message.error(`${res.data.msg}`)
           }
@@ -1093,7 +1114,7 @@
     mounted() {
       this.getCaseList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
       this.getDictConfList()
-      this.stakeholderlist()
+      this.companylist("company","")
     }
   }
 </script>
