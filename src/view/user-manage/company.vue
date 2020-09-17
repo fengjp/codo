@@ -10,7 +10,7 @@
           <Input @on-change="handleClear" clearable placeholder="输入关键字搜索" style="width:150px;margin-right:5px"
                  v-model="searchValue"/>
           <Button @click="handleSearch" class="search-btn" style="margin-right:5px" type="primary">搜索</Button>
-          <Button @click="editModal('', 'post', '新增单位')" class="search-btn" style="margin-right:5px" type="info">新建单位
+          <Button @click="editModal2('', 'post', '新增单位')" class="search-btn" style="margin-right:5px" type="info">新建单位
           </Button>
         </Row>
       </div>
@@ -61,13 +61,13 @@
       <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
       <Form :inline="true" :label-width="80" :model="formValidate" :rules="ruleValidate" ref="formValidate">
 
-        <FormItem label="上级部门" prop="company" style="width:350px;">
+        <FormItem label="上级单位" prop="company" style="width:350px;">
 <!--          <Select @on-create="handleCreate" allow-create  filterable placeholder="上级部门" v-model="formValidate.company">-->
 <!--            <Option :key="item.k" :value="item.v" v-for="item in allcompanyList">{{item.v}}</Option>-->
 <!--          </Select>-->
           <Input
             :maxlength="45"
-            placeholder="请输入上级部门姓名"
+            placeholder="请输入单位名称"
             v-model="formValidate.company"
           ></Input>
         </FormItem>
@@ -76,6 +76,79 @@
             <Option :key="item.k" :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
           </Select>
         </FormItem>
+<!--        <FormItem label="部门级别" prop="level" style="width:350px;">-->
+<!--          <InputNumber :max="9" :min="1" placeholder="请选择部门级别" v-model="formValidate.level"></InputNumber>-->
+<!--        </FormItem>-->
+        <FormItem label="负责人" prop="bossname" style="width:350px;">
+          <Input
+            :maxlength="45"
+            placeholder="请输入负责人姓名"
+            v-model="formValidate.bossname"
+          ></Input>
+        </FormItem>
+
+        <FormItem label="电话" prop="tel" style="width:350px;">
+          <Input
+            :maxlength="45"
+            placeholder="请输入联系方式"
+            v-model="formValidate.tel"
+          ></Input>
+        </FormItem>
+
+        <FormItem label="邮箱" prop="email" style="width:350px;">
+          <Input
+            :maxlength="45"
+            placeholder="请输入邮箱号"
+            v-model="formValidate.email"
+          ></Input>
+        </FormItem>
+        <FormItem label="备注" prop="remarks" style="width:350px;">
+          <Input
+            :maxlength="45"
+            placeholder="备注信息"
+            v-model="formValidate.remarks"
+          ></Input>
+        </FormItem>
+        <FormItem>
+          <Button
+            :disabled="isDisable"
+            @click="handleSubmit('formValidate')"
+            type="primary"
+          >提交
+          </Button>
+          <Button
+            @click="handleReset('formValidate')"
+            style="margin-left: 8px"
+          >重置
+          </Button>
+        </FormItem>
+      </Form>
+    </Modal>
+    <Modal
+      :footer-hide=true
+      :loading=true
+      :title="modalMap2.modalTitle"
+      v-model="modalMap2.modalVisible"
+      width="385px"
+    >
+      <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
+      <Form :inline="true" :label-width="80" :model="formValidate" :rules="ruleValidate" ref="formValidate">
+
+        <FormItem label="单位名称" prop="company" style="width:350px;">
+<!--          <Select @on-create="handleCreate" allow-create  filterable placeholder="上级部门" v-model="formValidate.company">-->
+<!--            <Option :key="item.k" :value="item.v" v-for="item in allcompanyList">{{item.v}}</Option>-->
+<!--          </Select>-->
+          <Input
+            :maxlength="45"
+            placeholder="请输入单位名称"
+            v-model="formValidate.company"
+          ></Input>
+        </FormItem>
+<!--        <FormItem label="部门名称" prop="department" style="width:350px;">-->
+<!--          <Select @on-create="handleCreate2" allow-create  filterable placeholder="部门名称" v-model="formValidate.department">-->
+<!--            <Option :key="item.k" :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>-->
+<!--          </Select>-->
+<!--        </FormItem>-->
 <!--        <FormItem label="部门级别" prop="level" style="width:350px;">-->
 <!--          <InputNumber :max="9" :min="1" placeholder="请选择部门级别" v-model="formValidate.level"></InputNumber>-->
 <!--        </FormItem>-->
@@ -151,6 +224,10 @@
         // 弹出框
         modalMap: {
           modalVisible: false,
+          modalTitle: '创建部门'
+        },
+        modalMap2: {
+          modalVisible: false,
           modalTitle: '创建单位'
         },
         isDisable: false,
@@ -192,7 +269,7 @@
 
         columns: [
           {
-            title: '单位/部门', key: 'department', tree: true, sortable: true, render: (h, params) => {
+            title: '单位', key: 'department', tree: true, sortable: true, render: (h, params) => {
               // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
               return h('a', {
                   on: {
@@ -474,6 +551,44 @@
           }
         }
       },
+       editModal2(paramsRow, meth, mtitle) {
+        this.modalMap2.modalVisible = true
+        this.modalMap2.modalTitle = mtitle
+        this.editModalData = meth
+        if (paramsRow && paramsRow.id) {
+            // put
+              this.formValidate = {
+                id: paramsRow.id,
+                company_id: paramsRow.company_id,
+                company: paramsRow.company,
+                addr: paramsRow.addr,
+                bossname: paramsRow.bossname,
+                duty: paramsRow.duty,
+                department:paramsRow.department,
+                tel: paramsRow.tel,
+                website: paramsRow.website,
+                level:parseInt(paramsRow.level),
+                email: paramsRow.email,
+                remarks: paramsRow.remarks
+              }
+        } else {
+          // post
+          this.formValidate = {
+            id:"",
+            company_id: "",
+            company: "",
+            addr: "",
+            bossname: "",
+            duty: "",
+            department:'',
+            level:1,
+            tel: "",
+            website: "",
+            email: "",
+            remarks: ""
+          }
+        }
+      },
       handleDelete(params) {
         if (confirm(`确定要删除 ${params.row.department}`)) {
           delCompany({id: params.row.id}).then(res => {
@@ -580,6 +695,9 @@
             setTimeout(() => {
               if (this.editModalData == "post") {
                 console.log(this.formValidate)
+                if(this.formValidate.department === ""){
+                  this.formValidate.department = this.formValidate.company
+                }
                 newCompany(this.formValidate).then(res => {
                   const data = res.data
                   if (res.data.code === 0) {
