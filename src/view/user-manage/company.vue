@@ -61,13 +61,13 @@
       <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
       <Form :inline="true" :label-width="80" :model="formValidate" :rules="ruleValidate" ref="formValidate">
 
-        <FormItem label="上级单位" prop="company" style="width:350px;">
+        <FormItem label="上级部门" prop="company" style="width:350px;">
 <!--          <Select @on-create="handleCreate" allow-create  filterable placeholder="上级部门" v-model="formValidate.company">-->
 <!--            <Option :key="item.k" :value="item.v" v-for="item in allcompanyList">{{item.v}}</Option>-->
 <!--          </Select>-->
           <Input
             :maxlength="45"
-            placeholder="请输入单位名称"
+            placeholder="请输入部门名称"
             v-model="formValidate.company"
           ></Input>
         </FormItem>
