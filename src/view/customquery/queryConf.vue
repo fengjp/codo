@@ -52,11 +52,11 @@
           label="设置列名" style="width: 100%"
         >
           <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colnames">
-            <Col span="12">
-              <Input style="width: 80px" v-model="item.col" :maxlength="20" placeholder="字段名"></Input> ：
-              <Input style="width: 100px" v-model="item.name" :maxlength="20" placeholder="字段名称"></Input>
+            <Col span="14">
+              <Input style="width: 120px" v-model="item.col" :maxlength="20" placeholder="字段名"></Input> ：
+              <Input style="width: 120px" v-model="item.name" :maxlength="20" placeholder="字段名称"></Input>
             </Col>
-            <Col span="4">
+            <Col span="3">
               <Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colnames',index)"></Button>
             </Col>
           </Row>
@@ -73,19 +73,19 @@
         </FormItem>
         <FormItem label="" v-if="isAlarm" style="display: block; margin-top: -30px;">
           <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colalarms">
-            <Select id="alarmCol" size="small" style="width:100px" v-model="item.selCol">
+            <Select id="alarmCol" size="small" style="width:120px" v-model="item.selCol">
               <Option v-for="i in formValidate.colnames" :value="i.col">{{ i.col }}</Option>
             </Select>
             <p style="display: initial;color: red;margin-left: 10px;" v-text="message"></p>
             <!--<Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colalarms',index)"></Button>-->
             <div v-for="(subCol, subColIndex) in item.subColList">
-              <Col span="13" offset="5">
+              <Col span="12" offset="5">
                 <Select style="width:60px" v-model="subCol.sign">
                   <Option v-for="s in signList" :value="s.name" :key="`sign-${s.id}`">{{ s.name }}</Option>
                 </Select>
                 <InputNumber style="width: 65px; margin-left: 5px; margin-right: 5px" v-model="subCol.alarmVal"
                              placeholder="指标值"></InputNumber>
-                <Select style="width:70px" v-model="subCol.alarmType">
+                <Select style="width:80px" v-model="subCol.alarmType">
                   <Option v-for="t in typeList" :value="t.name" :key="`type-${t.id}`">{{ t.name }}</Option>
                 </Select>
               </Col>
