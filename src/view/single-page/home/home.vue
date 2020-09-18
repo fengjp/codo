@@ -532,4 +532,9 @@
   .customtable .ivu-table-small td {
     height: 30px;
   }
+
+  .customtable.ivu-table-wrapper thead tr th {
+    background-color: #fff;
+  }
+
 </style>

@@ -13,7 +13,7 @@
         </p>
         <Table v-if="item.isShow" class="customtable" :no-data-text="item.errormsg" :columns="item.columns"
                :data="item.tableData"
-               size="small" height="200">
+               size="small" height="300">
         </Table>
         <div class="customspan" v-else>
           <span v-for="(val, k) in item.count"
@@ -34,7 +34,7 @@
         </p>
         <Table v-if="item.isShow" class="customtable" :no-data-text="item.errormsg" :columns="item.columns"
                :data="item.tableData"
-               size="small" height="200">
+               size="small" height="300">
         </Table>
         <div class="customspan" v-else>
           <span v-for="(val, k) in item.count"
