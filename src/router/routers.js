@@ -43,6 +43,16 @@ export const routerMap = [
           import ('@/view/cmdb/software_mg.vue')
       },
       {
+        path: 'asset_facility',
+        name: 'asset_facility',
+        meta: {
+          icon: 'md-aperture',
+          title: '设备管理'
+        },
+        component: () =>
+          import ('@/view/cmdb/facility_mg.vue')
+      },
+      {
         path: 'asset_server',
         name: 'asset_server',
         meta: {

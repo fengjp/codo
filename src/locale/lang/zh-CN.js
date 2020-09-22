@@ -95,6 +95,7 @@ export default {
   report_mg: '报表管理',
   software_mg: '软件管理',
   asset_server: '主机管理',
+  asset_facility: '设备管理',
   log_audit: '日志审计',
   asset_db: 'DB管理',
   asset_sql: '脚本管理',
