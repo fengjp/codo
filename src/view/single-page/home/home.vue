@@ -20,7 +20,7 @@
     </Row>
 
     <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="540"
-           :mask-closable=false :styles="{top: '20px'}">
+           :mask-closable=false >
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
         <!--<alert>温馨提示：xxx</alert>-->
         <FormItem label="模版名称" prop="tmpNa">

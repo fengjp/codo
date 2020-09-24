@@ -13,7 +13,8 @@ export default {
   join_page: 'QQ群',
   doc: '文档',
   doc_mg: '文档管理',
-
+  repository: '知识库',
+  //
   'i18n-tip': '注：仅此' +
     '页做了多语言，其他页面没有在多语言包中添加语言内容',
   error_store_page: '错误收集',

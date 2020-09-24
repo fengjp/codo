@@ -57,11 +57,13 @@
           </Select>
         </FormItem>
         <FormItem label="问题标题" prop="question" style="margin-right:30px">
-          <Input v-model="formValidate.question" :maxlength="100" placeholder="问题标题"></Input>
+          <i-input type="textarea" v-model="formValidate.question" placeholder="问题标题"
+                   :rows="4">
+          </i-input>
         </FormItem>
         <FormItem label="回答" prop="answer" style="margin-right:30px">
           <i-input type="textarea" v-model="formValidate.answer" placeholder="回答"
-                   :rows="5">
+                   :rows="7">
           </i-input>
         </FormItem>
         <FormItem>

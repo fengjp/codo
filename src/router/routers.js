@@ -347,43 +347,34 @@ export const routerMap = [
     ]
   },
   {
-    path: '/doc',
-    name: 'doc',
+    path: '/repository',
+    name: 'repository',
     meta: {
-      icon: 'ios-book',
-      title: '文档管理'
+      icon: 'md-book',
+      title: '知识库'
     },
     component: Main,
-    children: [{
-      path: 'doc_mg',
-      name: 'doc_mg',
-      meta: {
-        icon: 'ios-book',
-        title: '文档管理'
+    children: [
+      {
+        path: 'doc',
+        name: 'doc',
+        meta: {
+          icon: 'ios-book',
+          title: '文档管理'
+        },
+        component: () =>
+          import ('@/view/it-manage/doc-manager.vue')
       },
-      component: () =>
-        import ('@/view/it-manage/doc-manager.vue')
-    }
-    ]
-  },
-  {
-    path: '/faq',
-    name: 'FAQ',
-    meta: {
-      icon: 'md-help-circle',
-      title: 'FAQ'
-    },
-    component: Main,
-    children: [{
-      path: 'faq_mg',
-      name: 'FAQ',
-      meta: {
-        icon: 'md-help-circle',
-        title: 'FAQ'
-      },
-      component: () =>
-        import ('@/view/it-manage/faq.vue')
-    }
+      {
+        path: 'faq',
+        name: 'FAQ',
+        meta: {
+          icon: 'md-help-circle',
+          title: 'FAQ'
+        },
+        component: () =>
+          import ('@/view/it-manage/faq.vue')
+      }
     ]
   },
   // {
