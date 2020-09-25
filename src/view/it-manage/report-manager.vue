@@ -1,12 +1,11 @@
 <template>
   <div>
     <Card :bordered="false" style="margin-bottom: 20px">
-      <div style="padding: 10px; text-align:center;">
         <Row>
-          <Col span="24" style="text-align: right; margin-bottom: 5px">
+          <Col span="24" style="text-align: left; margin-bottom: 1px">
         <Select v-model="searchValue" clearable placeholder='请选择报表' style="width: 200px;marginRight: 2px;">
-          <Option v-if="item.value != 'xunjian'" v-for="item in reportList" :value="item.value" :key="item.value">
-            {{ item.label }}
+          <Option v-if="item.download_dir != 'xunjian'" v-for="item in reportList" :value="item.download_dir" :key="item.download_dir">
+            {{ item.totitle }}
           </Option>
         </Select>
         <DatePicker type="daterange" :options="optionsDate" confirm
@@ -21,17 +20,24 @@
         <a :href=surl><span id="surl"></span></a>
             </Col>
         </Row>
-      </div>
     </Card>
     <Row :gutter="16">
-      <Col span="6">
+      <Col span="8">
         <Card :bordered="false">
-          <Table height="500" size="small" :columns="columns" :data="reportdata" @on-row-click="getFileList"></Table>
+          <Table height="650" size="small" :columns="columns" :data="reportdata" ></Table>
+          <div style="margin: 10px;overflow: hidden">
+        <div style="float: left;">
+          <Page :current="pageNum" :page-size="pageSize"
+                :page-size-opts=[10,15,25,35,50,100,150,200,300,500,800,1000,1500]
+                :total="pageTotal"
+                @on-change="changePage" @on-page-size-change="handlePageSize" show-sizer show-total></Page>
+        </div>
+      </div>
         </Card>
       </Col>
-      <Col span="18">
+      <Col span="16">
         <Card :bordered="false">
-          <Table height="500" size="small" :columns="columns2" :data="reportdata2"></Table>
+          <Table height="700" size="small" :columns="columns2" :data="reportdata2"></Table>
         </Card>
       </Col>
     </Row>
@@ -44,12 +50,19 @@
         <FormItem label="excel表头" prop="header" style="display: block">
           <Input v-model="formValidate.header" :maxlength="50" placeholder='请输入excel表头字段,用竖号分开。例：编号|用户名|手机号|地址'></Input>
         </FormItem>
-        <FormItem label="数据库源" prop="dblinkstr" style="width: 48%">
-          <Select v-model="formValidate.dblinkstr" placeholder='请选择数据库源'>
+<!--        <FormItem label="数据库源" prop="dbname_id" style="width: 48%">-->
+<!--          <Select v-model="formValidate.dbname_id" placeholder='请选择数据库源'>-->
+<!--            <Option v-for="item in databaselist" :value="item.id">{{ item.name }}-->
+<!--            </Option>-->
+<!--          </Select>-->
+<!--        </FormItem>-->
+        <FormItem label="数据库源" prop="dbname_id" style="width: 48%">
+          <Select v-model="formValidate.dbname_id" placeholder='请选择脚本'>
             <Option v-for="item in databaselist" :value="item.id">{{ item.name }}
             </Option>
           </Select>
         </FormItem>
+
         <FormItem label="数据库名" prop="dataname" style="width: 48%">
           <Input v-model="formValidate.dataname" :maxlength="50" placeholder="请输入数据库名"></Input>
         </FormItem>
@@ -59,6 +72,11 @@
             </Option>
           </Select>
         </FormItem>
+        <FormItem label="执行周期" prop="cycle">
+        <Select v-model="formValidate.cycle" multiple style="width:260px">
+        <Option v-for="item in cycleList" :value="item.k">{{ item.v}}</Option>
+    </Select>
+          </FormItem>
         <FormItem label="执行时间" prop="times">
           <RadioGroup  vertical>
               <TimePicker size="small" format="HH:mm"
@@ -66,7 +84,7 @@
           </RadioGroup>
         </FormItem>
         <FormItem style="display: block">
-          <Button type="primary" @click="handleSubmit_sql('formValidate')">提交</Button>
+          <Button type="primary" @click="handleSubmit_sql('formValidate')"  :disabled="isDisable" >提交</Button>
           <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
         </FormItem>
       </Form>
@@ -94,10 +112,11 @@
 <script>
   import {getCaseFile} from '@/api/problem'
   import {createFile, getFileList, getReportList} from '@/api/doc'
-  import  {customizedAdd} from '@/api/task'
+  import  {customizedAdd,customizedList,customizedDelete} from '@/api/task'
   import {getDate} from '@/libs/tools'
   import {getSqlIdList} from '@/api/cmdb2/asset_sql'
   import {getDBListForQry} from '@/api/cmdb2/db.js'
+  import {getSqlIdDate} from '@/api/cmdb2/asset_sql'
 
   export default {
     data() {
@@ -145,6 +164,7 @@
         },
         surl: '',
         tableData: '',
+        isDisable: false,
         tabledata3: [],
         mode_type: 'mysql',
         todate: [],
@@ -154,6 +174,35 @@
           color: "primary"
         },
         searchKey: '',
+        cycleList:[{
+                        k: '1',
+                        v: '星期一'
+                    },
+                    {
+                        k: '2',
+                        v: '星期二'
+                    },
+                    {
+                        k: '3',
+                        v: '星期三'
+                    },
+                    {
+                        k: '4',
+                        v: '星期四'
+                    },
+                    {
+                        k: '5',
+                        v: '星期五'
+                    },
+                    {
+                        k: '6',
+                        v: '星期六'
+                    },
+                   {
+                        k: '7',
+                        v: '星期日'
+                    }
+        ],
         searchValue: '',
         tokey: '',
         tovalue: '',
@@ -161,11 +210,12 @@
         databaselist:[],
         ruleValidate: {
           title: [{required: true, message: "标题不能为空", trigger: "blur"}],
-          // dblinkstr: [{required: true, message: "不能为空", trigger: "blur"}],
           header: [{required: true, message: "请输入excel表头字段,用竖号分开。", trigger: "blur"}],
           times: [{required: true, message: "请选择定时时间", trigger: "blur"}],
-          dataname: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
-          dbid: [{required: true, message: "脚本数据不能为空", trigger: "blur", type: 'number'}]
+          // dataname: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
+          dbid: [{required: true, message: "脚本数据不能为空", trigger: "blur", type: 'number'}],
+          dbname_id: [{required: true, message: "数据源不能为空", trigger: "change",type: 'number'}],
+          // cycle: [{required: true, message: "执行周期不能为空", trigger: "change"}],
         },
         reportList: [
           // {
@@ -182,22 +232,94 @@
           // }
         ],
         columns: [
-          {title: '报表名称', key: 'report_na', align: 'center'},
-          {
-            title: ' ',
-            key: 'script_rd',
-            align: 'center',
-            width: 60,
-            render: (h, params) => {
-              if (params.row.report_sql) {
+          {title: '报表名称', key: 'totitle', align: 'center',
+          render: (h, params) => {
                 return h('div', [
-                  h('a', {
+                  h(
+                    'Button',
+                    {props: {
+                      type: 'text',
+                      size: 'small',
+                      icon: "ios-list",
+                    },
+                    style: {
+                      marginRight: '1px',
+                      color: '#409eff'
+                    },
+                    on: {
+                      click: () => {
+                        console.log(params.row.totitle)
+                        this.getFileList(params.row.totitle,params.row.download_dir)
+                      }
+                    }
+                  }, params.row.totitle)
+                ])
+            }},
+          {
+            title: '操作 ',
+            key: '',
+            align: 'center',
+            width: 240,
+            render: (h, params) => {
+              if (params.row.dbid) {
+                return h('div', [
+                  h(
+                    'Button',
+                    {props: {
+                      type: 'text',
+                      size: 'small',
+                      icon: "ios-eye-outline"
+                    },
+                    style: {
+                      marginRight: '1px',
+                      color: '#409eff'
+                    },
                     on: {
                       click: () => {
                         this.handlerReadScript(params.row)
                       }
                     }
-                  }, '查看')
+                  }, '查看'),
+                  h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
+                    },
+                    style: {
+                      marginRight: '1px',
+                      color: '#409eff'
+                    },
+                    on: {
+                      click: () => {
+                        this.handler_sql(params.row, 'put', '编辑')
+                      }
+                    }
+                  },
+                  '编辑'
+                ),
+                  h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
+                    },
+                    style: {
+                      marginRight: '1px',
+                      color: '#ed4014'
+                    },
+                    on: {
+                      click: () => {
+                        this.delData(params)
+                      }
+                    }
+                  },
+                  '删除'
+                )
                 ])
               }
             }
@@ -242,6 +364,10 @@
             }}
         ],
         reportdata2: [],
+        assetSqldata : [],
+        pageNum: 1, // 当前页码
+        pageTotal: 0, // 数据总数
+        pageSize: 15, // 每页条数
         modalMap: {
           modalVisible: false,
           modalTitle: '定制报表',
@@ -256,12 +382,67 @@
           header: '',
           dbid: '',
           times: '',
-          dblinkstr: '',
+          dbname_id: '',
           dataname: '',
+          download_dir: '',
+          cycle: '',
         },
       }
     },
     methods: {
+      // 删除
+      delData(params) {
+        if (confirm(`确定要删除 ${params.row.totitle}`)) {
+          customizedDelete(
+            {
+              id: params.row.id,
+              download_dir:params.row.download_dir,
+            }
+          ).then(res => {
+            if (res.data.code === 0) {
+              this.$Message.success(`${res.data.msg}`)
+              this.customizedList(this.pageNum, this.pageSize)
+              this.getFileList(params.row.totitle,params.row.download_dir)
+            } else {
+              this.$Message.error(`${res.data.msg}`)
+            }
+          })
+        }
+      },
+      getSqlIdDate(value) {
+        getSqlIdDate(value).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            this.assetSqldata  = res.data.data
+          } else {
+            this.assetSqldata =  []
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
+       changePage(value) {
+        this.pageNum = value
+        this.customizedList(this.pageNum, this.pageSize,
+        )
+      },
+      // 每页条数
+      handlePageSize(value) {
+        this.pageSize = value
+        this.customizedList(1, this.pageSize)
+      },
+      customizedList(page, limit) {
+        customizedList(page, limit).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            this.pageTotal = res.data.count
+            this.reportdata = res.data.data
+            this.reportList = res.data.data
+          } else {
+            // this.reportdata =  []
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
       // 获取数据库源
       getDBListForQry(key, value) {
         getDBListForQry(key, value).then(res => {
@@ -285,11 +466,12 @@
        handleReset(name) {
         this.$refs[name].resetFields()
       },
-      customizedAdd (data) {
-      customizedAdd(data).then(res => {
+      customizedAdd (data,meth) {
+      customizedAdd(data,meth).then(res => {
         if (res.data.code === 0) {
           this.$Message.success(`${res.data.msg}`)
           this.modalMap.modalVisible = false
+          this.customizedList(this.pageNum, this.pageSize)
         } else {
           this.$Message.error(`${res.data.msg}`)
         }
@@ -305,9 +487,12 @@
         this.$refs[value].validate((valid) => {
           console.log(this.formValidate)
           if (valid) {
+            this.isDisable = true
             setTimeout(() => {
-                  this.customizedAdd(this.formValidate)
+                  this.customizedAdd(this.formValidate,this.editModalData)
+                  this.isDisable = false
             }, 1000)
+
           } else {
             this.$Message.error('缺少必要参数')
           }
@@ -318,14 +503,18 @@
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
         this.getDBListForQry()
+        console.log(paramsRow)
         if (paramsRow && paramsRow.id) {
           this.formValidate = {
             id: paramsRow.id,
-            title: paramsRow.title,
+            title: paramsRow.totitle,
             header: paramsRow.header,
-            dbid: paramsRow.dbid,
-            dblinkstr:paramsRow.dblinkstr,
-            times: paramsRow.timesTy,
+            dbid: parseInt(paramsRow.dbid),
+            dbname_id:parseInt(paramsRow.dbname_id),
+            dataname:paramsRow.dataname,
+            times: paramsRow.times,
+            download_dir: paramsRow.download_dir,
+            cycle:eval(paramsRow.cycle),
           }
         } else {
           this.formValidate = {
@@ -334,16 +523,21 @@
             header: '',
             dbid: '',
             times: '',
-            dblinkstr:'',
+            dbname_id:'',
+            dbname: '',
+            download_dir: '',
+            cycle: '',
           }
         }
       },
       handlerReadScript(row) {
-        // console.log(row)
-        this.$Modal.info({
-          title: row.report_na + '_脚本',
-          content: row.report_sql
-        });
+        this.getSqlIdDate(row.dbid)
+        setTimeout(() => {
+              this.$Modal.info({
+                title: row.totitle + '_脚本',
+                content: this.assetSqldata[0].sqlstr
+              });
+        }, 1000)
       },
       handlerReadScript2(name,columns,file_data) {
       this.modalMapShow.modalVisible = true
@@ -366,8 +560,8 @@
           }
         })
       },
-      getFileList(row, index) {
-        getFileList(row.report_na, row.report_val).then(res => {
+      getFileList(totile,download_dir) {
+        getFileList(totile,download_dir).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
             this.reportdata2 = res.data.data
@@ -421,8 +615,8 @@
         getReportList().then(res => {
           if (res.data.code === 0) {
             // this.$Message.success(`${res.data.msg}`)
-            this.reportdata = res.data.reportdata
-            this.reportList = res.data.reportList
+            // this.reportdata = res.data.reportdata
+            // this.reportList = res.data.reportList
           } else {
             // this.$Message.error(`${res.data.msg}`)
             this.reportList = []
@@ -435,6 +629,7 @@
     mounted() {
       this.getReportList()
       this.getSqlIdList()
+      this.customizedList(this.pageNum, this.pageSize)
     }
   }
 </script>

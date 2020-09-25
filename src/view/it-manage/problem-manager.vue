@@ -398,7 +398,7 @@
                 prop="case_details" style="width:500px;margin-right:500px"
               >
                 <Input
-                  :rows="4"
+                  :rows="5"
                   placeholder="详细描述"
                   type="textarea"
                   v-model="formValidate.case_details"
@@ -430,6 +430,25 @@
         </div>
       </div>
     </Card>
+    <Modal
+        v-model="modalMapShow.modalVisible"
+        :title="modalMapShow.modalTitle"
+        :loading=true
+        :footer-hide=true
+        width=1000
+        style="margin-top: 1px"
+
+      >
+       <Row :gutter="10" >
+         <Col span="12">
+            <img :src=surl2  style="width: 100%">
+           </Col>
+             <Col span="12">
+            <Input v-model="modalMapShow.user_key" type="textarea" :autosize="{minRows: 30,maxRows: 500}"
+               placeholder="Enter something..."></Input>
+               </Col>
+       </Row>
+      </Modal>
   </div>
 </template>
 
@@ -442,6 +461,7 @@
   import {getDate} from '@/libs/tools'
   import excel from '@/libs/excel'
   import {getDictConfList} from '@/api/app'
+  import {gettypedata} from '@/api/typeconf'
 
   export default {
     data() {
@@ -491,7 +511,9 @@
         isShow: false,
         isDisable: false,
         isDisable2: true,
+        temp_typedata: [],
         surl: '',
+        surl2: '',
         optionsDate: {
           shortcuts: [
             {
@@ -648,7 +670,18 @@
               )
             }
           },
-          {title: '类型', key: 'case_type', align: 'center', width: 100,fixed: 'left'},
+          {title: '类型', key: 'case_type', align: 'center', width: 100,fixed: 'left',
+          render: (h, params) => {
+              return h('div', [
+                h('a', {
+                  on: {
+                    click: () => {
+                      this.handleDetail2("类型", params.row.case_type)
+                    }
+                  }
+                }, params.row.case_type)
+              ])
+            }},
           {title: '状态', key: 'case_status', align: 'center', width: 100,},
           {title: '项目', key: 'case_obj', align: 'center', width: 150,},
           {title: '开始时间', key: 'case_stime',  align: 'center', width: 150,},
@@ -800,9 +833,36 @@
         ],
         alldemanderList: [],
         alldemand_unit: [],
+        modalMapShow: {
+          modalVisible: false,
+          modalTitle: '类型',
+          user_key: ''
+        },
       }
     },
     methods: {
+       gettypedata(value) {
+        gettypedata(value).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            this.temp_typedata =  res.data.data
+            console.log(this.temp_typedata)
+          } else {
+            this.temp_typedata =  []
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
+      // 查看Key详细信息
+      handleDetail2(name, typestr) {
+        this.modalMapShow.modalVisible = true
+        this.modalMapShow.modalTitle = name
+        this.gettypedata(typestr)
+         setTimeout(() => {
+             this.modalMapShow.user_key = this.temp_typedata[0]["remarks"]
+             this.surl2 = this.temp_typedata[0]["chart"]
+            }, 1000)
+      },
       getstakeholder(){
         console.log(this.formValidate.demand_unit)
         this.stakeholderlist("company",this.formValidate.demand_unit)

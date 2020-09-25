@@ -196,6 +196,36 @@ export const routerMap = [
     }]
   },
   {
+    path: '/people_admin',
+    name: 'people_admin',
+    meta: {
+      icon: 'ios-alarm',
+      title: '人事管理'
+    },
+    component: Main,
+    children: [{
+      path: 'peoples',
+      name: 'peoples',
+      meta: {
+        icon: 'md-alarm',
+        title: '人员'
+      },
+      component: () =>
+        import ('@/view/user-manage/peoplesconf.vue')
+    },
+      {
+        path: 'JobPost',
+        name: 'JobPost',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '岗位'
+        },
+        component: () =>
+          import ('@/view/user-manage/JobPost.vue')
+      }
+    ]
+  },
+  {
     path: '/report',
     name: 'report',
     meta: {
@@ -323,6 +353,16 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/system-manage/dictconf.vue')
+      },
+      {
+        path: 'typeconf',
+        name: 'typeconf',
+        meta: {
+          icon: 'ios-build',
+          title: '个案类型配置'
+        },
+        component: () =>
+          import ('@/view/user-manage/typeconf.vue')
       },
       {
         path: 'systemlog',

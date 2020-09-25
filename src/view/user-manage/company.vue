@@ -727,6 +727,7 @@
                 })
               }
               this.modalMap.modalVisible = false
+              this.modalMap2.modalVisible = false
               this.isDisable = false
             }, 1000)
           } else {

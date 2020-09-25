@@ -21,6 +21,15 @@ export const getSqlIdList = () => {
     method: 'get',
   })
 }
+export const getSqlIdDate = (value) => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/IdDate/',
+    method: 'get',
+    params: {
+      value
+    }
+  })
+}
 
 export const SqlAdd = (data, meth) => {
   return axios.request({

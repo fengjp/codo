@@ -442,7 +442,7 @@
   import {getDate} from '@/libs/tools'
   import excel from '@/libs/excel'
   import {getDictConfList} from '@/api/app'
-   import {stakeholderlist} from '@/api/problem'
+   import {stakeholderlist,companylist} from '@/api/problem'
 
   export default {
     data() {
@@ -962,6 +962,17 @@
         }
 
       },
+      companylist(key,value) {
+        companylist(key,value).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            console.log(res.data.data)
+            this.alldemand_unit  = res.data.data
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
       handleSubmitTable() {
         if (this.todate.length) {
           if (this.todate[0].length) {
@@ -1093,7 +1104,8 @@
     mounted() {
       this.getPlanList(this.pageNum, this.pageSize, this.tokey, this.tovalue);
       this.getDictConfList()
-      this.stakeholderlist()
+      // this.stakeholderlist()
+      this.companylist("company","")
     }
   };
 </script>

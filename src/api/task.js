@@ -19,11 +19,28 @@ export const operationCommand = (data, meth) => {
         data
     })
 }
-export const customizedAdd = (data) => {
+export const customizedAdd = (data,meth) => {
     return axios.request({
         url: '/tk/v2/accounts/customized/',
-        method: 'post',
+        method: meth,
         data
+    })
+}
+export const customizedDelete = (data) => {
+    return axios.request({
+        url: '/tk/v2/accounts/customizedDelete/',
+        method: 'delete',
+        data
+    })
+};
+export const customizedList = (page, limit) => {
+    return axios.request({
+        url: '/tk/v2/accounts/customized/',
+        method: 'get',
+        params: {
+            page,
+            limit,
+        }
     })
 }
 
