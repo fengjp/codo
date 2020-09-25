@@ -22,7 +22,7 @@
     </Card>
 
     <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="600"
-           :mask-closable=false :styles="{top: '20px'}">
+           :mask-closable=false :styles="{top: '0px'}">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100" inline>
         <!--<alert>温馨提示：xxx</alert>-->
         <FormItem label="标题" prop="title" style="display: block">
