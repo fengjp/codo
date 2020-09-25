@@ -212,10 +212,10 @@
           // ]
         },
         columnslist: [
-          {title: '类型', key: 'typename', editable: true},
+          {title: '类型', key: 'typename', editable: true,width: 100,},
         ],
         columns: [
-          {title: '类型', key: 'typename', editable: true},
+          {title: '类型', key: 'typename', editable: true,width: 200, },
           {title: '操作流程描述', key: 'remarks', editable: true,
             render: (h, params) => {
               let roleTitle = params.row.remarks
