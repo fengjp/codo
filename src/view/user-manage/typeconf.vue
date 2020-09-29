@@ -19,7 +19,7 @@
         :columns="columns"
         :data="tableData"
         ref="selection"
-
+        size="small"
       ></Table>
       <div style="margin: 10px; overflow: hidden">
         <div style="float: left;">

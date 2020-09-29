@@ -39,3 +39,10 @@ export const updatepeoplelist = (data) => {
         data
     })
 }
+
+export const getlist = () => {
+    return axios.request({
+        url: '/mg/v2/accounts/getlist/',
+        method: 'get',
+    })
+}

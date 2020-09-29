@@ -20,6 +20,7 @@
         :load-data="handleLoadData"
         max-height="300"
         row-key="id"
+        size="small"
       ></Table>
       <div style="margin: 10px; overflow: hidden">
         <div style="float: left;">

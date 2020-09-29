@@ -436,15 +436,13 @@
         :loading=true
         :footer-hide=true
         width=1000
-        style="margin-top: 1px"
-
       >
        <Row :gutter="10" >
          <Col span="12">
             <img :src=surl2  style="width: 100%">
            </Col>
              <Col span="12">
-            <Input v-model="modalMapShow.user_key" type="textarea" :autosize="{minRows: 30,maxRows: 500}"
+            <Input v-model="modalMapShow.user_key" type="textarea" :autosize="{minRows: 20,maxRows: 500}"
                placeholder="Enter something..."></Input>
                </Col>
        </Row>
@@ -672,11 +670,12 @@
           },
           {title: '类型', key: 'case_type', align: 'center', width: 100,fixed: 'left',
           render: (h, params) => {
+              let  tempstr = params.row.case_type + ":流程图"
               return h('div', [
                 h('a', {
                   on: {
                     click: () => {
-                      this.handleDetail2("类型", params.row.case_type)
+                      this.handleDetail2(tempstr, params.row.case_type)
                     }
                   }
                 }, params.row.case_type)
@@ -835,7 +834,7 @@
         alldemand_unit: [],
         modalMapShow: {
           modalVisible: false,
-          modalTitle: '类型',
+          modalTitle: '流程图',
           user_key: ''
         },
       }
@@ -928,7 +927,7 @@
       companylist(key,value) {
         companylist(key,value).then(res => {
           if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
+            // this.$Message.success(`${res.data.msg}`)
             console.log(res.data.data)
             this.alldemand_unit  = res.data.data
           } else {

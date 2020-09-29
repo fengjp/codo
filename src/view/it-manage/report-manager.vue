@@ -240,7 +240,6 @@
                     {props: {
                       type: 'text',
                       size: 'small',
-                      icon: "ios-list",
                     },
                     style: {
                       marginRight: '1px',
@@ -279,7 +278,7 @@
                         this.handlerReadScript(params.row)
                       }
                     }
-                  }, '查看'),
+                  }, ''),
                   h(
                   'Button',
                   {
@@ -298,7 +297,7 @@
                       }
                     }
                   },
-                  '编辑'
+                  ''
                 ),
                   h(
                   'Button',
@@ -318,7 +317,7 @@
                       }
                     }
                   },
-                  '删除'
+                  ''
                 )
                 ])
               }

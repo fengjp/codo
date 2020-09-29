@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div ref="dom" class="charts chart-line"></div>
 </template>
 

@@ -9,14 +9,14 @@
           <Input @on-change="handleClear"  clearable placeholder="输入关键字搜索"  v-model="searchValue" style="width:150px;margin-right:5px"/>
       <Button @click="handleSearch" class="search-btn" type="primary" style="margin-right:5px">搜索</Button>
        <Button type="info" class="search-btn" @click="editModal('', 'post', '新增人员')" style="margin-right:5px">新增人员</Button>
-<!--          <Button type="info"  @click="editModal2" style="margin-right:5px">批量新建干系人</Button>-->
+          <Button type="info"  @click="editModal3" style="margin-right:5px">组织架构图</Button>
         </Row>
     </div>
       <Table
         :columns="columns"
         :data="tableData"
         ref="selection"
-
+        size="small"
       ></Table>
       <div style="margin: 10px; overflow: hidden">
         <div style="float: left;">
@@ -31,7 +31,6 @@
         :loading=true
         :footer-hide=true
         width="385px"
-        :styles="{top: '20px'}"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
@@ -67,6 +66,29 @@
                   placeholder="请输入联系手机号"
                 ></Input>
               </FormItem>
+          <FormItem label="上级领导" prop="othername" style="width:350px;">
+                <Select v-model="formValidate.othername" placeholder="请选择上级领导姓名">
+                <Option v-for="item in allusernameList" :value="item.id" >{{item.username}}</Option>
+              </Select>
+              </FormItem>
+          <FormItem label="入岗日期" prop="startdate" style="width:350px;">
+                <DatePicker :clearable="false"
+                              :value="formValidate.startdate" @on-change="changestime"
+                              format="yyyy-MM-dd"
+                              placeholder="记录开始日期"
+                              type="date">
+
+                  </DatePicker>
+              </FormItem>
+          <FormItem label="离岗日期" prop="enddate" style="width:350px;">
+                <DatePicker :clearable="false"
+                              :value="formValidate.enddate" @on-change="changeetime"
+                              format="yyyy-MM-dd"
+                              placeholder="记录结束日期"
+                              type="date">
+
+                  </DatePicker>
+              </FormItem>
           <FormItem>
               <Button
                 type="primary"
@@ -84,6 +106,7 @@
       </Modal>
     <Modal
         v-model="modalMap2.modalVisible"
+        :title="modalMap2.modalTitle"
         :loading=true
         :footer-hide=true
         width="30%"
@@ -104,6 +127,17 @@
         </div>
     </Upload>
     </Modal>
+    <Modal
+        v-model="modalMap3.modalVisible"
+        :title="modalMap3.modalTitle"
+        :loading=true
+        :footer-hide=true
+        width="50%"
+      >
+       <Card shadow>
+       <chart-tree ref="peopleTree" style="height: 340px;" :value="treeData" text="组织架构图"/>
+         </Card>
+    </Modal>
   </div>
 </template>
 
@@ -116,16 +150,19 @@ import {
   addpeoplelist,
   delpeoplelist,
   updatepeoplelist,
+  getlist,
 } from '@/api/peoples'
 import { getDictConfList } from '@/api/app'
 import { post_getid } from '@/api/jobpost'
-
+import {ChartTree} from '_c/charts'
 export default {
   components: {
-    FormGroup
+    FormGroup,
+    ChartTree,
   },
   data () {
     return {
+      treeData: [],
       // 弹出框
       modalMap: {
         modalVisible: false,
@@ -135,9 +172,14 @@ export default {
         modalVisible: false,
         modalTitle: '批量创建干系人'
       },
+      modalMap3: {
+        modalVisible: false,
+        modalTitle: '组织架构'
+      },
       isDisable: false,
       editModalData: '',
       tokey: '',
+      allusernameList: [],
       alljobpostList: [],
       tovalue: '',
       searchValue: '',
@@ -147,8 +189,11 @@ export default {
       formValidate: {
         id: 0,
         username: '',
+        othername: '',
         jobpost:'',
-        tel: ''
+        tel: '',
+        startdate: '',
+        enddate: ''
       },
       allcompanyList: [],
       alldemand_unit: [],
@@ -183,6 +228,9 @@ export default {
         { title: '用户名', key: 'username',editable: true },
         { title: '岗位', key: 'jobpost', editable: true },
         { title: '联系方式', key: 'tel', editable: true },
+        // { title: '上级领导', key: 'othername', editable: true },
+        { title: '入岗日期', key: 'startdate', editable: true },
+        { title: '离岗日期', key: 'enddate', editable: true },
         {
           title: '操作',
           align: 'center',
@@ -250,6 +298,12 @@ export default {
     }
   },
   methods: {
+    changestime(data) {
+        this.formValidate.startdate = data
+      },
+      changeetime(data) {
+        this.formValidate.enddate = data
+      },
     handleSuccess (res, file) {
           console.log(file)
           this.getpeoplelist(this.pageNum, this.pageSize)
@@ -265,9 +319,8 @@ export default {
         post_getid().then(res => {
         if (res.data.code === 0) {
           this.alljobpostList = res.data.data
-          this.$Message.success(`${res.data.msg}`)
         } else {
-          this.$Message.error(`${res.data.msg}`)
+          this.alljobpostList = []
         }
       })
     },
@@ -281,6 +334,17 @@ export default {
             }, 1000)
         } else {
           this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    getlist () {
+        getlist().then(res => {
+        if (res.data.code === 0) {
+          this.allusernameList = res.data.data
+          this.treeData  = res.data.treelist
+        } else {
+          this.allusernameList =  []
+          this.treeData = []
         }
       })
     },
@@ -300,13 +364,23 @@ export default {
           }
 
         } else {
-          this.$Message.error(`${res.data.msg}`)
+          this.alldepartmentList = []
+          this.allcompanyList = []
+          // this.$Message.error(`${res.data.msg}`)
+
         }
       })
     },
     editModal2 () {
       this.modalMap2.modalVisible = true
       this.modalMap2.modalTitle = '上传文件'
+    },
+    editModal3 () {
+      this.getlist()
+      setTimeout(() => {
+              this.modalMap3.modalVisible = true
+              this.modalMap3.modalTitle = '组织架构'
+      }, 500)
     },
     editModal (paramsRow, meth, mtitle) {
       this.modalMap.modalVisible = true
@@ -319,6 +393,9 @@ export default {
           username: paramsRow.username,
           jobpost:paramsRow.jobpost,
           tel:paramsRow.tel,
+          othername:paramsRow.othername,
+          startdate:paramsRow.startdate,
+          enddate:paramsRow.enddate,
         }
       }else {
         // post
@@ -326,6 +403,9 @@ export default {
           username: '',
           jobpost:'',
           tel:'',
+          othername: '',
+          startdate:'',
+          enddate:'',
         }
       }
     },
@@ -405,6 +485,7 @@ export default {
                                this.$Message.info(`${data.msg}`)
                                // 重新获取数据
                                this.getpeoplelist(this.pageNum, this.pageSize)
+                               this.getlist()
                        } else {
                             this.$Message.error(`${data.msg}`)
                        }
@@ -475,7 +556,13 @@ export default {
     this.getpeoplelist(this.pageNum, this.pageSize)
     this.getDictConfList()
     this.post_getid()
-  }
+    this.getlist()
+  },
+  watch: {
+      treeData: function () {
+        this.$refs.peopleTree.initTree()
+      },
+    },
 }
 </script>
 

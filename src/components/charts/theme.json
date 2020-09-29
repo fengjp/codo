@@ -48,6 +48,18 @@
         "symbol": "emptyCircle",
         "smooth": true
     },
+  "tree": {
+        "itemStyle": {
+            "normal": {
+                "barBorderWidth": 0,
+                "barBorderColor": "#ccc"
+            },
+            "emphasis": {
+                "barBorderWidth": 0,
+                "barBorderColor": "#ccc"
+            }
+        }
+    },
     "bar": {
         "itemStyle": {
             "normal": {
