@@ -36,16 +36,82 @@
       :columns="columns"
       :data="tableData"
     ></Table>
+    <div style="margin: 10px; overflow: hidden">
+      <div style="float: left;">
+        <Page
+          :total="pageTotal"
+          :current="pageNum"
+          :page-size="pageSize"
+          :page-size-opts="[15,35,50,100,200,500,1000]"
+          show-sizer
+          show-total
+          @on-change="changePage"
+          @on-page-size-change="handlePageSize"
+        ></Page>
+      </div>
+    </div>
     <Modal
       v-model="modalMap.modalVisible"
       :title="modalMap.modalTitle"
-      :loading=true
-      :footer-hide=true
-      width=760
+      :loading="true"
+      :footer-hide="true"
+      :mask-closable="false"
+      :styles="{top:'0px'}"
     >
-      <div style="marginRight: 35px;">
-        <form-group :list="formList" @on-submit-success="handleSubmit"></form-group>
-      </div>
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="85">
+        <FormItem label="名称" prop="facility_na">
+          <Input v-model="formValidate.facility_na" :maxlength="100" placeholder=""></Input>
+        </FormItem>
+        <FormItem label="品牌">
+          <Select v-model="formValidate.facility_brand" placeholder="类型">
+            <Option v-for="item in brandList" :value="item.val">{{item.val}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="型号">
+          <Input v-model="formValidate.facility_version" :maxlength="50" placeholder=""></Input>
+        </FormItem>
+        <FormItem label="分类">
+          <Select v-model="formValidate.facility_type" placeholder="类型">
+            <Option v-for="item in facilityTypeList" :value="item.val">{{item.val}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="设备编号">
+          <Input v-model="formValidate.facility_id" :maxlength="50" placeholder="资产编号"></Input>
+        </FormItem>
+        <FormItem label="设备SN">
+          <Input v-model="formValidate.facility_sn" :maxlength="50" placeholder="设备序列号"></Input>
+        </FormItem>
+        <FormItem label="购买日期">
+          <DatePicker type="datetime" :value="formValidate.buy_date" @on-change="formValidate.buy_date=$event"
+                      placeholder=""></DatePicker>
+        </FormItem>
+        <FormItem label="保修日期">
+          <Select v-model="formValidate.warranty_date" placeholder="类型">
+            <Option v-for="item in warranty_List" :value="item.val">{{item.val}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="安装日期">
+          <DatePicker type="datetime" :value="formValidate.installation_date"
+                      @on-change="formValidate.installation_date=$event"
+                      placeholder=""></DatePicker>
+        </FormItem>
+        <FormItem label="IP地址">
+          <Input v-model="formValidate.facility_ip" :maxlength="50" placeholder=""></Input>
+        </FormItem>
+        <FormItem label="描述">
+          <Input
+            v-model="formValidate.remarks"
+            type="textarea"
+            :autosize="{minRows: 2,maxRows: 10}"
+            :maxlength="50"
+            placeholder="描述"
+          ></Input>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+        </FormItem>
+      </Form>
     </Modal>
   </Card>
 </template>
@@ -61,28 +127,37 @@
     data() {
       return {
         columns: [
+          // {
+          //   title: "ID",
+          //   key: "id",
+          //   align: "center",
+          //   width: 100,
+          //   sortable: true
+          // },
           {
-            title: "ID",
-            key: "id",
-            align: "center",
-            width: 100,
-            sortable: true
-          },
-          {
-            title: "设备名称",
+            title: "名称",
             key: "facility_na",
             align: "center",
             minWidth: 100,
-            // render: (h, params) => {
-            //   return h('a', {
-            //       on: {
-            //         click: () => {
-            //           this.handleDetail(params.row.user_key)
-            //         }
-            //       }
-            //     }, params.row.admin_user
-            //   )
-            // }
+            fixed: 'left'
+          },
+          {
+            title: "品牌",
+            key: "facility_brand",
+            align: "center",
+            minWidth: 100,
+          },
+          {
+            title: "型号",
+            key: "facility_version",
+            align: "center",
+            minWidth: 100,
+          },
+          {
+            title: "分类",
+            key: "facility_type",
+            align: "center",
+            minWidth: 100,
           },
           {
             title: "设备编号",
@@ -127,6 +202,7 @@
             key: "handle",
             width: 180,
             align: "center",
+            fixed: 'right',
             render: (h, params) => {
               return h("div", [
                 h(
@@ -143,7 +219,7 @@
                     },
                     on: {
                       click: () => {
-                        this.editModal(params.index, "put", "编辑设备");
+                        this.editModal(params.row, "put", "编辑设备");
                       }
                     }
                   },
@@ -177,21 +253,54 @@
           modalVisible: false,
           modalTitle: "新建"
         },
-        formList: [],
+        pageNum: 1, // 当前页码
+        pageTotal: 0, // 数据总数
+        pageSize: 15, // 每页条数
         editModalData: "",
         //
         searchKey: "",
         searchValue: "",
         //
-        alert_id: "",
-        config_api: "",
-        allUser: [], // 所有用户
-        existUser: [] // 已存在用户
+        warranty_List: [
+          {id: 0, val: '1年'},
+          {id: 1, val: '2年'},
+          {id: 2, val: '3年'},
+          {id: 3, val: '4年'},
+          {id: 4, val: '5年'},
+        ],
+        brandList: [
+          {id: 0, val: '华为'},
+          {id: 1, val: '联想'},
+          {id: 2, val: '戴尔'},
+        ],
+        facilityTypeList: [
+          {id: 0, val: '笔记本'},
+          {id: 1, val: '服务器'},
+          {id: 2, val: '交换机'},
+          {id: 3, val: '路由器'},
+        ],
+        formValidate: {
+          id: '',
+          facility_na: '',
+          facility_id: '',
+          facility_sn: '',
+          facility_brand: '',
+          facility_version: '',
+          facility_type: '',
+          buy_date: '',
+          warranty_date: '',
+          installation_date: '',
+          facility_ip: '',
+          remarks: ''
+        },
+        ruleValidate: {
+          facility_na: [{required: true, message: '请输入名称', trigger: 'blur'}],
+        },
       };
     },
     methods: {
-      getFacilityList(page, limit, key, value) {
-        getFacilityList(page, limit, key, value).then(res => {
+      getFacilityList(key, value) {
+        getFacilityList(this.pageNum, this.pageSize, key, value).then(res => {
           if (res.data.code === 0) {
             //this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
@@ -201,68 +310,67 @@
           }
         })
       },
-      editModal(index, meth, mtitle) {
+      editModal(paramsRow, meth, mtitle) {
         this.modalMap.modalVisible = true;
         this.modalMap.modalTitle = mtitle;
         this.editModalData = meth;
-        this.formList = [
-          {
-            name: "id",
-            value: meth === "put" ? this.tableData[index].id : ""
-          },
-          {
-            name: "facility_na",
-            type: "i-input",
-            value: meth === "put" ? this.tableData[index].facility_na : "",
-            label: "设备名称",
-            placeholder: "",
-            rule: [{required: true, message: "名称不能为空", trigger: "blur"}]
-          },
-          {
-            name: "facility_id",
-            type: "i-input",
-            value: meth === "put" ? this.tableData[index].facility_id : "",
-            label: "设备编号",
-            placeholder: "",
-          },
-          {
-            name: "facility_sn",
-            type: "i-input",
-            value: meth === "put" ? this.tableData[index].facility_sn : "",
-            label: "设备SN",
-            placeholder: "",
-          },
-          {
-            name: "facility_ip",
-            type: "i-input",
-            value: meth === "put" ? this.tableData[index].facility_ip : "",
-            label: "IP地址",
-            placeholder: "",
-          },
-          {
-            name: "remarks",
-            type: "i-input",
-            type1: 'textarea',
-            maxlength: 300,
-            value: meth === "put" ? this.tableData[index].remarks : "",
-            label: "描述",
-            placeholder: "描述",
-          },
-
-        ];
+        this.getTypeList()
+        if (paramsRow && paramsRow.id) {
+          // put
+          this.formValidate = {
+            id: paramsRow.id,
+            facility_na: paramsRow.facility_na,
+            facility_id: paramsRow.facility_id,
+            facility_sn: paramsRow.facility_sn,
+            facility_brand: paramsRow.facility_brand,
+            facility_version: paramsRow.facility_version,
+            facility_type: paramsRow.facility_type,
+            buy_date: paramsRow.buy_date,
+            warranty_date: paramsRow.warranty_date,
+            installation_date: paramsRow.installation_date,
+            facility_ip: paramsRow.facility_ip,
+            remarks: paramsRow.remarks
+          }
+        } else {
+          // post
+          this.formValidate = {
+            id: '',
+            facility_na: '',
+            facility_id: '',
+            facility_sn: '',
+            facility_brand: '',
+            facility_version: '',
+            facility_type: '',
+            buy_date: '',
+            warranty_date: '',
+            installation_date: '',
+            facility_ip: '',
+            remarks: ''
+          }
+        }
+      },
+      // 获取分类
+      getTypeList() {
       },
       handleSubmit(value) {
-        setTimeout(() => {
-          operationFacility(value.data, this.editModalData).then(res => {
-            if (res.data.code === 0) {
-              this.$Message.success(`${res.data.msg}`);
-              this.getFacilityList(this.searchKey, this.searchValue);
-              this.modalMap.modalVisible = false;
-            } else {
-              this.$Message.error(`${res.data.msg}`);
-            }
-          });
-        }, 500);
+        this.$refs[value].validate(valid => {
+          if (valid) {
+            setTimeout(() => {
+              operationFacility(this.formValidate, this.editModalData).then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`);
+                  this.getFacilityList(this.searchKey, this.searchValue);
+                  this.modalMap.modalVisible = false;
+                } else {
+                  this.$Message.error(`${res.data.msg}`);
+                }
+              });
+            }, 500)
+            // this.$Message.success('Success!');
+          } else {
+            this.$Message.error('缺少必要参数')
+          }
+        });
       },
       // 删除
       delData(params) {
@@ -290,6 +398,25 @@
       },
       handleSearch() {
         this.getFacilityList(this.searchKey, this.searchValue);
+      },
+      // 翻页
+      changePage(value) {
+        this.pageNum = value
+        if (this.searchValue) {
+          this.getFacilityList(this.searchKey, this.searchValue)
+        } else {
+          this.getFacilityList()
+        }
+      },
+      // 切换分页
+      handlePageSize(value) {
+        this.pageSize = value
+        this.pageNum = 1
+        if (this.searchValue) {
+          this.getFacilityList(this.searchKey, this.searchValue)
+        } else {
+          this.getFacilityList()
+        }
       }
     },
 //   watch: {

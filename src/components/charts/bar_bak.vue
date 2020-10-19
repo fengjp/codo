@@ -1,5 +1,5 @@
 <template>
-  <div ref="dom" class="charts chart-lime"></div>
+  <div ref="dom" class="charts chart-bar"></div>
 </template>
 
 <script>
@@ -8,7 +8,7 @@ import tdTheme from './theme.json'
 import { on, off } from '@/libs/tools'
 echarts.registerTheme('tdTheme', tdTheme)
 export default {
-  name: 'ChartLime',
+  name: 'ChartBar',
   props: {
     value: Object,
     text: String,
@@ -23,16 +23,14 @@ export default {
     resize () {
       this.dom.resize()
     },
-    initLime(){
+    initBar(){
       this.$nextTick(() => {
       let xAxisData = Object.keys(this.value)
       let seriesData = Object.values(this.value)
       let  temp  = {}
       let option = {}
       temp = JSON.stringify(this.value)
-      console.log("1111111111111111111111111111111111111111")
-      console.log(this.value)
-      console.log("1111111111111111111111111111111111111111")
+
       if  (temp == '{}'){
 
         option = {
@@ -55,25 +53,38 @@ export default {
         },
         series: [{
           data: seriesData,
-          type: 'line'
+          type: 'bar'
         }]
       }
       }else{
        option = {
         title: {
-          text: "折線圖",
+          text: this.text,
+          subtext: this.subtext,
           //x: 'center'
           y: 'top',
         },
         xAxis: {
-          data: ["智联招聘","51job","拉钩","Boss直聘"]
+          type: 'category',
+          data: xAxisData
         },
         yAxis: {
+          type: 'value'
         },
         series: [{
-          name: "數據量",
-          data: [600,310,200,800],
-          type: 'line',
+          data: seriesData,
+          type: 'bar',
+          //配置样式
+          itemStyle: {
+            //通常情况下：
+            normal: {
+              //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
+              color: function (params) {
+                var colorList = ['#4962FC','#02ae60','#fe8104','#f376e0','#844ba3'];
+                return colorList[params.dataIndex];
+              }
+            },
+          },
         }]
       }}
 
@@ -84,7 +95,7 @@ export default {
     }
   },
   mounted () {
-    this.initLime()
+    this.initBar()
   },
   beforeDestroy () {
     off(window, 'resize', this.resize)

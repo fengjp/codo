@@ -24,17 +24,33 @@
     </Card>
 
     <Card :bordered="false" style="margin-top: 16px">
-      <List size="large">
+      <List size="large" item-layout="vertical">
         <ListItem v-for="item in data" :key="item.question">
-          <ListItemMeta :title="item.question" :description="brightenKeyword(item.answer, searchValue)"/>
+          <!--<ListItemMeta :title="item.question" :description="item.question"/>-->
+          <div class="ivu-list-item-meta">
+            <div class="ivu-list-item-meta-content">
+              <div class="ivu-list-item-meta-title">{{item.question}}</div>
+              <div class="ivu-list-item-meta-description">
+                <div>
+                  <Tag color="success">咨询</Tag>
+                  <Tag color="success">咨询2</Tag>
+                  <Tag color="success">咨询3</Tag>
+                </div>
+              </div>
+            </div>
+          </div>
           <template slot="action">
             <li>
               <Icon type="ios-time-outline" size="16"/>
-              <span style="padding-left: 5px">{{item.ctime}}</span>
+              {{item.ctime}}
+            </li>
+            <li>
+              <Icon type="ios-eye-outline" size="20"/>
+              {{item.clicks}}
             </li>
           </template>
           <!--<a class="list-a">-->
-          <!--<span v-html="brightenKeyword(item.answer, searchValue)"></span>-->
+          <span class="list-text" v-html="brightenKeyword(item.answer, searchValue)"></span>
           <!--</a>-->
           <!--{{ item.content }}-->
         </ListItem>
@@ -50,11 +66,17 @@
 
     <Modal v-model="modalTable.tableVisible" :loading=true :footer-hide=true :title="modalTable.tableTitle">
       <Form ref="formValidate" :model="formValidate" :label-width="100">
-        <FormItem label="添加问题" prop="sysID" style="margin-right:30px">
+        <FormItem label="分类" prop="sysID" style="margin-right:30px">
           <Select v-model="formValidate.sysID" placeholder="">
             <Option v-for="item in allSysList" :value="item.id" :key="item.id">{{item.type_name}}
             </Option>
           </Select>
+        </FormItem>
+        <FormItem label="标签">
+          <Tag checkable color="success" style="margin-right: 20px"
+               v-for="tag in allFaqTag" v-bind:name="tag.id"
+          >{{ tag.name }}
+          </Tag>
         </FormItem>
         <FormItem label="问题标题" prop="question" style="margin-right:30px">
           <i-input type="textarea" v-model="formValidate.question" placeholder="问题标题"
@@ -88,6 +110,7 @@
   export default {
     data() {
       return {
+        tmp: '<div><div class="ivu-tag ivu-tag-size-default ivu-tag-default ivu-tag-checked"><!----> <span class="ivu-tag-text">iView</span> <!----></div><div class="ivu-tag ivu-tag-size-default ivu-tag-default ivu-tag-checked"><!----> <span class="ivu-tag-text">Vue.js</span> <!----></div><div class="ivu-tag ivu-tag-size-default ivu-tag-default ivu-tag-checked"><!----> <span class="ivu-tag-text">Webpack</span> <!----></div></div>',
         keyword: '',
         UploadUrl: '',
         data: [
@@ -116,6 +139,9 @@
         isDisable: false,
         allSysTag: [],
         tagChecked: {},
+        allFaqTag: [
+          {"id": 0, "name": "咨询"},
+        ],
       }
     },
     computed: {
@@ -327,5 +353,4 @@
       }
     }
   }
-
 </style>

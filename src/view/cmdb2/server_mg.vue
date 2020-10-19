@@ -85,6 +85,7 @@
             :loading="true"
             :footer-hide="true"
             :mask-closable="false"
+            :styles="{top: '50px'}"
           >
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="85">
               <Alert closable>管理用户：用来登陆你的主机获取资产信息，请务必配置！</Alert>

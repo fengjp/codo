@@ -20,7 +20,7 @@
     </Row>
 
     <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="540"
-           :mask-closable=false >
+           :mask-closable=false>
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
         <!--<alert>温馨提示：xxx</alert>-->
         <FormItem label="模版名称" prop="tmpNa">
@@ -400,9 +400,13 @@
                   tableData[i].cellClassName = {
                     target: 'table-error-cell-target'
                   }
-                } else {
+                } else if (tableData[i].target === '正常') {
                   tableData[i].cellClassName = {
                     target: 'table-success-cell-target'
+                  }
+                } else {
+                  tableData[i].cellClassName = {
+                    target: 'table-disabled-cell-target'
                   }
                 }
               }
@@ -522,6 +526,11 @@
 
   .ivu-table .table-success-cell-target {
     background-color: #19be6b;
+    color: #fff;
+  }
+
+  .ivu-table .table-disabled-cell-target {
+    background-color: #c5c8ce;
     color: #fff;
   }
 

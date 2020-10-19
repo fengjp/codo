@@ -180,9 +180,13 @@
                   tableData[i].cellClassName = {
                     target: 'table-error-cell-target'
                   }
-                } else {
+                } else if (tableData[i].target === '正常') {
                   tableData[i].cellClassName = {
                     target: 'table-success-cell-target'
+                  }
+                } else {
+                  tableData[i].cellClassName = {
+                    target: 'table-disabled-cell-target'
                   }
                 }
               }
@@ -292,6 +296,11 @@
 
   .ivu-table .table-success-cell-target {
     background-color: #19be6b;
+    color: #fff;
+  }
+
+  .ivu-table .table-disabled-cell-target {
+    background-color: #c5c8ce;
     color: #fff;
   }
 

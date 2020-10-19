@@ -43,14 +43,35 @@ export const routerMap = [
           import ('@/view/cmdb/software_mg.vue')
       },
       {
-        path: 'asset_facility',
-        name: 'asset_facility',
+        path: 'facility_mg',
+        name: 'facility_mg',
         meta: {
           icon: 'md-aperture',
           title: '设备管理'
         },
-        component: () =>
-          import ('@/view/cmdb/facility_mg.vue')
+        component: parentView,
+        children: [
+          {
+            path: 'asset_facility',
+            name: 'asset_facility',
+            meta: {
+              icon: 'md-list',
+              title: '设备列表'
+            },
+            component: () =>
+              import ('@/view/cmdb/facility_mg.vue')
+          },
+          {
+            path: 'facility_report',
+            name: 'facility_report',
+            meta: {
+              icon: 'ios-book',
+              title: '设备报表'
+            },
+            component: () =>
+              import ('@/view/cmdb/facility_report.vue')
+          },
+        ]
       },
       {
         path: 'asset_server',
