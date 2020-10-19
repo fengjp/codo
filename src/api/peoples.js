@@ -46,3 +46,22 @@ export const getlist = () => {
         method: 'get',
     })
 }
+export const getdatelist = (start,end) => {
+    return axios.request({
+        url: '/mg/v2/accounts/getdatelist/',
+        method: 'get',
+        params: {
+           start,
+           end,
+        }
+    })
+}
+export const getiddata = (id) => {
+    return axios.request({
+        url: '/mg/v2/accounts/getiddata/',
+        method: 'get',
+        params: {
+           id,
+        }
+    })
+}

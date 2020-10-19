@@ -443,7 +443,7 @@
            </Col>
              <Col span="12">
             <Input v-model="modalMapShow.user_key" type="textarea" :autosize="{minRows: 20,maxRows: 500}"
-               placeholder="Enter something..."></Input>
+               placeholder="无数据......"></Input>
                </Col>
        </Row>
       </Modal>
@@ -854,13 +854,19 @@
       },
       // 查看Key详细信息
       handleDetail2(name, typestr) {
-        this.modalMapShow.modalVisible = true
-        this.modalMapShow.modalTitle = name
-        this.gettypedata(typestr)
+         this.gettypedata(typestr)
+
          setTimeout(() => {
-             this.modalMapShow.user_key = this.temp_typedata[0]["remarks"]
-             this.surl2 = this.temp_typedata[0]["chart"]
-            }, 1000)
+             this.modalMapShow.modalVisible = true
+             this.modalMapShow.modalTitle = name
+             if(this.temp_typedata.length == 0){
+                    this.modalMapShow.user_key = ""
+                    this.surl2 = ""
+              }else{
+                    this.modalMapShow.user_key = this.temp_typedata[0]["remarks"]
+                    this.surl2 = this.temp_typedata[0]["chart"]
+              }
+            }, 500)
       },
       getstakeholder(){
         console.log(this.formValidate.demand_unit)

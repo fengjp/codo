@@ -67,9 +67,9 @@
           ></Input>
         </FormItem>
         <FormItem label="流程图" prop="chart" style="width:430px;">
-          <div class="demo-upload-list" v-for="item in uploadList">
+          <div class="demo-upload-list" v-for="item in formValidate.defaultList">
             <template v-if="item.status === 'finished'">
-              <img :src="item.url">
+              <img :src="item.response.data.url" style="width:50px;height:50px">
               <div class="demo-upload-list-cover">
                 <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
@@ -80,10 +80,11 @@
             </template>
           </div>
           <Upload
+            v-model="formValidate.chart"
             ref="upload"
             type="drag"
             :show-upload-list="false"
-            :default-file-list="defaultList"
+            :default-file-list="formValidate.defaultList"
             :on-success="handleSuccess"
             multiple
             :format="['jpg','jpeg','png']"
@@ -157,12 +158,6 @@
           modalVisible: false,
           modalTitle: '批量创建干系人'
         },
-        defaultList: [
-                    // {
-                    //     'name': 'a42bdcc1178e62b4694c830f028db5c0',
-                    //     'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-                    // },
-                ],
         isDisable: false,
         editModalData: '',
         tokey: '',
@@ -183,7 +178,13 @@
           id: 0,
           typename: '',
           remarks: '',
-          chart: ''
+          chart: '',
+          defaultList: [
+                    // {
+                    //     'name': 'a42bdcc1178e62b4694c830f028db5c0',
+                    //     'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+                    // },
+                ],
         },
         allcompanyList: [],
         alldemand_unit: [],
@@ -352,11 +353,15 @@
       handleRemove (file) {
                 const fileList = this.$refs.upload.fileList;
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+                this.formValidate.defaultList.splice(fileList.indexOf(file), 1);
+                this.uploadList = this.$refs.upload.fileList;
             },
       handleSuccess(res, file) {
         console.log(res.data.url)   //上传图片成功,返回的url
         this.formValidate.chart = res.data.url
-        console.log(this.uploadList)   //记录了上传和返回的数据
+        this.formValidate.defaultList = this.$refs.upload.fileList
+        this.uploadList  = this.$refs.upload.fileList
+        console.log(this.formValidate.defaultList)   //记录了上传和返回的数据
         this.$Message.success("图片上传成功")
       },
       handleError(error) {
@@ -391,19 +396,27 @@
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
         if (paramsRow && paramsRow.id) {
+
           // put
           this.formValidate = {
             id: paramsRow.id,
             typename: paramsRow.typename,
             remarks: paramsRow.remarks,
             chart: paramsRow.chart,
+            defaultList: [{"status":"finished", "response":{"data":{"url":paramsRow.chart}}},]
           }
         } else {
+          this.$refs.upload.fileList = [{
+            "status":"finished",
+            "response":{"data":{"url":""}}
+            },]
+          this.uploadList = []
           // post
           this.formValidate = {
             typename: '',
             remarks: '',
             chart: '',
+            defaultList: []
           }
         }
       },

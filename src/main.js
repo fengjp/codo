@@ -15,6 +15,8 @@ import 'view-design/dist/styles/iview.css'
 import './index.less'
 import '@/assets/icons/iconfont.css'
 import VueClipboard from 'vue-clipboard2'
+import Vue2OrgTree from 'vue2-org-tree'
+import 'vue2-org-tree/dist/style.css'
 
 // window.requestAnimationFrame多浏览器兼容问题补丁
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -119,7 +121,7 @@ if (!('classList' in document.documentElement)) {
     },
   });
 }
-
+Vue.use(Vue2OrgTree)
 Vue.use(VueClipboard)
 // 实际打包时应该不引入mock
 /* eslint-disable */

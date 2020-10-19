@@ -12,7 +12,6 @@
     props: {
       value: Array,
       text: String,
-      subtext: String
     },
     data() {
       return {
@@ -25,14 +24,14 @@
       },
       initTree() {
         this.$nextTick(() => {
-          console.log("22222222222222222222222222")
-          console.log(this.value)
-          console.log("22222222222222222222222222")
           let temp = {}
           let option = {}
           temp = JSON.stringify(this.value)
-          if (temp == '[]') {
-            option = {
+          console.log("22222222222222222222222222")
+          console.log(temp)
+          console.log("22222222222222222222222222")
+          // if (temp == '[]') {}
+          option = {
               tooltip: {
                 trigger: 'item',
                 triggerOn: 'mousemove'
@@ -42,7 +41,7 @@
                 left: '3%',
                 orient: 'vertical',
                 data: [{
-                  name: 'tree1',
+                  name: '树型图',
                   icon: 'rectangle'
                 }],
                 borderColor: '#c23531'
@@ -51,7 +50,7 @@
                 {
                   type: 'tree',
 
-                  name: 'tree1',
+                  name: '树型图',
 
                   data: this.value,
 
@@ -84,60 +83,6 @@
                 }
               ]
             }
-          } else {
-            option = {
-              tooltip: {
-                trigger: 'item',
-                triggerOn: 'mousemove'
-              },
-              legend: {
-                top: '2%',
-                left: '3%',
-                orient: 'vertical',
-                data: [{
-                  name: 'tree1',
-                  icon: 'rectangle'
-                }],
-                borderColor: '#c23531'
-              },
-              series: [
-                {
-                  type: 'tree',
-
-                  name: 'tree1',
-
-                  data: this.value,
-
-                  top: '5%',
-                  left: '7%',
-                  bottom: '2%',
-                  right: '60%',
-
-                  symbolSize: 7,
-
-                  label: {
-                    position: 'left',
-                    verticalAlign: 'middle',
-                    align: 'right'
-                  },
-
-                  leaves: {
-                    label: {
-                      position: 'right',
-                      verticalAlign: 'middle',
-                      align: 'left'
-                    }
-                  },
-
-                  expandAndCollapse: true,
-
-                  animationDuration: 550,
-                  animationDurationUpdate: 750
-
-                }
-              ]
-            }
-          }
 
           this.dom = echarts.init(this.$refs.dom, 'tdTheme')
           this.dom.setOption(option)
