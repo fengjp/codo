@@ -133,131 +133,135 @@
 </template>
 
 <script>
-  import FormGroup from '_c/form-group'
-  import {
-    gettypeList,
-    addtypeList,
-    deltypeList,
-    updatetypeList,
-    UploadUrl,
-  } from '@/api/typeconf'
-  import {getDictConfList} from '@/api/app'
+import FormGroup from '_c/form-group'
+import {
+  gettypeList,
+  addtypeList,
+  deltypeList,
+  updatetypeList,
+  UploadUrl
+} from '@/api/typeconf'
+import { getDictConfList } from '@/api/app'
 
-  export default {
-    components: {
-      FormGroup
-    },
-    data() {
-      return {
-        // 弹出框
-        modalMap: {
-          modalVisible: false,
-          modalTitle: '创建干系人'
-        },
-        modalMap2: {
-          modalVisible: false,
-          modalTitle: '批量创建干系人'
-        },
-        isDisable: false,
-        editModalData: '',
-        tokey: '',
-        uploadList: [],
-        modalMapShow: {
-          modalVisible: false,
-          modalTitle: '流程图',
-        },
-        tovalue: '',
-        visible: false,
-        searchValue: '',
-        searchKey: '',
-        imgeurl: '',
-        UploadUrl: '',
-        surl2: '',
-        surl: '',
-        formValidate: {
-          id: 0,
-          typename: '',
-          remarks: '',
-          chart: '',
-          defaultList: [
-                    // {
-                    //     'name': 'a42bdcc1178e62b4694c830f028db5c0',
-                    //     'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-                    // },
-                ],
-        },
-        allcompanyList: [],
-        alldemand_unit: [],
-        alldepartmentList: [],
-        ruleValidate: {
-          typename: [
-            {
-              required: true,
-              message: '请输入类型名',
-              trigger: 'blur'
-            }
-          ],
-          remarks: [
-            {
-              required: true,
-              message: '请输入操作流程描述',
-              trigger: 'blur'
-            }
-          ],
-          // chart: [
-          //   {
-          //     required: true,
-          //     message: '请输上传流程图',
-          //     trigger: 'blur'
-          //   }
-          // ]
-        },
-        columnslist: [
-          {title: '类型', key: 'typename', editable: true,width: 100,},
-        ],
-        columns: [
-          {title: '类型', key: 'typename', editable: true,width: 200, },
-          {title: '操作流程描述', key: 'remarks', editable: true,
-            render: (h, params) => {
-              let roleTitle = params.row.remarks
-              return h('div', [
-                h('span', {
-                  style: {
-                    display: 'inline-block',
-                    width: '100%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  },
-                  domProps: {
-                    title: roleTitle
-                  }
-                }, roleTitle)
-              ])
-            }
-          },
-          {title: '流程图', key: 'chart', editable: true,
-            render: (h, params) => {
-              return h('a', {
-                  // attrs:{
-                  //      href: params.row.chart,
-                  // },
-                  on: {
-                        click: () => {
-                          this.handleDetail3("流程图",params.row.chart)
-                        }
-                      }
-                }, params.row.chart
-              )
-            }
-          },
+export default {
+  components: {
+    FormGroup
+  },
+  data () {
+    return {
+      // 弹出框
+      modalMap: {
+        modalVisible: false,
+        modalTitle: '创建干系人'
+      },
+      modalMap2: {
+        modalVisible: false,
+        modalTitle: '批量创建干系人'
+      },
+      isDisable: false,
+      editModalData: '',
+      tokey: '',
+      uploadList: [],
+      modalMapShow: {
+        modalVisible: false,
+        modalTitle: '流程图'
+      },
+      tovalue: '',
+      visible: false,
+      searchValue: '',
+      searchKey: '',
+      imgeurl: '',
+      UploadUrl: '',
+      surl2: '',
+      surl: '',
+      formValidate: {
+        id: 0,
+        typename: '',
+        remarks: '',
+        chart: '',
+        defaultList: [
+          // {
+          //     'name': 'a42bdcc1178e62b4694c830f028db5c0',
+          //     'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
+          // },
+        ]
+      },
+      allcompanyList: [],
+      alldemand_unit: [],
+      alldepartmentList: [],
+      ruleValidate: {
+        typename: [
           {
-            title: '操作',
-            align: 'center',
-            width: 180,
-            key: 'handle',
-            // options: ["delete"],
-            render:
+            required: true,
+            message: '请输入类型名',
+            trigger: 'blur'
+          }
+        ],
+        remarks: [
+          {
+            required: true,
+            message: '请输入操作流程描述',
+            trigger: 'blur'
+          }
+        ]
+        // chart: [
+        //   {
+        //     required: true,
+        //     message: '请输上传流程图',
+        //     trigger: 'blur'
+        //   }
+        // ]
+      },
+      columnslist: [
+        { title: '类型', key: 'typename', editable: true, width: 100 }
+      ],
+      columns: [
+        { title: '类型', key: 'typename', editable: true, width: 200 },
+        { title: '操作流程描述',
+          key: 'remarks',
+          editable: true,
+          render: (h, params) => {
+            let roleTitle = params.row.remarks
+            return h('div', [
+              h('span', {
+                style: {
+                  display: 'inline-block',
+                  width: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                },
+                domProps: {
+                  title: roleTitle
+                }
+              }, roleTitle)
+            ])
+          }
+        },
+        { title: '流程图',
+          key: 'chart',
+          editable: true,
+          render: (h, params) => {
+            return h('a', {
+              // attrs:{
+              //      href: params.row.chart,
+              // },
+              on: {
+                click: () => {
+                  this.handleDetail3('流程图', params.row.chart)
+                }
+              }
+            }, params.row.chart
+            )
+          }
+        },
+        {
+          title: '操作',
+          align: 'center',
+          width: 180,
+          key: 'handle',
+          // options: ["delete"],
+          render:
               (h, params) => {
                 return h('div', [
                   h(
@@ -266,7 +270,7 @@
                       props: {
                         type: 'text',
                         size: 'small',
-                        icon: 'ios-create-outline',
+                        icon: 'ios-create-outline'
                       },
                       style: {
                         marginRight: '1px',
@@ -286,7 +290,7 @@
                       props: {
                         type: 'text',
                         size: 'small',
-                        icon: 'ios-trash-outline',
+                        icon: 'ios-trash-outline'
                       },
                       style: {
                         marginRight: '1px',
@@ -303,272 +307,269 @@
                 ])
               }
 
-          }
-        ],
-        // 搜索数据
-        searchKey: '',
-        searchValue: '',
-        // 分页数据
-        tableData: [],
-        tableData2: [],
-        pageTotal: 0, // 数据总数
-        pageNum: 1, // 当前页码
-        pageSize: 15, // 每页条数
-        // select
-        selectionList: []
-      }
+        }
+      ],
+      // 搜索数据
+      searchKey: '',
+      searchValue: '',
+      // 分页数据
+      tableData: [],
+      tableData2: [],
+      pageTotal: 0, // 数据总数
+      pageNum: 1, // 当前页码
+      pageSize: 15, // 每页条数
+      // select
+      selectionList: []
+    }
+  },
+  methods: {
+    handleDetail3 (name, chart) {
+      this.modalMapShow.modalVisible = true
+      this.modalMapShow.modalTitle = name
+      this.surl2 = chart
     },
-    methods: {
-       handleDetail3(name, chart) {
-        this.modalMapShow.modalVisible = true
-        this.modalMapShow.modalTitle = name
-         this.surl2 = chart
-      },
-       handleFormatError (file) {
-                this.$Notice.warning({
-                    title: 'The file format is incorrect',
-                    desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
-                });
-            },
-      handleMaxSize (file) {
-                this.$Notice.warning({
-                    title: 'Exceeding file size limit',
-                    desc: 'File  ' + file.name + ' is too large, no more than 2M.'
-                });
-            },
-      handleBeforeUpload () {
-                const check = this.uploadList.length < 1;
-                if (!check) {
-                    this.$Notice.warning({
-                        title: '图片只能上传一张'
-                    });
-                }
-                return check;
-            },
-      handleView (item) {
-                console.log(item.response.data.url)
-                this.imgeurl = item.response.data.url
-                this.visible = true;
-            },
-      handleRemove (file) {
-                const fileList = this.$refs.upload.fileList;
-                this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-                this.formValidate.defaultList.splice(fileList.indexOf(file), 1);
-                this.uploadList = this.$refs.upload.fileList;
-            },
-      handleSuccess(res, file) {
-        console.log(res.data.url)   //上传图片成功,返回的url
-        this.formValidate.chart = res.data.url
-        this.formValidate.defaultList = this.$refs.upload.fileList
-        this.uploadList  = this.$refs.upload.fileList
-        console.log(this.formValidate.defaultList)   //记录了上传和返回的数据
-        this.$Message.success("图片上传成功")
-      },
-      handleError(error) {
-        this.$Message.error("图片上传失败")
-      },
-      getDictConfList() {
-        getDictConfList().then(res => {
-          if (res.data.code === 0) {
-            // let stakeholder_company_list = JSON.parse(res.data.data['stakeholder_company_list'])
-            // let stakeholder_department_list = JSON.parse(res.data.data['stakeholder_department_list'])
-            let stakeholder_company_list = eval(res.data.data['stakeholder_company_list'])
-            let stakeholder_department_list = eval(res.data.data['stakeholder_department_list'])
-            if (stakeholder_company_list) {
-              this.allcompanyList = stakeholder_company_list
-              console.log(this.allcompanyList)
-            }
-            if (stakeholder_department_list) {
-              this.alldepartmentList = stakeholder_department_list
-            }
-
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
+    handleFormatError (file) {
+      this.$Notice.warning({
+        title: 'The file format is incorrect',
+        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+      })
+    },
+    handleMaxSize (file) {
+      this.$Notice.warning({
+        title: 'Exceeding file size limit',
+        desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+      })
+    },
+    handleBeforeUpload () {
+      const check = this.uploadList.length < 1
+      if (!check) {
+        this.$Notice.warning({
+          title: '图片只能上传一张'
         })
-      },
-      editModal2() {
-        this.modalMap2.modalVisible = true
-        this.modalMap2.modalTitle = '上传文件'
-      },
-      editModal(paramsRow, meth, mtitle) {
-        this.modalMap.modalVisible = true
-        this.modalMap.modalTitle = mtitle
-        this.editModalData = meth
-        if (paramsRow && paramsRow.id) {
-
-          // put
-          this.formValidate = {
-            id: paramsRow.id,
-            typename: paramsRow.typename,
-            remarks: paramsRow.remarks,
-            chart: paramsRow.chart,
-            defaultList: [{"status":"finished", "response":{"data":{"url":paramsRow.chart}}},]
+      }
+      return check
+    },
+    handleView (item) {
+      console.log(item.response.data.url)
+      this.imgeurl = item.response.data.url
+      this.visible = true
+    },
+    handleRemove (file) {
+      const fileList = this.$refs.upload.fileList
+      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
+      this.formValidate.defaultList.splice(fileList.indexOf(file), 1)
+      this.uploadList = this.$refs.upload.fileList
+    },
+    handleSuccess (res, file) {
+      console.log(res.data.url) // 上传图片成功,返回的url
+      this.formValidate.chart = res.data.url
+      this.formValidate.defaultList = this.$refs.upload.fileList
+      this.uploadList = this.$refs.upload.fileList
+      console.log(this.formValidate.defaultList) // 记录了上传和返回的数据
+      this.$Message.success('图片上传成功')
+    },
+    handleError (error) {
+      this.$Message.error('图片上传失败')
+    },
+    getDictConfList () {
+      getDictConfList().then(res => {
+        if (res.data.code === 0) {
+          // let stakeholder_company_list = JSON.parse(res.data.data['stakeholder_company_list'])
+          // let stakeholder_department_list = JSON.parse(res.data.data['stakeholder_department_list'])
+          let stakeholder_company_list = eval(res.data.data['stakeholder_company_list'])
+          let stakeholder_department_list = eval(res.data.data['stakeholder_department_list'])
+          if (stakeholder_company_list) {
+            this.allcompanyList = stakeholder_company_list
+            console.log(this.allcompanyList)
+          }
+          if (stakeholder_department_list) {
+            this.alldepartmentList = stakeholder_department_list
           }
         } else {
-          this.$refs.upload.fileList = [{
-            "status":"finished",
-            "response":{"data":{"url":""}}
-            },]
-          this.uploadList = []
-          // post
-          this.formValidate = {
-            typename: '',
-            remarks: '',
-            chart: '',
-            defaultList: []
-          }
+          this.$Message.error(`${res.data.msg}`)
         }
-      },
-      handleDelete(params) {
-        if (confirm(`确定要删除 ${params.row.username}`)) {
-          deltypeList({id: params.row.id}).then(res => {
-            if (res.data.code === 0) {
-              this.$Message.success(`${res.data.msg}`)
-              this.gettypeList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
-            } else {
-              this.$Message.error(`${res.data.msg}`)
-            }
-          })
+      })
+    },
+    editModal2 () {
+      this.modalMap2.modalVisible = true
+      this.modalMap2.modalTitle = '上传文件'
+    },
+    editModal (paramsRow, meth, mtitle) {
+      this.modalMap.modalVisible = true
+      this.modalMap.modalTitle = mtitle
+      this.editModalData = meth
+      if (paramsRow && paramsRow.id) {
+        // put
+        this.formValidate = {
+          id: paramsRow.id,
+          typename: paramsRow.typename,
+          remarks: paramsRow.remarks,
+          chart: paramsRow.chart,
+          defaultList: [{ 'status': 'finished', 'response': { 'data': { 'url': paramsRow.chart } } }]
         }
-      },
-      handleReset(name) {
-        this.$refs[name].resetFields()
-      },
-      changePage(value) {
-        this.pageNum = value
-        this.gettypeList(
-          this.pageNum,
-          this.pageSize,
-          this.searchKey,
-          this.searchValue
-        )
-      },
-      handleSearch() {
-        this.gettypeList(1, this.pageSize, this.searchKey, this.searchValue)
-      },
-      // 每页条数
-      handlePageSize(value) {
-        this.pageSize = value
-        this.gettypeList(1, this.pageSize, this.searchKey, this.searchValue)
-      },
-      exportExcel() {
-        this.$refs.tables.exportCsv({
-          filename: `table-${new Date().valueOf()}.csv`
-        })
-      },
-      handleSearchTable(key, val) {
-        this.pageNum = 1
-        this.searchKey = key
-        this.searchValue = val
-        this.gettypeList(
-          this.pageNum,
-          this.pageSize,
-          this.searchKey,
-          this.searchValue
-        )
-      },
-      // 获取用户列表
-      gettypeList(page, limit, key, value) {
-        gettypeList(page, limit, key, value).then(res => {
-          if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
-            this.pageTotal = res.data.count
-            this.tableData = res.data.data
-
-          } else {
-            this.tableData = []
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      handleSubmit(value) {
-        this.$refs[value].validate((valid) => {
-          if (valid) {
-            this.isDisable = true
-            setTimeout(() => {
-              if (this.editModalData == "post") {
-                addtypeList(this.formValidate).then(res => {
-                  const data = res.data
-                  if (res.data.code === 0) {
-                    this.$Message.info(`${data.msg}`)
-                    // 重新获取数据
-                    this.gettypeList(this.pageNum, this.pageSize)
-                    this.modalMap.modalVisible = false
-                  } else {
-                    this.$Message.error(`${data.msg}`)
-                  }
-                }).catch(err => {
-                  this.$Message.error(err)
-                })
-              }
-              if (this.editModalData == "put") {
-                updatetypeList(this.formValidate).then(res => {
-                  const data = res.data
-                  if (res.data.code === 0) {
-                    this.$Message.info(`${data.msg}`)
-                    // 重新获取数据
-                    this.gettypeList(this.pageNum, this.pageSize)
-                    this.modalMap.modalVisible = false
-                  } else {
-                    this.$Message.error(`${data.msg}`)
-                  }
-                }).catch(err => {
-                  this.$Message.error(err)
-                })
-              }
-
-              this.isDisable = false
-            }, 1000)
-          } else {
-            this.$Message.error('缺少必要参数')
-          }
-        })
-      },
-      handleInput(editData) {
-        // 行内编辑
-        const EditData = {
-          user_id: editData.row.user_id,
-          key: editData.column.key,
-          value: editData.value
+      } else {
+        this.$refs.upload.fileList = [{
+          'status': 'finished',
+          'response': { 'data': { 'url': '' } }
+        }]
+        this.uploadList = []
+        // post
+        this.formValidate = {
+          typename: '',
+          remarks: '',
+          chart: '',
+          defaultList: []
         }
-        updatetypeList(EditData).then(res => {
-          if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      companylist(key, value) {
-        companylist(key, value).then(res => {
-          if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
-            console.log(res.data.data)
-            this.alldemand_unit = res.data.data
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      handleClear(e) {
-        // if (e.target.value === '') this.tableData = this.value
-      },
-      handleSelectChange(val) {
-        let userList = []
-        val.forEach(item => {
-          userList.push(item.user_id)
-        })
-        this.selectionList = userList
       }
     },
-    mounted() {
-      this.uploadList = this.$refs.upload.fileList;
-      this.UploadUrl = UploadUrl
-      this.gettypeList(this.pageNum, this.pageSize)
-      this.getDictConfList()
+    handleDelete (params) {
+      if (confirm(`确定要删除 ${params.row.username}`)) {
+        deltypeList({ id: params.row.id }).then(res => {
+          if (res.data.code === 0) {
+            this.$Message.success(`${res.data.msg}`)
+            this.gettypeList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      }
+    },
+    handleReset (name) {
+      this.$refs[name].resetFields()
+    },
+    changePage (value) {
+      this.pageNum = value
+      this.gettypeList(
+        this.pageNum,
+        this.pageSize,
+        this.searchKey,
+        this.searchValue
+      )
+    },
+    handleSearch () {
+      this.gettypeList(1, this.pageSize, this.searchKey, this.searchValue)
+    },
+    // 每页条数
+    handlePageSize (value) {
+      this.pageSize = value
+      this.gettypeList(1, this.pageSize, this.searchKey, this.searchValue)
+    },
+    exportExcel () {
+      this.$refs.tables.exportCsv({
+        filename: `table-${new Date().valueOf()}.csv`
+      })
+    },
+    handleSearchTable (key, val) {
+      this.pageNum = 1
+      this.searchKey = key
+      this.searchValue = val
+      this.gettypeList(
+        this.pageNum,
+        this.pageSize,
+        this.searchKey,
+        this.searchValue
+      )
+    },
+    // 获取用户列表
+    gettypeList (page, limit, key, value) {
+      gettypeList(page, limit, key, value).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+          this.pageTotal = res.data.count
+          this.tableData = res.data.data
+        } else {
+          this.tableData = []
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    handleSubmit (value) {
+      this.$refs[value].validate((valid) => {
+        if (valid) {
+          this.isDisable = true
+          setTimeout(() => {
+            if (this.editModalData == 'post') {
+              addtypeList(this.formValidate).then(res => {
+                const data = res.data
+                if (res.data.code === 0) {
+                  this.$Message.info(`${data.msg}`)
+                  // 重新获取数据
+                  this.gettypeList(this.pageNum, this.pageSize)
+                  this.modalMap.modalVisible = false
+                } else {
+                  this.$Message.error(`${data.msg}`)
+                }
+              }).catch(err => {
+                this.$Message.error(err)
+              })
+            }
+            if (this.editModalData == 'put') {
+              updatetypeList(this.formValidate).then(res => {
+                const data = res.data
+                if (res.data.code === 0) {
+                  this.$Message.info(`${data.msg}`)
+                  // 重新获取数据
+                  this.gettypeList(this.pageNum, this.pageSize)
+                  this.modalMap.modalVisible = false
+                } else {
+                  this.$Message.error(`${data.msg}`)
+                }
+              }).catch(err => {
+                this.$Message.error(err)
+              })
+            }
+
+            this.isDisable = false
+          }, 1000)
+        } else {
+          this.$Message.error('缺少必要参数')
+        }
+      })
+    },
+    handleInput (editData) {
+      // 行内编辑
+      const EditData = {
+        user_id: editData.row.user_id,
+        key: editData.column.key,
+        value: editData.value
+      }
+      updatetypeList(EditData).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    companylist (key, value) {
+      companylist(key, value).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+          console.log(res.data.data)
+          this.alldemand_unit = res.data.data
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    handleClear (e) {
+      // if (e.target.value === '') this.tableData = this.value
+    },
+    handleSelectChange (val) {
+      let userList = []
+      val.forEach(item => {
+        userList.push(item.user_id)
+      })
+      this.selectionList = userList
     }
+  },
+  mounted () {
+    this.uploadList = this.$refs.upload.fileList
+    this.UploadUrl = UploadUrl
+    this.gettypeList(this.pageNum, this.pageSize)
+    this.getDictConfList()
   }
+}
 </script>
 
 <style lang="less" scoped>

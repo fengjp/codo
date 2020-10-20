@@ -231,7 +231,7 @@ export const routerMap = [
     name: 'people_admin',
     meta: {
       icon: 'ios-alarm',
-      title: '人事管理'
+      title: '团队管理'
     },
     component: Main,
     children: [{
@@ -253,6 +253,16 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/user-manage/JobPost.vue')
+      },
+      {
+        path: 'meter',
+        name: 'meter',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '仪表'
+        },
+        component: () =>
+          import ('@/view/user-manage/meter.vue')
       }
     ]
   },
@@ -274,6 +284,67 @@ export const routerMap = [
       component: () =>
         import ('@/view/it-manage/report-manager.vue')
     }]
+  },
+    {
+    path: '/statistics',
+    name: 'statistics',
+    meta: {
+      icon: 'ios-alarm',
+      title: '需求统计'
+    },
+    component: Main,
+    children: [{
+      path: 'examination',
+      name: 'examination',
+      meta: {
+        icon: 'md-alarm',
+        title: '每月一考'
+      },
+      component: () =>
+        import ('@/view/statistics/examination.vue')
+    },
+
+      {
+        path: 'extension_admin',
+        name: 'extension_admin',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '综合监管系统推广应用任务统计'
+        },
+        component: parentView,
+        children: [{
+      path: 'extension',
+      name: 'extension',
+      meta: {
+        icon: 'ios-list-box-outline',
+        title: '推广统计',
+      },
+      component: () =>
+          import ('@/view/statistics/extension.vue')
+    },
+          {
+      path: 'extension2',
+      name: 'extension2',
+      meta: {
+        icon: 'ios-list-box-outline',
+        title: '推广',
+      },
+      component: () =>
+          import ('@/view/statistics/extension.vue')
+    },
+    ],
+      },
+      {
+        path: 'vehicle',
+        name: 'vehicle',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '外省机动车违法情况统计'
+        },
+        component: () =>
+          import ('@/view/statistics/vehicle.vue')
+      }
+    ]
   },
   {
     path: '/cron',

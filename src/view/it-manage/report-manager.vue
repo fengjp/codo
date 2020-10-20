@@ -77,6 +77,14 @@
         <Option v-for="item in cycleList" :value="item.k">{{ item.v}}</Option>
     </Select>
           </FormItem>
+        <FormItem label="日期范围" prop="todate2" style="width: 48%">
+        <DatePicker type="daterange"
+                    placement="bottom-end" placeholder="请选择开始与结束日期"
+                    :value="todate2"
+                    @on-change="todate2=$event"
+                    style="width: 230px;marginRight: 2px;">
+        </DatePicker>
+          </FormItem>
         <FormItem label="执行时间" prop="times">
           <RadioGroup  vertical>
               <TimePicker size="small" format="HH:mm"
@@ -168,6 +176,7 @@
         tabledata3: [],
         mode_type: 'mysql',
         todate: [],
+        todate2: [],
         editor: {
           title: '编辑',
           read: false,
@@ -385,6 +394,7 @@
           dataname: '',
           download_dir: '',
           cycle: '',
+          start_end: [],
         },
       }
     },
@@ -487,6 +497,7 @@
           console.log(this.formValidate)
           if (valid) {
             this.isDisable = true
+            this.formValidate.start_end = this.todate2
             setTimeout(() => {
                   this.customizedAdd(this.formValidate,this.editModalData)
                   this.isDisable = false
@@ -514,6 +525,7 @@
             times: paramsRow.times,
             download_dir: paramsRow.download_dir,
             cycle:eval(paramsRow.cycle),
+            start_end:eval(paramsRow.start_end),
           }
         } else {
           this.formValidate = {
@@ -526,6 +538,7 @@
             dbname: '',
             download_dir: '',
             cycle: '',
+            start_end:[],
           }
         }
       },

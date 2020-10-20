@@ -1,191 +1,14 @@
 <template>
   <div style="height:100%">
     <Card style="margin-top: 5px;">
-      <div>
-        <Row>
-          <Select class="search-col" style="width:150px;margin-right:5px" v-model="searchKey">
-            <Option :key="`search-col-${item.key}`" :value="item.key" v-for="item in columnslist">{{ item.title }}
-            </Option>
-          </Select>
-          <Input @on-change="handleClear" clearable placeholder="输入关键字搜索" style="width:150px;margin-right:5px"
-                 v-model="searchValue"/>
-          <Button @click="handleSearch" class="search-btn" style="margin-right:5px" type="primary">搜索</Button>
-          <Button @click="editModal('', 'post', '新增人员')" class="search-btn" style="margin-right:5px" type="info">新增人员
-          </Button>
-          <Button @click="editModal3" style="margin-right:5px" type="info">组织架构图</Button>
-          <Button @click="editModal5" style="margin-right:5px" type="info">在职频率</Button>
-        </Row>
-      </div>
-      <Table
-        :columns="columns"
-        :data="tableData"
-        ref="selection"
-        size="small"
-      ></Table>
-      <div style="margin: 10px; overflow: hidden">
-        <div style="float: left;">
-          <Page :current="pageNum" :page-size="pageSize" :page-size-opts=[10,15,25,35,50,100] :total="pageTotal"
-                @on-change="changePage" @on-page-size-change="handlePageSize" show-sizer show-total></Page>
-        </div>
-      </div>
-    </Card>
-    <Modal
-      :footer-hide=true
-      :loading=true
-      :title="modalMap.modalTitle"
-      v-model="modalMap.modalVisible"
-      width="390px"
-    >
-      <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
-      <Form :inline="true" :label-width="80" :model="formValidate" :rules="ruleValidate" ref="formValidate">
-        <div v-if="editModalData && editModalData == 'put'">
-          <FormItem label="用户名" prop="username" style="width:350px;">
-            <Input
-              :maxlength="45"
-              disabled
-              placeholder="请输入用户名"
-              v-model="formValidate.username"
-            ></Input>
-          </FormItem>
-        </div>
-        <div v-else>
-          <FormItem label="用户名" prop="username" style="width:350px;">
-            <Input
-              :maxlength="45"
-              placeholder="请输入用户名"
-              v-model="formValidate.username"
-            ></Input>
-          </FormItem>
-        </div>
-        <FormItem label="性别" prop="sex" style="width:350px;">
-               <RadioGroup v-model="formValidate.sex">
-              <Radio label="男"></Radio>
-              <Radio label="女"></Radio>
-              </RadioGroup>
-        </FormItem>
-        <FormItem label="部门" prop="department" style="width:350px;">
-          <Select placeholder="部门" v-model="formValidate.department">
-            <Option  :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="岗位" prop="jobpost" style="width:350px;">
-          <Select placeholder="岗位" v-model="formValidate.jobpost">
-            <Option :key="item.id" :value="item.postname" v-for="item in alljobpostList">{{item.postname}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="手机号" prop="tel" style="width:350px;">
-          <Input
-            :maxlength="45"
-            placeholder="请输入联系手机号"
-            v-model="formValidate.tel"
-          ></Input>
-        </FormItem>
-        <FormItem label="上级部门" prop="supe_department" style="width:350px;">
-          <Select placeholder="上级部门" v-model="formValidate.supe_department">
-            <Option  :value="item.department" v-for="item in allsupe_departmentList">{{item.department}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="上级领导" prop="othername" style="width:350px;">
-          <Select placeholder="请选择上级领导姓名" v-model="formValidate.othername">
-            <Option :value="item.id" v-for="item in allusernameList">{{item.username}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="类型" prop="type" style="width:350px;">
-               <RadioGroup v-model="formValidate.type">
-              <Radio label="在职"></Radio>
-              <Radio label="离职"></Radio>
-              </RadioGroup>
-        </FormItem>
-        <FormItem label="入岗日期" prop="startdate" style="width:350px;">
-          <DatePicker :clearable="false"
-                      :value="formValidate.startdate" @on-change="changestime"
-                      format="yyyy-MM-dd"
-                      placeholder="记录开始日期"
-                      type="date">
 
-          </DatePicker>
-        </FormItem>
-        <FormItem label="离岗日期" prop="enddate" style="width:350px;">
-          <DatePicker :clearable="false"
-                      :value="formValidate.enddate" @on-change="changeetime"
-                      format="yyyy-MM-dd"
-                      placeholder="记录结束日期"
-                      type="date">
-
-          </DatePicker>
-        </FormItem>
-        <FormItem>
-          <Button
-            :disabled="isDisable"
-            @click="handleSubmit('formValidate')"
-            type="primary"
-          >提交
-          </Button>
-          <Button
-            @click="handleReset('formValidate')"
-            style="margin-left: 8px"
-          >重置
-          </Button>
-        </FormItem>
-      </Form>
-    </Modal>
-    <Modal
-      :footer-hide=true
-      :loading=true
-      :title="modalMap2.modalTitle"
-      v-model="modalMap2.modalVisible"
-      width="30%"
-    >
-      <div slot="header">
-        <Button @click="geturl()">下载模板文件</Button>
-        <a :href=surl><span id="surl"></span></a>
-      </div>
-      <Upload
-        :action=UploadUrl
-        :on-error="handleError"
-        :on-success="handleSuccess"
-        type="drag"
-      >
-        <div style="padding: 20px 0">
-          <Icon size="52" style="color: #3399ff" type="ios-cloud-upload"></Icon>
-          <p>请选择或拖拽一个文件上传</p>
-        </div>
-      </Upload>
-    </Modal>
-    <Modal
-      :footer-hide=true
-      :loading=true
-      :title="modalMap3.modalTitle"
-      v-model="modalMap3.modalVisible"
-      width="80%"
-    >
-      <div  class="oTree">
-      <!--       <chart-tree ref="peopleTree" style="height: 500px;width: 1000px;" :value="treeData" text="组织架构图"/>-->
-      <vue2-org-tree
-        name="test"
-        :data="treedata"
-        :label-class-name="labelClassName"
-        :render-content="renderContent"
-        @on-expand="onExpand"
-        collapsable
-        width="100%"
-      />
-      </div>
-    </Modal>
-    <Modal
-      :footer-hide=true
-      :loading=true
-      :title="modalMap5.modalTitle"
-      v-model="modalMap5.modalVisible"
-      width="50%"
-    >
-      <div style="padding: 10px; text-align:center;">
+      <div style="padding: 10px; text-align:right;">
       <DatePicker  :value="todate" @on-change="todate=$event"
                       confirm placeholder="请选择开始与结束日期"
                       placement="bottom-end"
                       type="daterange">
           </DatePicker>
-          <Button @click="handleSubmitTable()" style="marginRight: 2px; marginLeft: 50px" type="success">查询
+          <Button @click="handleSubmitTable()" style="marginRight: 2px; marginLeft: 5px" type="success">查询
           </Button>
       </div>
     <Table
@@ -195,9 +18,8 @@
         size="small"
       >
     </Table>
-      <chart-bar2 ref="childBar" style="width: 900px;height: 340px;" :value="barData" :bar_data="bar_list" text="柱状图"/>
-    </Modal>
-<!--    <chart-bar ref="childBar" style="height: 340px;" :value="barData" text="柱状图"/>-->
+      <chart-bar2 ref="childBar" style="width: 100%;height: 340px;" :value="barData" :bar_data="bar_list" text=""/>
+      </Card>
   </div>
 </template>
 

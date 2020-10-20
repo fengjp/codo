@@ -4,64 +4,64 @@ const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : co
 export const UploadUrl = baseUrl + '/mg/v2/accounts/peoplelist/upload/'
 
 export const getpeoplelist = (page, limit, key, value) => {
-    return axios.request({
-        url: '/mg/v2/accounts/peoplelist/',
-        method: 'get',
-        params: {
-            page,
-            limit,
-            key,
-            value
-        }
-    })
+  return axios.request({
+    url: '/mg/v2/accounts/peoplelist/',
+    method: 'get',
+    params: {
+      page,
+      limit,
+      key,
+      value
+    }
+  })
 }
 
 export const addpeoplelist = (data) => {
-    return axios.request({
-        url: '/mg/v2/accounts/peoplelist/',
-        method: 'post',
-        data
-    })
+  return axios.request({
+    url: '/mg/v2/accounts/peoplelist/',
+    method: 'post',
+    data
+  })
 }
 
 export const delpeoplelist = (data) => {
-    return axios.request({
-        url: '/mg/v2/accounts/peoplelist/',
-        method: 'delete',
-        data
-    })
+  return axios.request({
+    url: '/mg/v2/accounts/peoplelist/',
+    method: 'delete',
+    data
+  })
 }
 
 export const updatepeoplelist = (data) => {
-    return axios.request({
-        url: '/mg/v2/accounts/peoplelist/',
-        method: 'put',
-        data
-    })
+  return axios.request({
+    url: '/mg/v2/accounts/peoplelist/',
+    method: 'put',
+    data
+  })
 }
 
 export const getlist = () => {
-    return axios.request({
-        url: '/mg/v2/accounts/getlist/',
-        method: 'get',
-    })
+  return axios.request({
+    url: '/mg/v2/accounts/getlist/',
+    method: 'get'
+  })
 }
-export const getdatelist = (start,end) => {
-    return axios.request({
-        url: '/mg/v2/accounts/getdatelist/',
-        method: 'get',
-        params: {
-           start,
-           end,
-        }
-    })
+export const getdatelist = (start, end) => {
+  return axios.request({
+    url: '/mg/v2/accounts/getdatelist/',
+    method: 'get',
+    params: {
+      start,
+      end
+    }
+  })
 }
 export const getiddata = (id) => {
-    return axios.request({
-        url: '/mg/v2/accounts/getiddata/',
-        method: 'get',
-        params: {
-           id,
-        }
-    })
+  return axios.request({
+    url: '/mg/v2/accounts/getiddata/',
+    method: 'get',
+    params: {
+      id
+    }
+  })
 }
