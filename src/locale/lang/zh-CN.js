@@ -148,6 +148,7 @@ export default {
   domain_name_monitor: '域名监控',
   monitor: '监控巡检',
   monitor_home_mg: '总览',
-  monitor_mg: '监控详情'
-
+  monitor_mg: '监控详情',
+  dataService: '数据服务',
+  certdataUp: '新版办件上报',
 }

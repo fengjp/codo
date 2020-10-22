@@ -347,6 +347,27 @@ export const routerMap = [
     ]
   },
   {
+    path: '/dataService',
+    name: 'dataService',
+    meta: {
+      icon: 'ios-cloudy',
+      title: '数据服务'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'certdataUp',
+        name: 'certdataUp',
+        meta: {
+          icon: 'md-cloud-upload',
+          title: '新版办件上报'
+        },
+        component: () =>
+          import ('@/view/it-manage/dataSerUp.vue')
+      },
+    ]
+  },
+  {
     path: '/cron',
     name: 'cron',
     meta: {
