@@ -45,27 +45,27 @@
            :mask-closable=false :styles="{top: '20px'}">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100" inline>
         <FormItem label="标题" prop="title" style="display: block">
-          <Input v-model="formValidate.title" :maxlength="50" placeholder='请输入标题'></Input>
+          <Input v-model="formValidate.title"  placeholder='请输入标题'></Input>
         </FormItem>
-        <FormItem label="excel表头" prop="header" style="display: block">
-          <Input v-model="formValidate.header" :maxlength="50" placeholder='请输入excel表头字段,用竖号分开。例：编号|用户名|手机号|地址'></Input>
-        </FormItem>
+<!--        <FormItem label="excel表头" prop="header" style="display: block">-->
+<!--          <Input v-model="formValidate.header" type="textarea"  placeholder='请输入excel表头字段,用竖号分开。例：编号|用户名|手机号|地址'></Input>-->
+<!--        </FormItem>-->
 <!--        <FormItem label="数据库源" prop="dbname_id" style="width: 48%">-->
 <!--          <Select v-model="formValidate.dbname_id" placeholder='请选择数据库源'>-->
 <!--            <Option v-for="item in databaselist" :value="item.id">{{ item.name }}-->
 <!--            </Option>-->
 <!--          </Select>-->
 <!--        </FormItem>-->
-        <FormItem label="数据库源" prop="dbname_id" style="width: 48%">
-          <Select v-model="formValidate.dbname_id" placeholder='请选择脚本'>
-            <Option v-for="item in databaselist" :value="item.id">{{ item.name }}
-            </Option>
-          </Select>
-        </FormItem>
+<!--        <FormItem label="数据库源" prop="dbname_id" style="width: 48%">-->
+<!--          <Select v-model="formValidate.dbname_id" placeholder='请选择脚本'>-->
+<!--            <Option v-for="item in databaselist" :value="item.id">{{ item.name }}-->
+<!--            </Option>-->
+<!--          </Select>-->
+<!--        </FormItem>-->
 
-        <FormItem label="数据库名" prop="dataname" style="width: 48%">
-          <Input v-model="formValidate.dataname" :maxlength="50" placeholder="请输入数据库名"></Input>
-        </FormItem>
+<!--        <FormItem label="数据库名" prop="dataname" style="width: 48%">-->
+<!--          <Input v-model="formValidate.dataname" :maxlength="50" placeholder="请输入数据库名"></Input>-->
+<!--        </FormItem>-->
         <FormItem label="数据库脚本" prop="dbid" style="width: 48%">
           <Select v-model="formValidate.dbid" placeholder='请选择脚本'>
             <Option v-for="item in dbList" :value="item.id">{{ item.name }}
@@ -219,11 +219,11 @@
         databaselist:[],
         ruleValidate: {
           title: [{required: true, message: "标题不能为空", trigger: "blur"}],
-          header: [{required: true, message: "请输入excel表头字段,用竖号分开。", trigger: "blur"}],
+          // header: [{required: true, message: "请输入excel表头字段,用竖号分开。", trigger: "blur"}],
           times: [{required: true, message: "请选择定时时间", trigger: "blur"}],
           // dataname: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
           dbid: [{required: true, message: "脚本数据不能为空", trigger: "blur", type: 'number'}],
-          dbname_id: [{required: true, message: "数据源不能为空", trigger: "change",type: 'number'}],
+          // dbname_id: [{required: true, message: "数据源不能为空", trigger: "change",type: 'number'}],
           // cycle: [{required: true, message: "执行周期不能为空", trigger: "change"}],
         },
         reportList: [
@@ -464,7 +464,7 @@
       getSqlIdList(page, limit, key, value).then(res => {
         if (res.data.code === 0) {
           this.$Message.success(`${res.data.msg}`)
-          this.pageTotal = res.data.count
+          // this.pageTotal = res.data.count
           this.dbList = res.data.data
           console.log(this.dbList)
         } else {

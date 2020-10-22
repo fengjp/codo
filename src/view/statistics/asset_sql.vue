@@ -42,11 +42,11 @@
             >新建脚本
             </Button>
           </slot>
-          <Button type="success" @click="exportDateALL()" class="case-btn"
-                  style="">
-            <Icon type="ios-download-outline"></Icon>
-            导出数据
-          </Button>
+<!--          <Button type="success" @click="exportDateALL()" class="case-btn"-->
+<!--                  style="">-->
+<!--            <Icon type="ios-download-outline"></Icon>-->
+<!--            导出数据-->
+<!--          </Button>-->
         </Col>
       </Row>
       <Table
@@ -62,10 +62,10 @@
         :title="modalMap.modalTitle"
         :loading=true
         :footer-hide=true
-        width="530"
+        width="525"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
-        <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="85" :inline="true">
+        <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="69" :inline="true">
 
           <div v-if="editModalData && editModalData == 'put'">
             <FormItem label="脚本名" prop="name" style="width:350px;margin-right:20px">
@@ -86,16 +86,6 @@
               ></Input>
             </FormItem>
           </div>
-          <FormItem label="excel表头" prop="header" style="display: block">
-            <Input v-model="formValidate.header" type="textarea"
-                   placeholder='请输入excel表头字段,用竖号分开。例：编号|用户名|手机号|地址'></Input>
-          </FormItem>
-          <FormItem label="数据库源" prop="dbname_id" style="width:60%;">
-              <Select placeholder="数据库源" v-model="formValidate.dbname_id">
-                <Option :value="item.id" v-for="item in databaselist">{{item.name}}
-                </Option>
-              </Select>
-            </FormItem>
           <Row :gutter="10" style="margin-bottom: 5px">
             <FormItem
               label="SQL语句"
@@ -117,13 +107,6 @@
                 type="textarea"
                 placeholder="详细描述"
               ></Input>
-            </FormItem>
-            <FormItem label="类型" prop="totype" style="width:350px;">
-              <RadioGroup v-model="formValidate.totype">
-                <Radio label="定时"></Radio>
-                <Radio label="触发"></Radio>
-                <Radio label="屏蔽"></Radio>
-              </RadioGroup>
             </FormItem>
           </Row>
 
@@ -174,7 +157,6 @@
   import {getDate} from '@/libs/tools'
   import excel from '@/libs/excel'
   import {getDictConfList} from '@/api/app'
-  import {getDBListForQry} from '@/api/cmdb2/db.js'
 
   export default {
     data() {
@@ -188,16 +170,11 @@
         surl: '',
         formValidate: {
           name: '',
-          header: '',
-          totype: '',
-          dbname_id: "",
-          dbname: "",
           sqlstr: '',
           remarks: '',
           username: '',
           create_time: ''
         },
-        databaselist: [],
         formValidate2: {
           name: '',
           remarks: ''
@@ -208,35 +185,6 @@
             {
               required: true,
               message: '请输入脚本名',
-              trigger: 'blur',
-            }
-          ],
-          header: [
-            {
-              required: true,
-              message: '请输入excel列名',
-              trigger: 'blur'
-            }
-          ],
-          dbname_id: [
-            {
-              required: true,
-              message: '请选择',
-              trigger: 'blur',
-              type:"number",
-            }
-          ],
-          sqlstr: [
-            {
-              required: true,
-              message: '请输入sql',
-              trigger: 'blur'
-            }
-          ],
-          type: [
-            {
-              required: true,
-              message: '请选择执行类型',
               trigger: 'blur'
             }
           ]
@@ -278,30 +226,7 @@
               ])
             }
           },
-          {title: '数据源', key: 'dbname', width: 200, align: 'center'},
-          {
-            title: 'excel列名',
-            key: 'header',
-            align: 'center',
-            render: (h, params) => {
-              let roleTitle = params.row.header
-              return h('div', [
-                h('span', {
-                  style: {
-                    display: 'inline-block',
-                    width: '100%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  },
-                  domProps: {
-                    title: roleTitle
-                  }
-                }, roleTitle)
-              ])
-            }
-          },
-          {title: '类型', key: 'totype', width: 60, align: 'center'},
+
           {
             title: '描述',
             key: 'remarks',
@@ -414,14 +339,6 @@
       }
     },
     methods: {
-      // 获取数据库源
-      getDBListForQry(key, value) {
-        getDBListForQry(key, value).then(res => {
-          if (res.data.code === 0) {
-            this.databaselist = res.data.data
-          }
-        })
-      },
       // 导出数据、支持分页、过滤、搜索、排序后导出
       exportDateALL() {
         // 查询所有数据
@@ -487,16 +404,11 @@
         this.modalMap.modalVisible = true
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
-        this.getDBListForQry()
         if (paramsRow && paramsRow.id) {
           // put
           this.formValidate = {
             id: paramsRow.id,
             name: paramsRow.name,
-            header: paramsRow.header,
-            dbname_id: parseInt(paramsRow.dbname_id),
-            dbname: paramsRow.dbname,
-            totype: paramsRow.totype,
             sqlstr: paramsRow.sqlstr,
             remarks: paramsRow.remarks,
             username: paramsRow.username,
@@ -506,10 +418,6 @@
           // post
           this.formValidate = {
             name: '',
-            header: '',
-            dbname_id: 0,
-            dbname: '',
-            totype: '',
             sqlstr: '',
             remarks: '',
             username: '',
@@ -522,15 +430,8 @@
           if (valid) {
             this.isDisable = true
             let loginUser = JSON.parse(sessionStorage.vuex).user.nickName
-            // console.log(loginUser)
+            console.log(loginUser)
             this.formValidate.username = loginUser
-            // console.log(this.databaselist)
-            for (let i = 0, len = this.databaselist.length; i < len; i++) {
-                console.log(this.databaselist[i]['id'])
-                if( this.formValidate.dbname_id === this.databaselist[i]['id']){
-                  this.formValidate.dbname =  this.databaselist[i]['name']
-                }
-            }
             setTimeout(() => {
               SqlAdd(this.formValidate, this.editModalData).then(res => {
                 if (res.data.code === 0) {

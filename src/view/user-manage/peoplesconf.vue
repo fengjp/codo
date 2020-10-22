@@ -13,7 +13,7 @@
           <Button @click="editModal('', 'post', '新增人员')" class="search-btn" style="margin-right:5px" type="info">新增人员
           </Button>
           <Button @click="editModal3" style="margin-right:5px" type="info">组织架构图</Button>
-          <Button @click="editModal5" style="margin-right:5px" type="info">在职频率</Button>
+<!--          <Button @click="editModal5" style="margin-right:5px" type="info">在职频率</Button>-->
         </Row>
       </div>
       <Table
@@ -436,22 +436,23 @@ export default {
       }, 500)
     },
     renderContent (h, data) {
-      return h('div', { style: { width: '60px', height: '120px' } },
+      return h('div',
+                // { style: { width: '60px', height: '120px' } },
         [
-          h('img', {
-            attrs: {
-              src: data.img,
-              width: 50,
-              height: 50
-            }
-
-          }),
+          // h('img', {
+          //   attrs: {
+          //     src: data.img,
+          //     width: 50,
+          //     height: 50
+          //   }
+          //
+          // }),
           h('a', {
             domProps: {
               href: 'javascript:;'
             },
             style: {
-              marginRight: '10px',
+              marginRight: '5px',
               color: '#fff'
             }
           }, data.label),
@@ -470,7 +471,7 @@ export default {
           }, [
             h('a', {
               style: {
-                marginLeft: '10px',
+                marginLeft: '5px',
                 color: '#409eff'
               },
               domProps: {
@@ -488,7 +489,7 @@ export default {
               h('DropdownItem', {
                 nativeOn: {
                   click: () => {
-                    this.editModal('', 'post', '新增人员')
+                    this.editModal8(data, 'post', '新增人员')
                   }
                 }
               }, '新增'),
@@ -672,6 +673,24 @@ export default {
         this.modalMap3.modalVisible = true
         this.modalMap3.modalTitle = '组织架构'
       }, 1000)
+    },
+    editModal8 (data, meth, mtitle) {
+      this.modalMap.modalVisible = true
+      this.modalMap.modalTitle = mtitle
+      this.editModalData = meth
+      this.formValidate = {
+          username: '',
+          sex: '',
+          jobpost: '',
+          tel: '',
+          department: '',
+          supe_department: data.label,
+          othername: data.id,
+          type: '',
+          startdate: '',
+          enddate: '',
+          supe_name: data.name
+        }
     },
     editModal (paramsRow, meth, mtitle) {
       this.modalMap.modalVisible = true

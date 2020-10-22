@@ -35,12 +35,12 @@ export default {
           var zaizhi_list = new Array()
           zaizhi_list = this.bar_data.在职
           for (let i = 0, len = zaizhi_list.length; i < len; i++) {
-            title_str += zaizhi_list[i].username + '      ' + zaizhi_list[i].department + '     ' + zaizhi_list[i].startdate + '     ' + zaizhi_list[i].enddate + '<br/>'
+            title_str += zaizhi_list[i].username + '&#12288;' +'&#12288;' +'&#12288;'  +zaizhi_list[i].department + '&#12288;' +'&#12288;'+ '&#12288;' + zaizhi_list[i].startdate + '&#12288;' +'&#12288;'+ '&#12288;' + zaizhi_list[i].enddate + '<br/>'
           }
           var lizhi_list = new Array()
           lizhi_list = this.bar_data.离职
           for (let i = 0, len = lizhi_list.length; i < len; i++) {
-            title_str2 += lizhi_list[i].username + '      ' + lizhi_list[i].department + '     ' + lizhi_list[i].startdate + '     ' + lizhi_list[i].enddate + '<br/>'
+            title_str2 += lizhi_list[i].username + '&#12288;'+ '&#12288;'+ '&#12288;' + lizhi_list[i].department + '&#12288;'+ '&#12288;'+ '&#12288;' + lizhi_list[i].startdate + '&#12288;'+ '&#12288;'+ '&#12288;' + lizhi_list[i].enddate + '<br/>'
           }
         }
         let temp = {}
@@ -88,7 +88,7 @@ export default {
               },
               formatter: function (params) {
                 var tar = params[0]
-                var alltitle_str = '姓 名：  ' + '      ' + '  部 门：   ' + '       ' + '  入职日期：  ' + '    ' + '   辞职日期：' + '<br/>'
+                var alltitle_str = '姓 名：  ' + '&#12288;'+ '&#12288;' + '  部 门：   ' + '&#12288;'+ '&#12288;' + '  入职日期：  ' + '&#12288;'+ '&#12288;' + '   辞职日期：' + '<br/>'
                 // var data_str =  "大佬" +'      ' +"销售"+ '     '  + "2020-10-01"  +  '     ' + "2900-12-31"  +  '<br/>'
                 // alltitle_str =  alltitle_str  +  data_str
                 if (tar.name == '在职') {

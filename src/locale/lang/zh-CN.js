@@ -46,6 +46,7 @@ export default {
   extension_admin: '任务统计',
   extension: '综合监管系统推广应用任务统计',
   extension2: '推广',
+  sql_admin:'脚本列表',
   examination: '每月一考',
   statistics: '需求统计',
   Jobcronlogs: '任务日志',
