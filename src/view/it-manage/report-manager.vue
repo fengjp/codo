@@ -513,29 +513,24 @@
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
         this.getDBListForQry()
-        console.log(paramsRow)
         if (paramsRow && paramsRow.id) {
           this.formValidate = {
             id: paramsRow.id,
             title: paramsRow.totitle,
-            header: paramsRow.header,
             dbid: parseInt(paramsRow.dbid),
-            dbname_id:parseInt(paramsRow.dbname_id),
-            dataname:paramsRow.dataname,
             times: paramsRow.times,
             download_dir: paramsRow.download_dir,
             cycle:eval(paramsRow.cycle),
             start_end:eval(paramsRow.start_end),
           }
+          this.todate2 =  eval(paramsRow.start_end)
         } else {
+          this.todate2 = []
           this.formValidate = {
             id: null,
             title: '',
-            header: '',
             dbid: '',
             times: '',
-            dbname_id:'',
-            dbname: '',
             download_dir: '',
             cycle: '',
             start_end:[],

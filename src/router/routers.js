@@ -294,34 +294,33 @@ export const routerMap = [
     },
     component: Main,
     children: [{
-      path: 'examination',
-      name: 'examination',
+      path: 'science',
+      name: 'science',
       meta: {
         icon: 'md-alarm',
-        title: '每月一考'
+        title: '科技科'
       },
       component: () =>
         import ('@/view/statistics/examination.vue')
     },
 
       {
-        path: 'extension_admin',
-        name: 'extension_admin',
+        path: 'drive',
+        name: 'drive',
         meta: {
           icon: 'ios-list-box-outline',
-          title: '综合监管系统推广应用任务统计'
+          title: '驾驶人管理科'
         },
         component: parentView,
         children: [{
-      path: 'extension',
-      name: 'extension',
-      meta: {
-        icon: 'ios-list-box-outline',
-        title: '推广统计',
-      },
-      component: () =>
-          import ('@/view/statistics/extension.vue')
-    },
+                     path: 'drive_people',
+                     name: 'drive_people',
+                     meta: {
+                           icon: 'ios-list-box-outline',
+                           title: '机动车驾驶人业务数据统计',
+                     },
+                     component: () => import ('@/view/statistics/drive_people.vue')
+                   },
           {
       path: 'extension2',
       name: 'extension2',

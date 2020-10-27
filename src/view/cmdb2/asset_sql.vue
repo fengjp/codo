@@ -4,7 +4,7 @@
       <Row>
         <Col span="12">
           <Form autocomplete="off" label-colon=":" class="case-form" ref="formValidate2" :model="formValidate2">
-            <Col span="12">
+            <Col span="8">
               <FormItem label="脚本名称" prop="name" :label-width="100">
                 <Input
                   v-model="formValidate2.name"
@@ -12,12 +12,20 @@
                 ></Input>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="8">
               <FormItem label="详情描述" prop="remarks" :label-width="100">
                 <Input
                   v-model="formValidate2.remarks"
                   placeholder="详细描述"
                 ></Input>
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem label="类型" prop="totype" :label-width="100">
+                <Select placeholder="类型" v-model="formValidate2.totype">
+                <Option :value="item.v" v-for="item in typelist">{{item.v}}
+                </Option>
+              </Select>
               </FormItem>
             </Col>
           </Form>
@@ -96,10 +104,17 @@
                 </Option>
               </Select>
             </FormItem>
+          <FormItem label="类型" prop="totype" style="width:350px;">
+              <RadioGroup v-model="formValidate.totype"   @on-change="change_totype">
+                <Radio label="定时"></Radio>
+                <Radio label="触发"></Radio>
+                <Radio label="屏蔽"></Radio>
+              </RadioGroup>
+            </FormItem>
           <Row :gutter="10" style="margin-bottom: 5px">
             <FormItem
               label="SQL语句"
-              prop="sqlstr" style="width:500px;margin-right:500px"
+              prop="sqlstr" style="width:500px;margin-right:500px"  v-if="isShow2"
             >
               <Input
                 v-model="formValidate.sqlstr"
@@ -107,6 +122,26 @@
                 :rows="5"
                 placeholder="SQL语句"
               ></Input>
+            </FormItem>
+            <FormItem
+              label="存储过程"
+              prop="storage" style="width:350px;"
+              v-if="isShow"
+            >
+              <Input
+                v-model="formValidate.storage"
+                placeholder="存储过程"
+              ></Input>
+            </FormItem>
+            <FormItem label="部门名称" prop="remarks" style="width:500px;margin-right:500px" v-if="isShow">
+          <Select @on-create="handleCreate2" allow-create  filterable placeholder="部门名称" v-model="formValidate.department">
+            <Option  :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
+          </Select>
+        </FormItem>
+            <FormItem label="项目名" prop="remarks" style="width:500px;margin-right:500px"  v-if="isShow">
+              <Select @on-create="handleCreate5" allow-create  filterable placeholder="项目名" v-model="formValidate.obj">
+            <Option  :value="item.v" v-for="item in allobjList">{{item.v}}</Option>
+          </Select>
             </FormItem>
             <FormItem
               label="详情描述"
@@ -117,13 +152,6 @@
                 type="textarea"
                 placeholder="详细描述"
               ></Input>
-            </FormItem>
-            <FormItem label="类型" prop="totype" style="width:350px;">
-              <RadioGroup v-model="formValidate.totype">
-                <Radio label="定时"></Radio>
-                <Radio label="触发"></Radio>
-                <Radio label="屏蔽"></Radio>
-              </RadioGroup>
             </FormItem>
           </Row>
 
@@ -169,7 +197,7 @@
   import XLSX from 'xlsx'
   import FileSaver from 'file-saver'
 
-  import {SqlAdd, getCase, getSqlList, getname, sqlDelete, getCaseFile} from '@/api/cmdb2/asset_sql'
+  import {SqlAdd, getCase, getSqlList, getname, sqlDelete, getdepartmentlist} from '@/api/cmdb2/asset_sql'
   import {getuserlist} from '@/api/user'
   import {getDate} from '@/libs/tools'
   import excel from '@/libs/excel'
@@ -179,8 +207,10 @@
   export default {
     data() {
       return {
+        typelist:[{"k":1,"v":"定时"},{"k":2,"v":"触发"},{"k":3,"v":"屏蔽"}],
         btnText: '展开',
         isShow: false,
+        isShow2: false,
         toflag: 0,
         tousername: "",
         isDisable: false,
@@ -195,12 +225,16 @@
           sqlstr: '',
           remarks: '',
           username: '',
+          department: '',
+          obj:'',
+          storage:'',
           create_time: ''
         },
         databaselist: [],
         formValidate2: {
           name: '',
-          remarks: ''
+          remarks: '',
+          totype:'',
         },
         todate: [],
         ruleValidate: {
@@ -226,14 +260,7 @@
               type:"number",
             }
           ],
-          sqlstr: [
-            {
-              required: true,
-              message: '请输入sql',
-              trigger: 'blur'
-            }
-          ],
-          type: [
+          totype: [
             {
               required: true,
               message: '请选择执行类型',
@@ -278,6 +305,7 @@
               ])
             }
           },
+          {title: '存储过程', key: 'storage', width: 150, align: 'center'},
           {title: '数据源', key: 'dbname', width: 200, align: 'center'},
           {
             title: 'excel列名',
@@ -383,6 +411,8 @@
         tableData: [],
         tableDataALL: [],
         tomsg: ' ',
+        alldepartmentList:[],
+        allobjList:[],
         uploadList: [],
         OSSRegion: '',
         OSSBucketName: '',
@@ -414,6 +444,48 @@
       }
     },
     methods: {
+       getdepartmentlist() {
+        getdepartmentlist().then(res => {
+          if (res.data.code === 0) {
+            this.alldepartmentList = res.data.data
+            this.allobjList = res.data.objlist
+          } else {
+            this.$Message.error(`${res.data.msg}`)
+            this.alldepartmentList = []
+            this.allobjList = []
+          }
+        })
+      },
+       handleCreate2 (val) {
+                this.alldepartmentList.push({
+                    k: val,
+                    v: val
+                });
+                this.formValidate.department = val
+            },
+      handleCreate5 (val) {
+                this.allobjList.push({
+                    k: val,
+                    v: val
+                });
+                this.formValidate.obj = val
+            },
+      //触发单选器
+      change_totype(){
+        if(this.formValidate.totype === "触发"){
+          this.isShow = true
+        }
+        else{
+          this.isShow = false
+        }
+        if(this.formValidate.totype === "定时"){
+          this.isShow2 = true
+        }
+        else{
+          this.isShow2 = false
+        }
+
+      },
       // 获取数据库源
       getDBListForQry(key, value) {
         getDBListForQry(key, value).then(res => {
@@ -488,6 +560,7 @@
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
         this.getDBListForQry()
+        this.getdepartmentlist()
         if (paramsRow && paramsRow.id) {
           // put
           this.formValidate = {
@@ -500,8 +573,13 @@
             sqlstr: paramsRow.sqlstr,
             remarks: paramsRow.remarks,
             username: paramsRow.username,
+            obj: paramsRow.obj,
+            department: paramsRow.department,
+            storage:paramsRow.storage,
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
+          if(this.formValidate.totype === "触发"){this.isShow = true,this.isShow2 = false}
+          else{this.isShow = false,this.isShow2 = false}
         } else {
           // post
           this.formValidate = {
@@ -509,12 +587,17 @@
             header: '',
             dbname_id: 0,
             dbname: '',
-            totype: '',
+            totype: '定时',
             sqlstr: '',
             remarks: '',
             username: '',
+            obj: '',
+            department: '',
+            storage:'',
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
+          if(this.formValidate.totype === "定时"){this.isShow2 = true,this.isShow = false}
+          else{this.isShow2 = false,this.isShow = false}
         }
       },
       handleSubmit(value) {
@@ -595,6 +678,7 @@
 
     mounted() {
       this.getSqlList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
+      this.getdepartmentlist()
     }
   }
 </script>

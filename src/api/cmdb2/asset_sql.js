@@ -38,7 +38,34 @@ export const SqlAdd = (data, meth) => {
     data
   })
 }
+export const getdepartmentlist = () => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/departmentlist/',
+    method: 'get',
+  })
+}
 
+export const getstoragelist = (department,obj) => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/storagelist/',
+    method: 'get',
+    params: {
+      department,
+      obj
+    }
+  })
+}
+export const getimplement = (start,end,storage) => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/implement/',
+    method: 'get',
+    params: {
+      start,
+      end,
+      storage,
+    }
+  })
+}
 export const getCase = (name) => {
   return axios.request({
     url: '/pb/v2/case/name/',

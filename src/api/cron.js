@@ -2,7 +2,7 @@ import axios from '@/libs/api.request'
 
 export const getCronJobslist = (page, limit, value) => {
   return axios.request({
-    url: '/cron//v1/cron/job/',
+    url: '/cron/v1/cron/job/',
     method: 'get',
     params: {
       page,
@@ -14,7 +14,7 @@ export const getCronJobslist = (page, limit, value) => {
 
 export const operationCron = (data, meth) => {
   return axios.request({
-    url: '/cron//v1/cron/job/',
+    url: '/cron/v1/cron/job/',
     method: meth,
     data
   })
@@ -22,7 +22,7 @@ export const operationCron = (data, meth) => {
 
 export const getCronLoglist = (page, limit, key, value, date = ['', '']) => {
   return axios.request({
-    url: '/cron//v1/cron/log/',
+    url: '/cron/v1/cron/log/',
     method: 'get',
     params: {
       page,
