@@ -96,6 +96,7 @@ export const getDate = (timeStamp, startType) => {
   const second = getHandledValue(d.getSeconds())
   let resStr = ''
   if (startType === 'year') resStr = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + second
+  else if (startType === 'date') resStr = year + '-' + month + '-' + date
   else resStr = month + '-' + date + ' ' + hours + ':' + minutes
   return resStr
 }
