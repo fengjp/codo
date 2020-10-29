@@ -285,7 +285,7 @@ export const routerMap = [
         import ('@/view/it-manage/report-manager.vue')
     }]
   },
-    {
+  {
     path: '/statistics',
     name: 'statistics',
     meta: {
@@ -303,7 +303,6 @@ export const routerMap = [
       component: () =>
         import ('@/view/statistics/examination.vue')
     },
-
       {
         path: 'drive',
         name: 'drive',
@@ -313,25 +312,25 @@ export const routerMap = [
         },
         component: parentView,
         children: [{
-                     path: 'drive_people',
-                     name: 'drive_people',
-                     meta: {
-                           icon: 'ios-list-box-outline',
-                           title: '机动车驾驶人业务数据统计',
-                     },
-                     component: () => import ('@/view/statistics/drive_people.vue')
-                   },
+          path: 'drive_people',
+          name: 'drive_people',
+          meta: {
+            icon: 'ios-list-box-outline',
+            title: '机动车驾驶人业务数据统计',
+          },
+          component: () => import ('@/view/statistics/drive_people.vue')
+        },
           {
-      path: 'extension2',
-      name: 'extension2',
-      meta: {
-        icon: 'ios-list-box-outline',
-        title: '推广',
-      },
-      component: () =>
-          import ('@/view/statistics/extension.vue')
-    },
-    ],
+            path: 'extension2',
+            name: 'extension2',
+            meta: {
+              icon: 'ios-list-box-outline',
+              title: '推广',
+            },
+            component: () =>
+              import ('@/view/statistics/extension.vue')
+          },
+        ],
       },
       {
         path: 'vehicle',
