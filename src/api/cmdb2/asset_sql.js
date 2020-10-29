@@ -55,14 +55,14 @@ export const getstoragelist = (department,obj) => {
     }
   })
 }
-export const getimplement = (start,end,storage) => {
+export const getimplement = (date,storage,flag) => {
   return axios.request({
     url: '/cmdb2/v1/sql/implement/',
     method: 'get',
     params: {
-      start,
-      end,
+      date,
       storage,
+      flag,
     }
   })
 }

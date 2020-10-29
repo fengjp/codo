@@ -321,28 +321,118 @@ export const routerMap = [
                      },
                      component: () => import ('@/view/statistics/drive_people.vue')
                    },
-          {
-      path: 'extension2',
-      name: 'extension2',
-      meta: {
-        icon: 'ios-list-box-outline',
-        title: '推广',
+                   {
+                     path: 'extension2',
+                     name: 'extension2',
+                     meta: {
+                     icon: 'ios-list-box-outline',
+                     title: '推广',
+                    },
+                   component: () => import ('@/view/statistics/extension.vue')
+             },],
       },
-      component: () =>
-          import ('@/view/statistics/extension.vue')
-    },
-    ],
+      {
+        path: 'supervise',
+        name: 'supervise',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '执法监督科'
+        },
+        component: () =>
+          import ('@/view/statistics/supervise.vue')
+      },
+      {
+        path: 'order2',
+        name: 'order2',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '执法监督科(秩序管理处)'
+        },
+        component: parentView,
+        children: [{
+                     path: 'illegal',
+                     name: 'illegal',
+                     meta: {
+                           icon: 'ios-list-box-outline',
+                           title: '农村统计',
+                     },
+                     component: () => import ('@/view/statistics/illegal.vue')
+                   },
+                   {
+                     path: 'extension6',
+                     name: 'extension6',
+                     meta: {
+                     icon: 'ios-list-box-outline',
+                     title: '推广',
+                    },
+                   component: () => import ('@/view/statistics/illegal.vue')
+             },],
+      },
+      {
+        path: 'coordinate',
+        name: 'coordinate',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '交通安全协调科'
+        },
+        component: parentView,
+        children: [{
+                     path: 'countryside',
+                     name: 'countryside',
+                     meta: {
+                           icon: 'ios-list-box-outline',
+                           title: '农村统计',
+                     },
+                     component: () => import ('@/view/statistics/countryside.vue')
+                   },
+                   {
+                     path: 'extension3',
+                     name: 'extension3',
+                     meta: {
+                     icon: 'ios-list-box-outline',
+                     title: '推广',
+                    },
+                   component: () => import ('@/view/statistics/countryside.vue')
+             },],
       },
       {
         path: 'vehicle',
         name: 'vehicle',
         meta: {
           icon: 'ios-list-box-outline',
-          title: '外省机动车违法情况统计'
+          title: '监督科(车管处)'
+        },
+        component: parentView,
+        children: [{
+                     path: 'monthly',
+                     name: 'monthly',
+                     meta: {
+                           icon: 'ios-list-box-outline',
+                           title: '每月一考',
+                     },
+                     component: () => import ('@/view/statistics/monthly.vue')
+                   },
+                   {
+                     path: 'extension5',
+                     name: 'extension5',
+                     meta: {
+                     icon: 'ios-list-box-outline',
+                     title: '推广',
+                    },
+                   component: () => import ('@/view/statistics/monthly.vue')
+             },],
+      },
+      {
+        path: 'vehicle2',
+        name: 'vehicle2',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '机动车管理科(车辆管理处)'
         },
         component: () =>
           import ('@/view/statistics/vehicle.vue')
-      }
+      },
+
     ]
   },
   {

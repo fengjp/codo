@@ -104,25 +104,15 @@
                 </Option>
               </Select>
             </FormItem>
-          <FormItem label="类型" prop="totype" style="width:350px;">
+          <FormItem label="类型" prop="totype" style="width:500px;">
               <RadioGroup v-model="formValidate.totype"   @on-change="change_totype">
-                <Radio label="定时"></Radio>
+                <Radio label="sql定时"></Radio>
+                <Radio label="存储过程定时"></Radio>
                 <Radio label="触发"></Radio>
                 <Radio label="屏蔽"></Radio>
               </RadioGroup>
             </FormItem>
           <Row :gutter="10" style="margin-bottom: 5px">
-            <FormItem
-              label="SQL语句"
-              prop="sqlstr" style="width:500px;margin-right:500px"  v-if="isShow2"
-            >
-              <Input
-                v-model="formValidate.sqlstr"
-                type="textarea"
-                :rows="5"
-                placeholder="SQL语句"
-              ></Input>
-            </FormItem>
             <FormItem
               label="存储过程"
               prop="storage" style="width:350px;"
@@ -133,8 +123,19 @@
                 placeholder="存储过程"
               ></Input>
             </FormItem>
+            <FormItem
+              label="SQL语句"
+              prop="sqlstr" style="width:500px;margin-right:500px"
+            >
+              <Input
+                v-model="formValidate.sqlstr"
+                type="textarea"
+                :rows="5"
+                placeholder="SQL语句"
+              ></Input>
+            </FormItem>
             <FormItem label="部门名称" prop="remarks" style="width:500px;margin-right:500px" v-if="isShow">
-          <Select @on-create="handleCreate2" allow-create  filterable placeholder="部门名称" v-model="formValidate.department">
+          <Select @on-create="handleCreate2" allow-create multiple filterable placeholder="部门名称" v-model="formValidate.department">
             <Option  :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
           </Select>
         </FormItem>
@@ -207,7 +208,7 @@
   export default {
     data() {
       return {
-        typelist:[{"k":1,"v":"定时"},{"k":2,"v":"触发"},{"k":3,"v":"屏蔽"}],
+        typelist:[{"k":1,"v":"sql定时"},{"k":2,"v":"存储过程定时"},{"k":3,"v":"触发"},{"k":4,"v":"屏蔽"}],
         btnText: '展开',
         isShow: false,
         isShow2: false,
@@ -447,11 +448,11 @@
        getdepartmentlist() {
         getdepartmentlist().then(res => {
           if (res.data.code === 0) {
-            this.alldepartmentList = res.data.data
+            // this.alldepartmentList = res.data.data
             this.allobjList = res.data.objlist
           } else {
             this.$Message.error(`${res.data.msg}`)
-            this.alldepartmentList = []
+            // this.alldepartmentList = []
             this.allobjList = []
           }
         })
@@ -472,13 +473,13 @@
             },
       //触发单选器
       change_totype(){
-        if(this.formValidate.totype === "触发"){
+        if(this.formValidate.totype === "触发" || this.formValidate.totype === "存储过程定时" ){
           this.isShow = true
         }
         else{
           this.isShow = false
         }
-        if(this.formValidate.totype === "定时"){
+        if(this.formValidate.totype === "sql定时"){
           this.isShow2 = true
         }
         else{
@@ -574,11 +575,11 @@
             remarks: paramsRow.remarks,
             username: paramsRow.username,
             obj: paramsRow.obj,
-            department: paramsRow.department,
+            department: eval('[' +paramsRow.department + ']'),
             storage:paramsRow.storage,
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
-          if(this.formValidate.totype === "触发"){this.isShow = true,this.isShow2 = false}
+          if(this.formValidate.totype === "触发" || this.formValidate.totype === "存储过程定时"){this.isShow = true,this.isShow2 = false}
           else{this.isShow = false,this.isShow2 = false}
         } else {
           // post
@@ -587,7 +588,7 @@
             header: '',
             dbname_id: 0,
             dbname: '',
-            totype: '定时',
+            totype: 'sql定时',
             sqlstr: '',
             remarks: '',
             username: '',
@@ -596,7 +597,7 @@
             storage:'',
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
-          if(this.formValidate.totype === "定时"){this.isShow2 = true,this.isShow = false}
+          if(this.formValidate.totype === "sql定时"){this.isShow2 = true,this.isShow = false}
           else{this.isShow2 = false,this.isShow = false}
         }
       },
@@ -673,12 +674,22 @@
       handlePageSize(value) {
         this.pageSize = value
         this.getCaseList(1, this.pageSize, this.tokey, this.tovalue)
-      }
+      },
+      getDictConfList () {
+      getDictConfList().then(res => {
+        if (res.data.code === 0) {
+          this.alldepartmentList = eval(res.data.data['statistics_department_list'])
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    }
     },
 
     mounted() {
       this.getSqlList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
       this.getdepartmentlist()
+      this.getDictConfList()
     }
   }
 </script>
