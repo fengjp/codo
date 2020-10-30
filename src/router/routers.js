@@ -312,7 +312,6 @@ export const routerMap = [
         },
         component: parentView,
         children: [{
-<<<<<<< HEAD
                      path: 'drive_people',
                      name: 'drive_people',
                      meta: {
@@ -377,45 +376,25 @@ export const routerMap = [
         },
         component: parentView,
         children: [{
-                     path: 'countryside',
-                     name: 'countryside',
-                     meta: {
-                           icon: 'ios-list-box-outline',
-                           title: '农村统计',
-                     },
-                     component: () => import ('@/view/statistics/countryside.vue')
-                   },
-                   {
-                     path: 'extension3',
-                     name: 'extension3',
-                     meta: {
-                     icon: 'ios-list-box-outline',
-                     title: '推广',
-                    },
-                   component: () => import ('@/view/statistics/countryside.vue')
-             },],
-=======
-          path: 'drive_people',
-          name: 'drive_people',
+          path: 'countryside',
+          name: 'countryside',
           meta: {
             icon: 'ios-list-box-outline',
-            title: '机动车驾驶人业务数据统计',
+            title: '农村统计',
           },
-          component: () => import ('@/view/statistics/drive_people.vue')
+          component: () => import ('@/view/statistics/countryside.vue')
         },
           {
-            path: 'extension2',
-            name: 'extension2',
+            path: 'extension3',
+            name: 'extension3',
             meta: {
               icon: 'ios-list-box-outline',
               title: '推广',
             },
-            component: () =>
-              import ('@/view/statistics/extension.vue')
-          },
-        ],
->>>>>>> c46bdae1bad29b7b70f179b7509ccaf79cb58926
+            component: () => import ('@/view/statistics/countryside.vue')
+          },],
       },
+
       {
         path: 'vehicle',
         name: 'vehicle',
