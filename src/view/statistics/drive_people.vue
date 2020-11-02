@@ -7,14 +7,16 @@
             <Option  :value="item.k" v-for="item in allstorageList">{{item.v}}</Option>
           </Select>
             </Col>
-           <Col span="6">
-      <DatePicker  :value="todate" @on-change="todate=$event"
-                      confirm placeholder="请选择开始与结束日期"
-                      placement="bottom-end"
-                      type="daterange">
-          </DatePicker>
-          <Button @click="handleSubmitTable()" style="marginRight: 2px; marginLeft: 5px" type="primary">查询
-          </Button>
+           <Col span="8">
+             <DatePicker
+                  value="todate"
+                  @on-change="todate=$event"
+                  format="yyyy-MM" placeholder="请选择日期"
+                  style="width: 46%"
+                  type="month">
+               </DatePicker>
+          <Button @click="handleSubmitTable()" style="marginRight: 2px; marginLeft: 5px" type="primary">查询</Button>
+<!--             <Button @click="handleSubmitTable2()" style="marginRight: 2px; marginLeft: 5px" type="primary">重新生成</Button>-->
         <Button @click="exportData()" class="case-btn" type="success">
               <Icon type="ios-download-outline"></Icon>
               导出数据
@@ -44,37 +46,57 @@ export default {
       todate: [],
       allstorageList:[],
       storage:'',
-      columns: [
+      columns2:  [
         { title: '在职', key: 'yessum', editable: true },
         { title: '离职', key: 'nosum', editable: true },
         { title: '总数', key: 'allsum', editable: true }
       ],
+      columns:  [],
       titlelist:[],
       keylist:[],
       tableData: [], // [{"yessum":20,"nosum":10,"allsum":30}],
     }
   },
   methods: {
+    handleSubmitTable2 () {
+      console.log(JSON.stringify(this.todate))
+      console.log(JSON.stringify(this.storage))
+      if (JSON.stringify(this.todate) == "") {
+        alert('请选择日期')
+      } else if(this.storage === ""){alert('请选择存储过程')}
+      else{
+        this.getimplement(this.todate,this.storage,"2")
+      }
+    },
     handleSubmitTable () {
       console.log(JSON.stringify(this.todate))
       console.log(JSON.stringify(this.storage))
-      if (JSON.stringify(this.todate) == '[]') {
-        alert('请选择日期范围')
+      if (JSON.stringify(this.todate) == "") {
+        alert('请选择日期')
       } else if(this.storage === ""){alert('请选择存储过程')}
       else{
-        this.getimplement(this.todate[0], this.todate[1],this.storage)
+        this.getimplement(this.todate,this.storage,"1")
       }
     },
-    getimplement (start, end,storage) {
-      getimplement(start, end,storage).then(res => {
+    getimplement (date,storage,flag) {
+      getimplement(date,storage,flag).then(res => {
         if (res.data.code === 0) {
           this.tableData = res.data.data  //表数据
           this.titlelist = res.data.titlelist  //excel表头数据
           this.columns = res.data.columnslist  //表字段
           this.keylist = res.data.keylist   //excel字段
-        } else {
+        } else if(res.data.code === 1){   //执行存储过程没有返回值
+            this.tableData = []
+            this.titlelist = []
+            this.columns = []
+            this.keylist = []
+            this.handleSubmitTable ()
+        }
+        else{
           this.tableData = []
-          this.headerlist = []
+          this.titlelist = []
+          this.columns = []
+          this.keylist = []
         }
       })
     },
