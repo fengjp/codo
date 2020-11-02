@@ -145,7 +145,7 @@
           todayUpLoad: 0,
           todayDownLoad: 0,
         },
-        select_date: [],
+        select_date: [getDate(new Date().getTime() / 1000, 'date'), getDate(new Date().getTime() / 1000, 'date')],
         today: [getDate(new Date().getTime() / 1000, 'date'), getDate(new Date().getTime() / 1000, 'date')],
         upLoadLogTitle: '数据上报记录',
         upLoadLogTableData: [],
@@ -280,7 +280,7 @@
     },
     mounted() {
       this.getCertdata('UpLoadLog', this.today)
-      // this.getCertdata('DownLoadLog')
+      this.getCertdata('DownLoadLog', this.today)
       this.getCertdata('UpLoadError', this.today)
       this.getCertdata('DownLoadError', this.today)
       this.getCertdata('dataAll', this.today)
