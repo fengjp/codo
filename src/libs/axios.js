@@ -47,8 +47,16 @@ class HttpRequest {
         }, error => {
             this.destroy(url)
             if (error.response.status === '401' || error.response.status === 401) {
-                setToken('')
-                location.reload()
+                Notice.error({
+                    title: '登录验证失败',
+                    desc: `已被强制下线，请重新登录`
+                })
+                // setToken('')
+                // location.reload()
+                setTimeout(() =>{
+                  setToken('')
+                  location.reload()
+                },2000);
             } else if (error.response.status === 402) {
                 console.log(error.response)
                 Notice.warning({
