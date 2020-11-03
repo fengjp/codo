@@ -185,8 +185,8 @@
             align: 'center',
           },
           {
-            title: '主题',
-            key: 'topic',
+            title: '批次号',
+            key: 'cd_batch',
             align: 'center',
           },
           {
