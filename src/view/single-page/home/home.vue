@@ -53,6 +53,8 @@
   } from '@/api/customquery/query'
   import {dateFormat} from '@/libs/util'
   import {swapArr, toFirst} from '@/libs/tools'
+  import store from '@/store'
+  import {getToken, setTitle, setToken} from '@/libs/util'
 
   export default {
     name: 'home',
@@ -481,6 +483,22 @@
           }
         })
       },
+      reAuthorization() {
+        store.dispatch('authorization').then(rules => {
+          // console.log(rules)
+          store.dispatch('concatRoutes', rules).then(routers => {
+            // console.log(routers)
+          }).catch((err) => {
+            console.log(err)
+            setToken('')
+            next({name: 'login'})
+          })
+        }).catch((err1) => {
+          console.log(err1)
+          setToken('')
+          next({name: 'login'})
+        })
+      }
     },
     mounted() {
       this.getTmpList()
@@ -489,6 +507,7 @@
         clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
       }
       this.playTimer()// 启用定时器
+      this.reAuthorization() // 刷新前端权限
     },
     watch: {
       // queryObjList: function () {
