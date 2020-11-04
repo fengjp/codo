@@ -106,10 +106,25 @@
             </FormItem>
           <FormItem label="类型" prop="totype" style="width:500px;">
               <RadioGroup v-model="formValidate.totype"   @on-change="change_totype">
-                <Radio label="sql定时"></Radio>
-                <Radio label="存储过程定时"></Radio>
+                <Radio label="sql"></Radio>
+                <Radio label="存储过程"></Radio>
+              </RadioGroup>
+            </FormItem>
+          <FormItem label="执行方式" prop="mode" style="width:500px;">
+              <RadioGroup v-model="formValidate.mode"   @on-change="change_totype">
+                <Radio label="定时"></Radio>
                 <Radio label="触发"></Radio>
-                <Radio label="屏蔽"></Radio>
+              </RadioGroup>
+            </FormItem><FormItem label="状态" prop="state" style="width:500px;">
+              <RadioGroup v-model="formValidate.state" >
+                <Radio label="运行"></Radio>
+                <Radio label="停止"></Radio>
+              </RadioGroup>
+            </FormItem>
+            <FormItem label="重新生成" prop="flag" style="width:500px;"  v-if="isShow3">
+              <RadioGroup v-model="formValidate.flag" >
+                <Radio label="是"></Radio>
+                <Radio label="否"></Radio>
               </RadioGroup>
             </FormItem>
           <Row :gutter="10" style="margin-bottom: 5px">
@@ -208,10 +223,11 @@
   export default {
     data() {
       return {
-        typelist:[{"k":1,"v":"sql定时"},{"k":2,"v":"存储过程定时"},{"k":3,"v":"触发"},{"k":4,"v":"屏蔽"}],
+        typelist:[{"k":1,"v":"sql"},{"k":2,"v":"存储过程"},{"k":3,"v":"触发"},{"k":4,"v":"屏蔽"}],
         btnText: '展开',
         isShow: false,
         isShow2: false,
+        isShow3: false,
         toflag: 0,
         tousername: "",
         isDisable: false,
@@ -229,6 +245,9 @@
           department: '',
           obj:'',
           storage:'',
+          mode:'',
+          state:'',
+          flag:'',
           create_time: ''
         },
         databaselist: [],
@@ -271,7 +290,7 @@
         },
         columns: [
           {
-            title: '脚本名称', key: 'name', width: 150, align: 'center', render: (h, params) => {
+            title: '脚本名称', key: 'name',  align: 'center', render: (h, params) => {
               // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
               return h('div', [
                 h('a', {
@@ -284,82 +303,16 @@
               ])
             }
           },
-          {
-            title: 'SQL',
-            key: 'sqlstr',
-            align: 'center',
-            render: (h, params) => {
-              // return h('router-link', {props:{to:'/project/publish/'+params.row.id+ '/'}}, params.row.name)
-              return h('div', [
-                h('span', {
-                  style: {
-                    display: 'inline-block',
-                    width: '100%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  },
-                  domProps: {
-                    title: params.row.sqlstr
-                  }
-                }, params.row.sqlstr)
-              ])
-            }
-          },
-          {title: '存储过程', key: 'storage', width: 150, align: 'center'},
-          {title: '数据源', key: 'dbname', width: 200, align: 'center'},
-          {
-            title: 'excel列名',
-            key: 'header',
-            align: 'center',
-            render: (h, params) => {
-              let roleTitle = params.row.header
-              return h('div', [
-                h('span', {
-                  style: {
-                    display: 'inline-block',
-                    width: '100%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  },
-                  domProps: {
-                    title: roleTitle
-                  }
-                }, roleTitle)
-              ])
-            }
-          },
-          {title: '类型', key: 'totype', width: 60, align: 'center'},
-          {
-            title: '描述',
-            key: 'remarks',
-            align: 'center',
-            render: (h, params) => {
-              let roleTitle = params.row.remarks
-              return h('div', [
-                h('span', {
-                  style: {
-                    display: 'inline-block',
-                    width: '100%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  },
-                  domProps: {
-                    title: roleTitle
-                  }
-                }, roleTitle)
-              ])
-            }
-          },
-          {title: '创建人', key: 'username', width: 100, align: 'center'},
-          {title: '记录时间', key: 'create_time', width: 100, align: 'center'},
+          {title: '数据源', key: 'dbname',  align: 'center'},
+          {title: '类型', key: 'totype',  align: 'center'},
+          {title: '执行方式', key: 'mode', align: 'center'},
+          {title: '状态', key: 'state', align: 'center'},
+          {title: '创建人', key: 'username', align: 'center'},
+          {title: '记录时间', key: 'create_time',  align: 'center'},
           {
             title: '操作',
             key: 'handle',
             align: 'center',
-            width: 180,
             render: (h, params) => {
               return h('div', [
                 h(
@@ -473,13 +426,18 @@
             },
       //触发单选器
       change_totype(){
-        if(this.formValidate.totype === "触发" || this.formValidate.totype === "存储过程定时" ){
+         if(this.formValidate.mode === "触发" && this.formValidate.totype === "存储过程" ){
+          this.isShow3 = true
+        }else{
+          this.isShow3 = false
+        }
+        if(this.formValidate.totype === "存储过程" ){
           this.isShow = true
         }
         else{
           this.isShow = false
         }
-        if(this.formValidate.totype === "sql定时"){
+        if(this.formValidate.totype === "sql"){
           this.isShow2 = true
         }
         else{
@@ -511,8 +469,8 @@
         if (this.tableDataALL.length) {
           // this.exportLoading = true
           const params = {
-            title: ['ID', '脚本名称', 'SQL', '描述', "创建人", '记录时间'],
-            key: ['id', 'name', 'sqlstr', 'remarks', "username", 'create_time'],
+            title: ['ID', '脚本名称', '数据源', '类型', '执行方式', '状态',"创建人", '记录时间'],
+            key: ['id', 'name', 'dbname', 'totype', "mode","state","username", 'create_time'],
             data: this.tableDataALL,
             autoWidth: true,
             filename: '脚本列表'
@@ -574,13 +532,17 @@
             sqlstr: paramsRow.sqlstr,
             remarks: paramsRow.remarks,
             username: paramsRow.username,
+            mode: paramsRow.mode,
+            state: paramsRow.state,
             obj: paramsRow.obj,
             department: eval('[' +paramsRow.department + ']'),
             storage:paramsRow.storage,
+            flag:paramsRow.flag,
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
-          if(this.formValidate.totype === "触发" || this.formValidate.totype === "存储过程定时"){this.isShow = true,this.isShow2 = false}
+          if(this.formValidate.totype === "触发" || this.formValidate.totype === "存储过程"){this.isShow = true,this.isShow2 = false}
           else{this.isShow = false,this.isShow2 = false}
+          if(this.formValidate.mode === "触发" && this.formValidate.totype === "存储过程"){this.isShow3 = true}
         } else {
           // post
           this.formValidate = {
@@ -588,17 +550,21 @@
             header: '',
             dbname_id: 0,
             dbname: '',
-            totype: 'sql定时',
+            totype: 'sql',
             sqlstr: '',
             remarks: '',
             username: '',
             obj: '',
+            mode:'定时',
+            state:'运行',
             department: '',
             storage:'',
+            flag:'否',
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
-          if(this.formValidate.totype === "sql定时"){this.isShow2 = true,this.isShow = false}
+          if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
           else{this.isShow2 = false,this.isShow = false}
+          if(this.formValidate.mode === "触发" && this.formValidate.totype === "存储过程"){this.isShow3 = true}
         }
       },
       handleSubmit(value) {

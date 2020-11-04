@@ -310,25 +310,7 @@ export const routerMap = [
           icon: 'ios-list-box-outline',
           title: '驾驶人管理科'
         },
-        component: parentView,
-        children: [{
-                     path: 'drive_people',
-                     name: 'drive_people',
-                     meta: {
-                           icon: 'ios-list-box-outline',
-                           title: '机动车驾驶人业务数据统计',
-                     },
-                     component: () => import ('@/view/statistics/drive_people.vue')
-                   },
-                   {
-                     path: 'extension2',
-                     name: 'extension2',
-                     meta: {
-                     icon: 'ios-list-box-outline',
-                     title: '推广',
-                    },
-                   component: () => import ('@/view/statistics/extension.vue')
-             },],
+        component: () => import ('@/view/statistics/drive_people.vue')
       },
       {
         path: 'supervise',
@@ -347,25 +329,7 @@ export const routerMap = [
           icon: 'ios-list-box-outline',
           title: '执法监督科(秩序管理处)'
         },
-        component: parentView,
-        children: [{
-                     path: 'illegal',
-                     name: 'illegal',
-                     meta: {
-                           icon: 'ios-list-box-outline',
-                           title: '农村统计',
-                     },
-                     component: () => import ('@/view/statistics/illegal.vue')
-                   },
-                   {
-                     path: 'extension6',
-                     name: 'extension6',
-                     meta: {
-                     icon: 'ios-list-box-outline',
-                     title: '推广',
-                    },
-                   component: () => import ('@/view/statistics/illegal.vue')
-             },],
+        component: () => import ('@/view/statistics/illegal.vue')
       },
       {
         path: 'coordinate',
@@ -374,25 +338,7 @@ export const routerMap = [
           icon: 'ios-list-box-outline',
           title: '交通安全协调科'
         },
-        component: parentView,
-        children: [{
-          path: 'countryside',
-          name: 'countryside',
-          meta: {
-            icon: 'ios-list-box-outline',
-            title: '农村统计',
-          },
-          component: () => import ('@/view/statistics/countryside.vue')
-        },
-          {
-            path: 'extension3',
-            name: 'extension3',
-            meta: {
-              icon: 'ios-list-box-outline',
-              title: '推广',
-            },
-            component: () => import ('@/view/statistics/countryside.vue')
-          },],
+        component: () => import ('@/view/statistics/countryside.vue')
       },
 
       {
@@ -402,25 +348,7 @@ export const routerMap = [
           icon: 'ios-list-box-outline',
           title: '监督科(车管处)'
         },
-        component: parentView,
-        children: [{
-                     path: 'monthly',
-                     name: 'monthly',
-                     meta: {
-                           icon: 'ios-list-box-outline',
-                           title: '每月一考',
-                     },
-                     component: () => import ('@/view/statistics/monthly.vue')
-                   },
-                   {
-                     path: 'extension5',
-                     name: 'extension5',
-                     meta: {
-                     icon: 'ios-list-box-outline',
-                     title: '推广',
-                    },
-                   component: () => import ('@/view/statistics/monthly.vue')
-             },],
+        component: () => import ('@/view/statistics/monthly.vue')
       },
       {
         path: 'vehicle2',

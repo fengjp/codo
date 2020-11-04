@@ -72,11 +72,6 @@
             </Option>
           </Select>
         </FormItem>
-        <FormItem label="执行周期" prop="cycle">
-        <Select v-model="formValidate.cycle" multiple style="width:260px">
-        <Option v-for="item in cycleList" :value="item.k">{{ item.v}}</Option>
-    </Select>
-          </FormItem>
         <FormItem label="日期范围" prop="todate2" style="width: 48%">
         <DatePicker type="daterange"
                     placement="bottom-end" placeholder="请选择开始与结束日期"
@@ -85,6 +80,26 @@
                     style="width: 230px;marginRight: 2px;">
         </DatePicker>
           </FormItem>
+        <FormItem label="周期/日期" prop="flag" style="width:250px;"  >
+              <RadioGroup v-model="formValidate.flag" @on-change="change_totype">
+                <Radio label="日期"></Radio>
+                <Radio label="周期"></Radio>
+              </RadioGroup>
+            </FormItem>
+        <FormItem label="执行周期" prop="cycle"  v-if="isShow">
+        <Select v-model="formValidate.cycle" multiple style="width:260px">
+        <Option v-for="item in cycleList" :value="item.k">{{ item.v}}</Option>
+    </Select>
+          </FormItem>
+        <FormItem label="日期" prop="todate" style="width:260px;" v-if="isShow2">
+          <DatePicker :clearable="false"
+                      :value="formValidate.todate" @on-change="changestime"
+                      format="yyyy-MM-dd"
+                      placeholder="请选择日期"
+                      type="date">
+
+          </DatePicker>
+        </FormItem>
         <FormItem label="执行时间" prop="times">
           <RadioGroup  vertical>
               <TimePicker size="small" format="HH:mm"
@@ -171,6 +186,8 @@
           ]
         },
         surl: '',
+        isShow:false,
+        isShow2:false,
         tableData: '',
         isDisable: false,
         tabledata3: [],
@@ -394,11 +411,30 @@
           dataname: '',
           download_dir: '',
           cycle: '',
+          flag:'',
+          todate:'',
           start_end: [],
         },
       }
     },
     methods: {
+      changestime (data) {
+      this.formValidate.todate = data
+    },
+      change_totype(){
+         if(this.formValidate.flag === "周期"){
+          this.isShow = true
+           this.isShow2 = false
+        }else{
+          this.isShow = false
+        }
+         if(this.formValidate.flag === "日期"){
+          this.isShow2 = true
+           this.isShow = false
+        }else{
+          this.isShow2 = false
+        }
+         },
       // 删除
       delData(params) {
         if (confirm(`确定要删除 ${params.row.totitle}`)) {
@@ -521,9 +557,13 @@
             times: paramsRow.times,
             download_dir: paramsRow.download_dir,
             cycle:eval(paramsRow.cycle),
+            flag:paramsRow.flag,
+            todate:paramsRow.todate,
             start_end:eval(paramsRow.start_end),
           }
           this.todate2 =  eval(paramsRow.start_end)
+          if(this.formValidate.flag === "周期"){ this.isShow = true , this.isShow2 = false}else{this.isShow = false}
+         if(this.formValidate.flag === "日期"){this.isShow2 = true , this.isShow = false }else{ this.isShow2 = false}
         } else {
           this.todate2 = []
           this.formValidate = {
@@ -534,7 +574,11 @@
             download_dir: '',
             cycle: '',
             start_end:[],
+            flag:'周期',
+            todate:'',
           }
+          if(this.formValidate.flag === "周期"){ this.isShow = true ,this.isShow2 = false}else{this.isShow = false}
+         if(this.formValidate.flag === "日期"){this.isShow2 = true , this.isShow = false }else{ this.isShow2 = false}
         }
       },
       handlerReadScript(row) {
