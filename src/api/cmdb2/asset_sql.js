@@ -55,6 +55,15 @@ export const getstoragelist = (department,obj) => {
     }
   })
 }
+export const getobjlist = (department) => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/objlist/',
+    method: 'get',
+    params: {
+      department
+    }
+  })
+}
 export const getimplement = (date,storage,flag) => {
   return axios.request({
     url: '/cmdb2/v1/sql/implement/',
