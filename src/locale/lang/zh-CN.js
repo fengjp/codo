@@ -158,4 +158,5 @@ export default {
   monitor_mg: '监控详情',
   dataService: '数据服务',
   certdataUp: '新版办件上报',
+  systemGetLog: '请求日志',
 }
