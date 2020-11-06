@@ -38,6 +38,7 @@
 </template>
 
 <script>
+  import customZhCn from '@/locale/lang/zh-CN'
   import Icons from '_c/icons'
   import Tables from '_c/tables'
   import FormGroup from '_c/form-group'
@@ -387,7 +388,7 @@
             res.data.data.forEach(item => {
               allData.push({
                 key: item.menu_id.toString(),
-                label: item.menu_name.toString()
+                label: customZhCn[item.menu_name.toString()] ? customZhCn[item.menu_name.toString()]: item.menu_name.toString()
               })
             })
             this.source = allData
@@ -489,6 +490,7 @@
     },
     mounted() {
       this.getRoleList(this.pageNum, this.pageSize)
+      // console.log(customZhCn)
     }
   }
 </script>
