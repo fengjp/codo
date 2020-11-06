@@ -2,10 +2,10 @@
   <div style="height:100%">
     <Card>
       <template>
-        <Form label-position="left" :label-width="75" label-colon=":" style="margin-bottom: -25px;">
-            <FormItem label="统计分类">
-              <Tag checkable color="primary" style="margin-left: 1px" @on-change="handleChange"
-                v-for="tag in allSysTag" v-bind:name="tag.v"
+        <Form label-position="left" :label-width="50" label-colon=":" style="margin-bottom: -25px;">
+            <FormItem label="报表">
+              <Tag checkable  color="primary" style="margin-left: 1px" @on-change="handleChange"
+                v-for="tag in allSysTag" v-bind:name="tag.v"  :checked="istype"
               >{{ tag.v }}</Tag>
             </FormItem>
         </Form>
@@ -28,7 +28,7 @@
                   type="month">
                </DatePicker>
           <Button @click="handleSubmitTable()" style="marginRight: 2px; marginLeft: 5px" type="primary">查询</Button>
-             <Button @click="handleSubmitTable2()" style="marginRight: 2px; marginLeft: 5px" type="primary" v-if="isShow">重新生成</Button>
+             <Button @click="handleSubmitTable2()" style="marginRight: 2px; marginLeft: 5px" type="warning" v-if="isShow">重新生成</Button>
         <Button @click="exportData()" class="case-btn" type="success">
               <Icon type="ios-download-outline"></Icon>
               导出数据
@@ -53,12 +53,14 @@
   import excel from '@/libs/excel'
   import {getstoragelist,getimplement,getobjlist} from '@/api/cmdb2/asset_sql'
 
+
 export default {
   components: {
   },
   data () {
     return {
       isShow: false,
+      istype:false,
       todate: [],
       allstorageList:[],
       temp_storagelist:[],
@@ -76,26 +78,31 @@ export default {
     }
   },
   methods: {
-    handleChange(name,obj){
+    handleChange(name,obj,){
         console.log("55555555555555")
         console.log(name)
         console.log(obj)
         console.log(this.temp_storagelist)
-        for (var i = 0; i < this.allSysTag.length; i++) {
-             if (obj === this.allSysTag[i].v){
-                    if(this.allSysTag[i].t == "是"){
-                        this.isShow = true
-                    }else{ this.isShow = false }
-                 }
-        }
-        for (var i = 0; i < this.temp_storagelist.length; i++) {
-                 if (obj === this.temp_storagelist[i].name){
-                    this.allstorageList = this.temp_storagelist[i].date
-                 }
+        if(name === true){
+            for (var i = 0; i < this.allSysTag.length; i++) {
+                 if (obj === this.allSysTag[i].v){
+                        if(this.allSysTag[i].t == "是"){
+                            this.isShow = true
+                        }else{ this.isShow = false }
+                     }
+            }
+            for (var i = 0; i < this.temp_storagelist.length; i++) {
+                     if (obj === this.temp_storagelist[i].name){
+                        this.allstorageList = this.temp_storagelist[i].date
+                     }
 
             }
-        this.$forceUpdate()
-      },
+        }else{
+          this.allstorageList= [], this.isShow = false
+
+        }
+            this.$forceUpdate()
+    },
     handleSubmitTable2 () {
       console.log(JSON.stringify(this.todate))
       console.log(this.todate)

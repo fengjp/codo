@@ -149,14 +149,19 @@
                 placeholder="SQL语句"
               ></Input>
             </FormItem>
-            <FormItem label="部门名称" prop="remarks" style="width:500px;margin-right:500px" v-if="isShow">
+            <FormItem label="部门名称" prop="department" style="width:500px;margin-right:500px" v-if="isShow">
           <Select @on-create="handleCreate2" allow-create multiple filterable placeholder="部门名称" v-model="formValidate.department">
             <Option  :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
           </Select>
         </FormItem>
-            <FormItem label="项目名" prop="remarks" style="width:500px;margin-right:500px"  v-if="isShow">
-              <Select @on-create="handleCreate5" allow-create  filterable placeholder="项目名" v-model="formValidate.obj">
+            <FormItem label="报表名" prop="obj" style="width:500px;margin-right:500px"  v-if="isShow">
+              <Select @on-create="handleCreate5" allow-create  filterable placeholder="报表名" v-model="formValidate.obj">
             <Option  :value="item.v" v-for="item in allobjList">{{item.v}}</Option>
+          </Select>
+            </FormItem>
+            <FormItem label="授权用户" prop="authorized" style="width:500px;margin-right:500px"  v-if="isShow">
+              <Select  allow-create   multiple   placeholder="授权用户" v-model="formValidate.authorized">
+            <Option  :value="item.nickname" v-for="item in allNameList">{{ item.nickname }}</Option>
           </Select>
             </FormItem>
             <FormItem
@@ -212,9 +217,10 @@
 <script>
   import XLSX from 'xlsx'
   import FileSaver from 'file-saver'
+  import { getuserlist } from '@/api/user'
+  import {routerMap} from '@/router/routers'
 
   import {SqlAdd, getCase, getSqlList, getname, sqlDelete, getdepartmentlist} from '@/api/cmdb2/asset_sql'
-  import {getuserlist} from '@/api/user'
   import {getDate} from '@/libs/tools'
   import excel from '@/libs/excel'
   import {getDictConfList} from '@/api/app'
@@ -229,6 +235,7 @@
         isShow2: false,
         isShow3: false,
         toflag: 0,
+        router_list: [],
         tousername: "",
         isDisable: false,
         isDisable2: false,
@@ -248,6 +255,7 @@
           mode:'',
           state:'',
           flag:'',
+          authorized:'',
           create_time: ''
         },
         databaselist: [],
@@ -398,6 +406,33 @@
       }
     },
     methods: {
+      gettemplist(){
+        this.router_list = eval(routerMap)
+        for(var i = 0; i < this.router_list.length; i++) {
+                 if (this.router_list[i].name == 'statistics'){
+                        for(var j = 0; j < eval(this.router_list[i].children).length; j++) {
+                             // console.log("55555555555555")
+                             // console.log(eval(this.router_list[i].children)[j].meta.title)
+                             this.alldepartmentList.push({k: j , v: eval(this.router_list[i].children)[j].meta.title});
+                             // console.log("55555555555555")
+                        }
+
+                     }
+            }
+    },
+      // 获取用户列表
+    getUserList () {
+      getuserlist(1, 2000).then(res => {
+        if (res.data.code === 0) {
+          this.allNameList = res.data.data
+          console.log("3333333")
+          console.log(this.allNameList )
+          console.log("3333333")
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
        getdepartmentlist() {
         getdepartmentlist().then(res => {
           if (res.data.code === 0) {
@@ -536,6 +571,7 @@
             state: paramsRow.state,
             obj: paramsRow.obj,
             department: eval('[' +paramsRow.department + ']'),
+            authorized: eval(paramsRow.authorized),
             storage:paramsRow.storage,
             flag:paramsRow.flag,
             create_time: getDate(new Date().getTime() / 1000, 'year')
@@ -560,6 +596,7 @@
             department: '',
             storage:'',
             flag:'否',
+            authorized:'',
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
           if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
@@ -655,7 +692,9 @@
     mounted() {
       this.getSqlList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
       this.getdepartmentlist()
-      this.getDictConfList()
+      // this.getDictConfList()
+      this.getUserList()
+      this.gettemplist()
     }
   }
 </script>
