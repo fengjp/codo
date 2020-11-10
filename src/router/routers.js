@@ -514,16 +514,6 @@ export const routerMap = [
         component: () =>
           import ('@/view/system-manage/systemlog.vue')
       },
-      {
-        path: 'systemGetLog',
-        name: 'systemGetLog',
-        meta: {
-          icon: 'ios-paper',
-          title: '请求日志'
-        },
-        component: () =>
-          import ('@/view/system-manage/systemgetlog.vue')
-      }
     ]
   },
   {

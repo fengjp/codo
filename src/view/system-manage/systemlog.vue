@@ -1,14 +1,19 @@
 <template>
   <Card>
     <div class="search-con search-con-top">
-      <Select v-model="searchKey" class="search-col">
-        <Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key" :key="`search-col-${item.key}`">
-          {{ item.title }}
-        </Option>
-      </Select>
-      <Input @on-change="handleClear" clearable placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
+      <!--<Select v-model="searchKey" class="search-col">-->
+        <!--<Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key" :key="`search-col-${item.key}`">-->
+          <!--{{ item.title }}-->
+        <!--</Option>-->
+      <!--</Select>-->
+      <!--<Input @on-change="handleClear" clearable placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>-->
+      <Input @on-change="handleClear" clearable placeholder="输入关键字全局搜索" class="search-input"
+                   v-model="searchValue"/>
       <DatePicker :value="dateValue" type="daterange" placement="bottom-end" @on-change="changeDate"
                   placeholder="Select date" style=" margin-left: 2px; width: 200px"></DatePicker>
+      <Select v-model="methodKey" class="search-col">
+        <Option :key="item.key" :value="item.val" v-for="item in methodList">{{item.val}}</Option>
+      </Select>
       <Button @click="handleSearch" class="search-btn" type="primary">搜索</Button>
     </div>
     <Table size="small" :columns="columns" :data="tableData"></Table>
@@ -73,12 +78,22 @@
         //
         searchKey: 'username',
         searchValue: '',
-        dateValue: []
+        dateValue: [],
+        methodList: [
+          {key: 0, val: '全部'},
+          {key: 1, val: 'GET'},
+          {key: 2, val: 'POST'},
+          {key: 3, val: 'PUT'},
+          {key: 4, val: 'PATCH'},
+          {key: 5, val: 'DELETE'},
+        ],
+        methodKey: '全部',
+        methodValue: '',
       }
     },
     methods: {
-      getLogList(page, limit, key, value, dateValue) {
-        getLoglist(page, limit, key, value, dateValue).then(res => {
+      getLogList(page, limit, key, value, methodKey, dateValue) {
+        getLoglist(page, limit, key, value, methodKey, dateValue).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
@@ -98,6 +113,7 @@
           this.pageSize,
           this.searchKey,
           this.searchValue,
+          this.methodKey,
           this.dateValue
         )
       },
@@ -109,6 +125,7 @@
           this.pageSize,
           this.searchKey,
           this.searchValue,
+          this.methodKey,
           this.dateValue
         )
       },
@@ -121,6 +138,7 @@
           this.pageSize,
           this.searchKey,
           this.searchValue,
+          this.methodKey,
           this.dateValue
         )
       }

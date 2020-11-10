@@ -1,6 +1,6 @@
 import axios from '@/libs/api.request'
 
-export const getLoglist = (page, limit, key, value, date = ['', '']) => {
+export const getLoglist = (page, limit, key, value, methodKey, date = ['', '']) => {
   return axios.request({
     url: '/mg/v2/app/opt_log/',
     method: 'get',
@@ -9,21 +9,7 @@ export const getLoglist = (page, limit, key, value, date = ['', '']) => {
       limit,
       key,
       value,
-      start_date: date[0],
-      end_date: date.length > 1 ? date[1] : ''
-    }
-  })
-}
-
-export const getGetLoglist = (page, limit, key, value, date = ['', '']) => {
-  return axios.request({
-    url: '/mg/v2/app/opt_log_for_get/',
-    method: 'get',
-    params: {
-      page,
-      limit,
-      key,
-      value,
+      methodKey,
       start_date: date[0],
       end_date: date.length > 1 ? date[1] : ''
     }
