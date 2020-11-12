@@ -94,15 +94,15 @@
               ></Input>
             </FormItem>
           </div>
-          <FormItem label="excel表头" prop="header" style="display: block">
-            <Input v-model="formValidate.header" type="textarea"
-                   placeholder='请输入excel表头字段,用竖号分开。例：编号|用户名|手机号|地址'></Input>
-          </FormItem>
+
           <FormItem label="数据库源" prop="dbname_id" style="width:60%;">
               <Select placeholder="数据库源" v-model="formValidate.dbname_id">
                 <Option :value="item.id" v-for="item in databaselist">{{item.name}}
                 </Option>
               </Select>
+            </FormItem>
+          <FormItem label="数据表名" prop="fieldname" style="width:350px;" >
+              <Input v-model="formValidate.fieldname" placeholder="请输入数据表的名称"></Input>
             </FormItem>
           <FormItem label="类型" prop="totype" style="width:500px;">
               <RadioGroup v-model="formValidate.totype"   @on-change="change_totype">
@@ -128,19 +128,18 @@
               </RadioGroup>
             </FormItem>
           <Row :gutter="10" style="margin-bottom: 5px">
-            <FormItem
-              label="存储过程"
-              prop="storage" style="width:350px;"
-              v-if="isShow"
-            >
-              <Input
-                v-model="formValidate.storage"
-                placeholder="存储过程"
-              ></Input>
+            <FormItem label="存储过程" prop="storage" style="width:350px;" v-if="isShow">
+              <Input v-model="formValidate.storage" placeholder="存储过程"></Input>
             </FormItem>
+
+            <FormItem label="excel表头" prop="header" style="display: block"  v-if="isShow2">
+            <Input v-model="formValidate.header" type="textarea"
+                   placeholder='请输入excel表头字段,用竖号分开。例：编号|用户名|手机号|地址'></Input>
+          </FormItem>
             <FormItem
               label="SQL语句"
               prop="sqlstr" style="width:500px;margin-right:500px"
+              v-if="isShow2"
             >
               <Input
                 v-model="formValidate.sqlstr"
@@ -256,6 +255,7 @@
           state:'',
           flag:'',
           authorized:'',
+          fieldname:'',
           create_time: ''
         },
         databaselist: [],
@@ -273,13 +273,6 @@
               trigger: 'blur',
             }
           ],
-          header: [
-            {
-              required: true,
-              message: '请输入excel列名',
-              trigger: 'blur'
-            }
-          ],
           dbname_id: [
             {
               required: true,
@@ -294,7 +287,14 @@
               message: '请选择执行类型',
               trigger: 'blur'
             }
-          ]
+          ],
+          fieldname: [
+            {
+              required: true,
+              message: '请填写表名',
+              trigger: 'blur'
+            }
+          ],
         },
         columns: [
           {
@@ -574,11 +574,15 @@
             authorized: eval(paramsRow.authorized),
             storage:paramsRow.storage,
             flag:paramsRow.flag,
+            fieldname:paramsRow.fieldname,
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
           if(this.formValidate.totype === "触发" || this.formValidate.totype === "存储过程"){this.isShow = true,this.isShow2 = false}
-          else{this.isShow = false,this.isShow2 = false}
+          else if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false,this.isShow3 = false}
+          else{this.isShow = false,this.isShow2 = false,this.isShow3 = false}
           if(this.formValidate.mode === "触发" && this.formValidate.totype === "存储过程"){this.isShow3 = true}
+          // if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
+          // else{this.isShow2 = false,this.isShow = false}
         } else {
           // post
           this.formValidate = {
@@ -597,11 +601,13 @@
             storage:'',
             flag:'否',
             authorized:'',
+            fieldname:'',
             create_time: getDate(new Date().getTime() / 1000, 'year')
           }
           if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
-          else{this.isShow2 = false,this.isShow = false}
+          else{this.isShow2 = false,this.isShow = false,this.isShow3 = false}
           if(this.formValidate.mode === "触发" && this.formValidate.totype === "存储过程"){this.isShow3 = true}
+          else{this.isShow3 = false}
         }
       },
       handleSubmit(value) {

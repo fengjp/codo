@@ -91,14 +91,17 @@
         <Option v-for="item in cycleList" :value="item.k">{{ item.v}}</Option>
     </Select>
           </FormItem>
-        <FormItem label="日期" prop="todate" style="width:260px;" v-if="isShow2">
-          <DatePicker :clearable="false"
-                      :value="formValidate.todate" @on-change="changestime"
-                      format="yyyy-MM-dd"
-                      placeholder="请选择日期"
-                      type="date">
+        <FormItem label="指定日期" prop="todate" style="width:350px;" v-if="isShow2">
+          <Select v-model="formValidate.todate" multiple style="width:260px">
+        <Option v-for="item in todateList" :value="item.k">{{ item.v}}</Option>
+    </Select>
+<!--          <DatePicker :clearable="false"-->
+<!--                      :value="formValidate.todate" @on-change="changestime"-->
+<!--                      format="yyyy-MM-dd"-->
+<!--                      placeholder="请选择日期"-->
+<!--                      type="date">-->
 
-          </DatePicker>
+<!--          </DatePicker>-->
         </FormItem>
         <FormItem label="执行时间" prop="times">
           <RadioGroup  vertical>
@@ -228,6 +231,22 @@
                         k: '7',
                         v: '星期日'
                     }
+        ],
+        todateList:[{k: '01', v: '1日'},
+                    {k: '02', v: '2日'},
+                    {k: '03', v: '3日'},
+                    {k: '04', v: '4日'},
+                    {k: '05', v: '5日'},
+                    {k: '06', v: '6日'},
+                    {k: '07', v: '7日'},
+                    {k: '08', v: '8日'},
+                    {k: '09', v: '9日'},
+                    {k: '10', v: '10日'},
+                    {k: '11', v: '11日'},
+                    {k: '12', v: '12日'},
+                    {k: '13', v: '13日'},
+                    {k: '14', v: '14日'},
+                    {k: '15', v: '15日'},
         ],
         searchValue: '',
         tokey: '',
@@ -412,7 +431,7 @@
           download_dir: '',
           cycle: '',
           flag:'',
-          todate:'',
+          todate:[],
           start_end: [],
         },
       }
@@ -558,7 +577,7 @@
             download_dir: paramsRow.download_dir,
             cycle:eval(paramsRow.cycle),
             flag:paramsRow.flag,
-            todate:paramsRow.todate,
+            todate:eval(paramsRow.todate),
             start_end:eval(paramsRow.start_end),
           }
           this.todate2 =  eval(paramsRow.start_end)
@@ -575,7 +594,7 @@
             cycle: '',
             start_end:[],
             flag:'周期',
-            todate:'',
+            todate:[],
           }
           if(this.formValidate.flag === "周期"){ this.isShow = true ,this.isShow2 = false}else{this.isShow = false}
          if(this.formValidate.flag === "日期"){this.isShow2 = true , this.isShow = false }else{ this.isShow2 = false}
