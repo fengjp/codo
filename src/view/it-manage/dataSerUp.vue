@@ -140,6 +140,7 @@
     },
     data() {
       return {
+        timer: null, // 保存定时器，用于销毁
         dataAll: {
           sumUpLoad: 0,
           todayUpLoad: 0,
@@ -174,6 +175,17 @@
             title: '失败',
             key: 'failed',
             align: 'center',
+          },
+          {
+            title: 'REMARK',
+            key: 'extra',
+            align: 'center',
+            render: (h, params, vm) => {
+              return h('div', [
+                h('span', {
+                }, params.row.extra)
+              ])
+            }
           },
         ],
         downLoadLogTitle: '不合格记录',
@@ -270,7 +282,8 @@
       playTimer() {
         this.timer = setInterval(() => {
           this.getCertdata('dataAll', this.today)
-        }, 1000*60*5)
+          this.getCertdata('UpLoadLog', this.today)
+        }, 1000 * 60 * 5)
       },
     },
     watch: {

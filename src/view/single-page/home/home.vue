@@ -1,18 +1,24 @@
 <template>
   <div>
     <Row :gutter="10">
-      <i-col :xs="12" :md="8" :lg="4">
+      <Col span="4">
         <Select :value="tmpValue" @on-select="selectTmp">
           <Option v-for="item in tmpList" :value="item.label" :key="item.value">{{ item.label }}</Option>
         </Select>
-      </i-col>
-      <i-col :xs="12" :md="8" :lg="4">
+      </Col>
+      <Col span="4">
         <ButtonGroup>
           <Button icon="ios-add" @click="handlerTmp('','post', '添加配置')"></Button>
           <Button icon="ios-settings" @click="handlerTmp('','put', '修改配置')"></Button>
           <Button icon="ios-trash" @click="handlerDeleteTmp(tid)"></Button>
         </ButtonGroup>
-      </i-col>
+      </Col>
+      <Col span="4" offset="12" style="text-align: right">
+        <ButtonGroup>
+          <Button icon="md-volume-up" @click="audioPlay()" v-if="!this.isPlaying"></Button>
+          <Button icon="md-volume-off" @click="audioPlay()" v-else></Button>
+        </ButtonGroup>
+      </Col>
     </Row>
 
     <Row :gutter="10" style="margin-top: 10px;">
@@ -55,6 +61,8 @@
   import {swapArr, toFirst} from '@/libs/tools'
   import store from '@/store'
   import {getToken, setTitle, setToken} from '@/libs/util'
+  import jinggao1Mp3 from '@/assets/mp3/jinggao1.mp3'
+  import jinggao2Mp3 from '@/assets/mp3/jinggao2.mp3'
 
   export default {
     name: 'home',
@@ -66,6 +74,9 @@
     },
     data() {
       return {
+        audio: '',
+        isPlaying: false,
+        canPlaying: false,
         tid: 0, //当前模版ID
         tmpValue: '',
         tmpList: [],
@@ -454,6 +465,32 @@
             l5.push(queryObjList[i])
           }
         }
+
+        // 指定警告声音
+        if (l2.length > 0) {
+          this.audio.src = jinggao2Mp3
+        }
+        if (l1.length > 0) {
+          this.audio.src = jinggao1Mp3
+        }
+
+        if (l1.length > 0 || l2.length > 0) {
+          this.canPlaying = true
+          let audioPlay = this.audio.play()
+          audioPlay.then(() => {
+            this.isPlaying = true
+            // console.log('可以自动播放');
+          }).catch((err) => {
+            console.log(err);
+            console.log("不允许自动播放");
+          })
+        } else {
+          this.canPlaying = false
+          this.audio.pause()
+          this.isPlaying = false
+        }
+
+        // 组合
         l1.push(...l2)
         l1.push(...l3)
         l1.push(...l4)
@@ -498,7 +535,25 @@
           setToken('')
           next({name: 'login'})
         })
+      },
+      audioPlay() {
+        if (!this.isPlaying && this.canPlaying) {
+          this.audio.play()
+          this.isPlaying = true
+        } else {
+          this.audio.pause()
+          this.isPlaying = false
+        }
+      },
+      createAudio(src) {
+        this.audio = new Audio();
+        this.audio.loop = true;
+        this.audio.src = src;
       }
+    },
+    beforeMount() {
+      this.createAudio(jinggao1Mp3) // 创建音频对象
+
     },
     mounted() {
       this.getTmpList()
@@ -508,6 +563,7 @@
       }
       this.playTimer()// 启用定时器
       this.reAuthorization() // 刷新前端权限
+
     },
     watch: {
       // queryObjList: function () {
@@ -518,11 +574,15 @@
     },
     // 组件关闭时，执行此方法来销毁定时器
     beforeRouteLeave(to, from, next) {
+      this.audio.pause()
+      this.isPlaying = false
       clearInterval(this.timer)
       next()
     },
     beforeDestroy() {
       clearInterval(this.timer)
+      this.audio.pause()
+      this.isPlaying = false
     }
   }
 </script>

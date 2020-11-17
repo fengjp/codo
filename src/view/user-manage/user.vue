@@ -6,7 +6,8 @@
               @on-search-table="handleSearchTable"
               @on-selection-change="handleSelectChange">
         <div slot="new_btn" class="search-con search-col">
-          <Button v-if="rules.new_user_btn" type="info" class="search-btn" @click="showModal">新建用户</Button>
+          <Button v-if="rules.new_user_btn" type="info" class="search-btn" @click="showModal('','post','新建用户')">新建用户
+          </Button>
           <Button v-if="rules.reset_pwd_btn" type="error" class="search-btn" @click="handleResetPWD">重置密码</Button>
           <!--<Button v-if="rules.reset_mfa_btn" type="error" class="search-btn"  @click="handleResetMFA">重置MFA</Button>-->
           <!--<Button v-if="rules.get_token_btn" type="error" class="search-btn"  @click="handleToken">长期Token</Button>-->
@@ -19,8 +20,53 @@
         </div>
       </div>
     </Card>
-    <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true>
-      <form-group :list="formList" @on-submit-success="handleSubmit"></form-group>
+    <!--<Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true>-->
+    <!--<form-group :list="formList" @on-submit-success="handleSubmit"></form-group>-->
+    <!--</Modal>-->
+    <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true
+           :mask-closable=false>
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
+        <FormItem label="账户名称" prop="username">
+          <div v-if="editModalData && editModalData ==='put'">
+            <Input v-model="formValidate.username" :maxlength="50" disabled
+                   placeholder='账户名(英文字母)'></Input>
+          </div>
+          <div v-else>
+            <Input v-model="formValidate.username" :maxlength="50" placeholder='账户名(英文字母)'></Input>
+          </div>
+        </FormItem>
+        <FormItem label="昵称" prop="nickname">
+          <Input v-model="formValidate.nickname" :maxlength="50" placeholder='昵称'></Input>
+        </FormItem>
+        <FormItem label="部门" prop="department">
+          <Input v-model="formValidate.department" :maxlength="50" placeholder='部门'></Input>
+        </FormItem>
+        <FormItem label="手机号" prop="tel">
+          <Input v-model="formValidate.tel" :maxlength="50" placeholder='手机号'></Input>
+        </FormItem>
+        <FormItem label="工号" prop="no">
+          <Input v-model="formValidate.no" :maxlength="50" placeholder='工号'></Input>
+        </FormItem>
+        <FormItem label="邮箱" prop="email">
+          <Input v-model="formValidate.email" :maxlength="50" placeholder='邮箱'></Input>
+        </FormItem>
+        <FormItem label="登录时段" prop="">
+          <RadioGroup v-model="chosenOrder" @on-change="radioChange()">
+            <Radio label="全天">
+              <span style="margin-right: 15px;">全天</span>
+            </Radio>
+            <Radio label="时段">
+              <span style="margin-right: 15px;">时间段</span>
+            </Radio>
+          </RadioGroup>
+          <TimePicker format="HH:mm" type="timerange" confirm placement="top" placeholder="时间段"
+                      v-model="formValidate.timeInterval" v-if="chosenOrder==='时段'" style="width: 168px"></TimePicker>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+        </FormItem>
+      </Form>
     </Modal>
   </div>
 </template>
@@ -52,90 +98,50 @@
           modalVisible: false,
           modalTitle: '创建用户'
         },
-        // 渲染form数据
-        formList: [
-          {
-            name: 'username',
-            type: 'i-input',
-            value: '',
-            label: '账户名称',
-            rule: [
-              {required: true, message: '账户名称不能为空', trigger: 'blur'}
-            ]
-          },
-          {
-            name: 'nickname',
-            type: 'i-input',
-            value: '',
-            label: '用户姓名',
-            rule: [
-              {required: true, message: '用户姓名不能为空', trigger: 'blur'}
-            ]
-          },
-          {
-            name: 'department',
-            type: 'i-input',
-            value: '',
-            label: '部门',
-            rule: [{required: true, message: '部门不能为空', trigger: 'blur'}]
-          },
-          {
-            name: 'wechat',
-            type: 'i-input',
-            value: '',
-            label: '微信号码',
-            rule: [
-              {required: true, message: '微信号码不能为空', trigger: 'blur'}
-            ]
-          },
-          {
-            name: 'tel',
-            type: 'i-input',
-            value: '',
-            label: '手机号码',
-            rule: [
-              {required: true, message: '手机号不能为空', trigger: 'blur'},
-              {
-                type: 'string',
-                min: 11,
-                max: 11,
-                message: '必须为手机号码',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            name: 'no',
-            type: 'i-input',
-            value: '',
-            label: '工号',
-            rule: [{required: true, message: '工号不能为空', trigger: 'blur'}]
-          },
-          {
-            name: 'email',
-            type: 'i-input',
-            value: '',
-            label: '邮箱',
-            rule: [
-              {required: true, message: '邮箱不能为空', trigger: 'blur'},
-              {
-                type: 'email',
-                message: '必须为邮箱格式',
-                trigger: 'blur'
-              }
-            ]
-          }
-        ],
+        editModalData: '',
+        ruleValidate: {
+          username: [{required: true, message: '账户名称不能为空', trigger: 'blur'}],
+          nickname: [{required: true, message: '昵称不能为空', trigger: 'blur'}],
+          department: [{required: true, message: '部门不能为空', trigger: 'blur'}],
+          tel: [{required: true, message: '手机号不能为空', trigger: 'blur'},
+            {
+              type: 'string',
+              min: 11,
+              max: 11,
+              message: '必须为手机号码',
+              trigger: 'blur'
+            }
+          ],
+          no: [{required: true, message: '工号不能为空', trigger: 'blur'}],
+          email: [{required: true, message: '邮箱不能为空', trigger: 'blur'},
+            {
+              type: 'email',
+              message: '必须为邮箱格式',
+              trigger: 'blur'
+            }
+          ],
+        },
+        formValidate: {
+          user_id:'',
+          username: '',
+          nickname: '',
+          department: '',
+          tel: '',
+          no: '',
+          email: '',
+          timeInterval: '',
+        },
         columns: [
           {type: 'selection', title: '', key: '', width: 60, align: 'center'},
-          {title: '用户名', key: 'username', sortable: true},
-          {title: '昵称', key: 'nickname', sortable: true},
-          {title: '部门', key: 'department', editable: true},
-          {title: '手机', key: 'tel', editable: true},
-          {title: '邮箱', key: 'email', editable: true},
-          {title: '登录IP', key: 'last_ip'},
+          {title: '用户名', key: 'username', align: 'center', sortable: true},
+          {title: '昵称', key: 'nickname', width: 100, align: 'center', sortable: true},
+          {title: '部门', key: 'department', width: 80, align: 'center', editable: true},
+          {title: '手机', width: 110, key: 'tel', align: 'center', editable: true},
+          {title: '邮箱', key: 'email', align: 'center', editable: true},
+          {title: '登录IP', width: 100, align: 'center', key: 'last_ip'},
           {
             title: '最后登录',
+            width: 100,
             key: 'last_login',
             align: 'center',
             sortable: true
@@ -143,7 +149,7 @@
           {
             title: '状态',
             key: 'status',
-            width: 80,
+            width: 70,
             align: 'center',
             render: (h, params, vm) => {
               return h('div', [
@@ -167,51 +173,102 @@
           {
             title: '操作',
             align: 'center',
-            width: 100,
-            key: 'handle',
-            // options: ["delete"],
-            button: [
-              (h, params, vm) => {
-                return h(
-                  'Poptip',
+            width: 170,
+            key: 'handle1',
+            render: (h, params, vm) => {
+              return h('div', [
+                h('Button',
                   {
                     props: {
-                      transfer: true,
-                      confirm: true,
-                      title: '你确定要删除吗?'
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-create-outline',
+                    },
+                    style: {
+                      marginRight: '2px',
+                      color: '#409eff'
                     },
                     on: {
-                      'on-ok': () => {
-                        vm.$emit('on-delete', params)
-                        vm.$emit(
-                          'input',
-                          params.tableData.filter(
-                            (item, index) => index !== params.row.initRowIndex
-                          )
-                        )
+                      click: () => {
+                        this.showModal(params.row, 'put', '编辑')
                       }
                     }
+                  }, '编辑'
+                ),
+                h('Poptip', {
+                  props: {
+                    placement: 'left-start',
+                    confirm: true,
+                    transfer: true,
+                    title: '确定删除吗？',
                   },
-                  [
-                    // h('Button', '自定义删除'),
-                    h(
-                      'Button',
-                      {
-                        props: {
-                          type: 'text',
-                          size: 'small',
-                          icon: 'ios-trash-outline',
-                        },
-                        style: {
-                          color: '#ed4014'
-                        },
-                      },
-                      '删除'
-                    )
-                  ]
-                )
-              }
-            ]
+                  on: {
+                    'on-ok': () => {
+                      vm.$emit('on-delete', params)
+                      vm.$emit(
+                        'input',
+                        params.tableData.filter(
+                          (item, index) => index !== params.row.initRowIndex
+                        )
+                      )
+                    }
+                  }
+                }, [
+                  h('Button', {
+                    props: {
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline',
+                    },
+                    style: {
+                      color: '#ed4014'
+                    },
+                  }, '删除'),
+                ]),
+              ])
+            }
+            // button: [
+            //   (h, params, vm) => {
+            //     return h(
+            //       'Poptip',
+            //       {
+            //         props: {
+            //           transfer: true,
+            //           confirm: true,
+            //           title: '你确定要删除吗?'
+            //         },
+            //         on: {
+            //           'on-ok': () => {
+            //             vm.$emit('on-delete', params)
+            //             vm.$emit(
+            //               'input',
+            //               params.tableData.filter(
+            //                 (item, index) => index !== params.row.initRowIndex
+            //               )
+            //             )
+            //           }
+            //         }
+            //       },
+            //       [
+            //         // h('Button', '自定义删除'),
+            //         h(
+            //           'Button',
+            //           {
+            //             props: {
+            //               type: 'text',
+            //               size: 'small',
+            //               icon: 'ios-trash-outline',
+            //             },
+            //             style: {
+            //               color: '#ed4014'
+            //             },
+            //           },
+            //           '删除'
+            //         )
+            //       ]
+            //     )
+            //   }
+            // ]
           }
         ],
         // 搜索数据
@@ -223,7 +280,8 @@
         pageNum: 1, // 当前页码
         pageSize: 15, // 每页条数
         // select
-        selectionList: []
+        selectionList: [],
+        chosenOrder: ''
       }
     },
     computed: {
@@ -232,6 +290,12 @@
       })
     },
     methods: {
+      radioChange() {
+        // console.log(this.chosenOrder)
+      },
+      handleReset(name) {
+        this.$refs[name].resetFields()
+      },
       handleDelete(params) {
         deluser({user_id: params.row.user_id}).then(res => {
           if (res.data.code === 0) {
@@ -284,21 +348,43 @@
         })
       },
       handleSubmit(value) {
-        setTimeout(() => {
-          newuser(value.data).then(res => {
-            const data = res.data
-            if (res.data.code === 0) {
-              this.$Message.info(`${data.msg}`)
-              // 重新获取数据
-              this.getUserList(this.pageNum, this.pageSize)
-            } else {
-              this.$Message.error(`${data.msg}`)
+        this.$refs[value].validate((valid) => {
+          if (valid) {
+            if (this.chosenOrder === '全天'){
+              this.formValidate.timeInterval = ''
             }
-          }).catch(err => {
-            this.$Message.error(err)
-          })
-          this.modalMap.modalVisible = false
-        }, 1000)
+            setTimeout(() => {
+              if (this.editModalData === 'post') {
+                newuser(this.formValidate).then(res => {
+                  const data = res.data
+                  if (res.data.code === 0) {
+                    this.$Message.info(`${data.msg}`)
+                    // 重新获取数据
+                    this.getUserList(this.pageNum, this.pageSize)
+                  } else {
+                    this.$Message.error(`${data.msg}`)
+                  }
+                }).catch(err => {
+                  this.$Message.error(err)
+                })
+              }
+              if (this.editModalData === 'put') {
+                updateuser(this.formValidate).then(res => {
+                  if (res.data.code === 0) {
+                    this.$Message.success(`${res.data.msg}`)
+                    // 重新获取数据
+                    this.getUserList(this.pageNum, this.pageSize)
+                  } else {
+                    this.$Message.error(`${res.data.msg}`)
+                  }
+                })
+              }
+              this.modalMap.modalVisible = false
+            }, 500)
+          } else {
+            this.$Message.error('缺少必要参数')
+          }
+        })
       },
       handleInput(editData) {
         // 行内编辑
@@ -316,8 +402,39 @@
         })
       },
       // 弹出对话框
-      showModal() {
-        this.modalMap.modalVisible = true
+      showModal(paramsRow, meth, mtitle) {
+        this.modalMap.modalVisible = true;
+        this.modalMap.modalTitle = mtitle;
+        this.editModalData = meth;
+        if (paramsRow && paramsRow.user_id) {
+          this.formValidate = {
+            user_id: paramsRow.user_id,
+            username: paramsRow.username,
+            nickname: paramsRow.nickname,
+            department: paramsRow.department,
+            tel: paramsRow.tel,
+            no: paramsRow.no,
+            email: paramsRow.email,
+            timeInterval: paramsRow.timeInterval != '' ? JSON.parse(paramsRow.timeInterval) : '',
+          }
+          if (this.formValidate['timeInterval'].length > 0) {
+            this.chosenOrder = '时段'
+          } else {
+            this.chosenOrder = '全天'
+          }
+        } else {
+          this.formValidate = {
+            user_id:'',
+            username: '',
+            nickname: '',
+            department: '',
+            tel: '',
+            no: '',
+            email: '',
+            timeInterval: '',
+          }
+          this.chosenOrder = '全天'
+        }
       },
       // 调用开关
       onSwitch(editData) {
