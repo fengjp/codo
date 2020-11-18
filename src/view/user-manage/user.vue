@@ -62,6 +62,23 @@
           <TimePicker format="HH:mm" type="timerange" confirm placement="top" placeholder="时间段"
                       v-model="formValidate.timeInterval" v-if="chosenOrder==='时段'" style="width: 168px"></TimePicker>
         </FormItem>
+        <FormItem label="IP限制" prop="limit_IP">
+          <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.limit_IP">
+            <Col span="14">
+              <Input v-model="item.ip" placeholder="IP限制"></Input>
+            </Col>
+            <Col span="3">
+              <Button type="text" shape="circle" icon="md-close" @click="handleRemove(index)"></Button>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem style="display: block">
+          <Row>
+            <Col span="12">
+              <Button type="dashed" long @click="handleColAdd()" icon="md-add">增加IP</Button>
+            </Col>
+          </Row>
+        </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
           <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
@@ -122,7 +139,7 @@
           ],
         },
         formValidate: {
-          user_id:'',
+          user_id: '',
           username: '',
           nickname: '',
           department: '',
@@ -130,6 +147,7 @@
           no: '',
           email: '',
           timeInterval: '',
+          limit_IP: [{'ip':''}],
         },
         columns: [
           {type: 'selection', title: '', key: '', width: 60, align: 'center'},
@@ -290,6 +308,14 @@
       })
     },
     methods: {
+      handleColAdd() {
+        this.formValidate.limit_IP.push({'ip':''});
+      },
+      handleRemove(index) {
+        console.log(index)
+        console.log(this.formValidate.limit_IP)
+        this.formValidate.limit_IP.splice(index, 1)
+      },
       radioChange() {
         // console.log(this.chosenOrder)
       },
@@ -350,7 +376,7 @@
       handleSubmit(value) {
         this.$refs[value].validate((valid) => {
           if (valid) {
-            if (this.chosenOrder === '全天'){
+            if (this.chosenOrder === '全天') {
               this.formValidate.timeInterval = ''
             }
             setTimeout(() => {
@@ -416,6 +442,7 @@
             no: paramsRow.no,
             email: paramsRow.email,
             timeInterval: paramsRow.timeInterval != '' ? JSON.parse(paramsRow.timeInterval) : '',
+            limit_IP: paramsRow.limit_IP ? JSON.parse(paramsRow.limit_IP) : [{'ip':''}],
           }
           if (this.formValidate['timeInterval'].length > 0) {
             this.chosenOrder = '时段'
@@ -424,7 +451,7 @@
           }
         } else {
           this.formValidate = {
-            user_id:'',
+            user_id: '',
             username: '',
             nickname: '',
             department: '',
@@ -432,6 +459,7 @@
             no: '',
             email: '',
             timeInterval: '',
+            limit_IP: [{'ip':''}],
           }
           this.chosenOrder = '全天'
         }
