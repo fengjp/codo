@@ -181,9 +181,15 @@
             key: 'extra',
             align: 'center',
             render: (h, params, vm) => {
+              let extra = params.row.extra
+              let remark = ''
+              if (extra){
+                for (let i in extra){
+                  remark = remark + i + ':' + extra[i] + ' '
+                }
+              }
               return h('div', [
-                h('span', {
-                }, params.row.extra)
+                h('span', {}, remark)
               ])
             }
           },
