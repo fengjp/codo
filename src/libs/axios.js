@@ -49,7 +49,7 @@ class HttpRequest {
             if (error.response.status === '401' || error.response.status === 401) {
                 Notice.error({
                     title: '登录验证失败',
-                    desc: `已被强制下线，请重新登录`
+                    desc: `已限制登录并强制下线`
                 })
                 // setToken('')
                 // location.reload()

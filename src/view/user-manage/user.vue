@@ -222,10 +222,10 @@
                   },
                   on: {
                     'on-ok': () => {
-                      vm.$emit('on-delete', params)
-                      vm.$emit(
+                      this.$refs.tables.$emit('on-delete', params)
+                      this.$refs.tables.$emit(
                         'input',
-                        params.tableData.filter(
+                        this.tableData.filter(
                           (item, index) => index !== params.row.initRowIndex
                         )
                       )
