@@ -54,6 +54,7 @@ export default {
   illegal:'机动车违法统计',
   science: '科技科',
   sql_admin:'脚本列表',
+  storage_admin:'存储过程管理',
   drive: '驾驶人管理科',
   statistics: '需求统计',
   Jobcronlogs: '任务日志',

@@ -18,6 +18,13 @@ import VueClipboard from 'vue-clipboard2'
 import Vue2OrgTree from 'vue2-org-tree'
 import 'vue2-org-tree/dist/style.css'
 
+
+import  VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+
 // window.requestAnimationFrame多浏览器兼容问题补丁
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
@@ -126,6 +133,7 @@ Vue.use(VueClipboard)
 // 实际打包时应该不引入mock
 /* eslint-disable */
 // if (process.env.NODE_ENV !== 'production') require('@/mock')
+Vue.use(VueQuillEditor)
 
 Vue.use(ViewUI, {
   i18n: (key, value) => i18n.t(key, value)

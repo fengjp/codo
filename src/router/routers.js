@@ -94,6 +94,16 @@ export const routerMap = [
           import ('@/view/cmdb2/db_mg.vue')
       },
       {
+        path: 'storage_admin',
+        name: 'storage_admin',
+        meta: {
+          icon: 'ios-cube',
+          title: '存储过程管理'
+        },
+        component: () =>
+          import ('@/view/cmdb2/storage.vue')
+      },
+      {
         path: 'asset_sql',
         name: 'asset_sql',
         meta: {
