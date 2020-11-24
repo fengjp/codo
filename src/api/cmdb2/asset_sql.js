@@ -64,12 +64,12 @@ export const getobjlist = (department) => {
     }
   })
 }
-export const getimplement = (date,storage,targetKeys,flag) => {
+export const getimplement = (parameter,storage,targetKeys,flag) => {
   return axios.request({
     url: '/cmdb2/v1/sql/implement/',
     method: 'get',
     params: {
-      date,
+      parameter,
       storage,
       targetKeys,
       flag,

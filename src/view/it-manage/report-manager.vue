@@ -41,7 +41,7 @@
         </Card>
       </Col>
     </Row>
-        <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="900"
+        <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="1000"
            :mask-closable=false :styles="{top: '20px'}">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100" inline>
         <FormItem label="标题" prop="title" style="display: block">
@@ -80,29 +80,22 @@
                     style="width: 230px;marginRight: 2px;">
         </DatePicker>
           </FormItem>
-        <FormItem label="周期/日期" prop="flag" style="width:250px;"  >
+        <FormItem label="日/周" prop="flag" style="width:200px;"  >
               <RadioGroup v-model="formValidate.flag" @on-change="change_totype">
-                <Radio label="日期"></Radio>
-                <Radio label="周期"></Radio>
+                <Radio label="日"></Radio>
+                <Radio label="周"></Radio>
               </RadioGroup>
             </FormItem>
-        <FormItem label="执行周期" prop="cycle"  v-if="isShow">
-        <Select v-model="formValidate.cycle" multiple style="width:260px">
-        <Option v-for="item in cycleList" :value="item.k">{{ item.v}}</Option>
+        <FormItem label="指定日期" prop="todate" style="width:350px;"   >
+          <Select v-model="formValidate.todate" multiple style="width:260px" :disabled="isDisable" >
+        <Option v-for="obj in todateList" :value="obj.k">{{ obj.v}}</Option>
     </Select>
-          </FormItem>
-        <FormItem label="指定日期" prop="todate" style="width:350px;" v-if="isShow2">
-          <Select v-model="formValidate.todate" multiple style="width:260px">
-        <Option v-for="item in todateList" :value="item.k">{{ item.v}}</Option>
-    </Select>
-<!--          <DatePicker :clearable="false"-->
-<!--                      :value="formValidate.todate" @on-change="changestime"-->
-<!--                      format="yyyy-MM-dd"-->
-<!--                      placeholder="请选择日期"-->
-<!--                      type="date">-->
-
-<!--          </DatePicker>-->
         </FormItem>
+         <FormItem label="执行周期" prop="cycle"   :disabled="isDisable">
+          <Select v-model="formValidate.cycle" multiple style="width:260px"  :disabled="isDisable2" >
+            <Option v-for="item in cycleList" :value="item.x">{{ item.q}}</Option>
+           </Select>
+          </FormItem>
         <FormItem label="执行时间" prop="times">
           <RadioGroup  vertical>
               <TimePicker size="small" format="HH:mm"
@@ -193,6 +186,7 @@
         isShow2:false,
         tableData: '',
         isDisable: false,
+        isDisable: false,
         tabledata3: [],
         mode_type: 'mysql',
         todate: [],
@@ -204,32 +198,39 @@
         },
         searchKey: '',
         cycleList:[{
-                        k: '1',
-                        v: '星期一'
+                        x: '一',
+                        q: '星期一',
+                        m:'',
                     },
                     {
-                        k: '2',
-                        v: '星期二'
+                        x: '二',
+                        q: '星期二',
+                      m:'',
                     },
                     {
-                        k: '3',
-                        v: '星期三'
+                        x: '三',
+                        q: '星期三',
+                      m:'',
                     },
                     {
-                        k: '4',
-                        v: '星期四'
+                        x: '四',
+                        q: '星期四',
+                      m:'',
                     },
                     {
-                        k: '5',
-                        v: '星期五'
+                        x: '五',
+                        q: '星期五',
+                      m:'',
                     },
                     {
-                        k: '6',
-                        v: '星期六'
+                        x: '六',
+                        q: '星期六',
+                      m:'',
                     },
                    {
-                        k: '7',
-                        v: '星期日'
+                        x: '日',
+                        q: '星期日',
+                     m:'',
                     }
         ],
         todateList:[{k: '01', v: '1日'},
@@ -441,17 +442,23 @@
       this.formValidate.todate = data
     },
       change_totype(){
-         if(this.formValidate.flag === "周期"){
-          this.isShow = true
-           this.isShow2 = false
+         if(this.formValidate.flag === "周"){
+           this.isDisable =  true
+           this.isDisable2 =  false
+           this.formValidate.todate = []
+
         }else{
-          this.isShow = false
+          this.isDisable =  false
+           this.isDisable2 =  true
         }
-         if(this.formValidate.flag === "日期"){
-          this.isShow2 = true
-           this.isShow = false
+         if(this.formValidate.flag === "日"){
+           this.isDisable =  false
+           this.isDisable2 =  true
+           this.formValidate.cycle = []
+
         }else{
-          this.isShow2 = false
+          this.isDisable =  true
+           this.isDisable2 =  false
         }
          },
       // 删除
@@ -581,8 +588,8 @@
             start_end:eval(paramsRow.start_end),
           }
           this.todate2 =  eval(paramsRow.start_end)
-          if(this.formValidate.flag === "周期"){ this.isShow = true , this.isShow2 = false}else{this.isShow = false}
-         if(this.formValidate.flag === "日期"){this.isShow2 = true , this.isShow = false }else{ this.isShow2 = false}
+          if(this.formValidate.flag === "周"){this.isDisable =  true ,this.isDisable2 =  false}else{this.isDisable =  false ,this.isDisable2 =  true}
+          if(this.formValidate.flag === "日"){this.isDisable = false ,this.isDisable2 =  true }else{this.isDisable =  true ,this.isDisable2 =  false}
         } else {
           this.todate2 = []
           this.formValidate = {
@@ -593,11 +600,11 @@
             download_dir: '',
             cycle: '',
             start_end:[],
-            flag:'周期',
+            flag:'周',
             todate:[],
           }
-          if(this.formValidate.flag === "周期"){ this.isShow = true ,this.isShow2 = false}else{this.isShow = false}
-         if(this.formValidate.flag === "日期"){this.isShow2 = true , this.isShow = false }else{ this.isShow2 = false}
+          if(this.formValidate.flag === "周"){this.isDisable =  true ,this.isDisable2 =  false}else{this.isDisable =  false ,this.isDisable2 =  true}
+          if(this.formValidate.flag === "日"){this.isDisable = false ,this.isDisable2 =  true }else{this.isDisable =  true ,this.isDisable2 =  false}
         }
       },
       handlerReadScript(row) {
