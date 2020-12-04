@@ -72,10 +72,16 @@
             v-model="formValidate.company"
           ></Input>
         </FormItem>
+<!--        <FormItem label="部门名称" prop="department" style="width:350px;">-->
+<!--          <Select @on-create="handleCreate2" allow-create  filterable placeholder="部门名称" v-model="formValidate.department">-->
+<!--            <Option :key="item.k" :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>-->
+<!--          </Select>-->
+<!--        </FormItem>-->
         <FormItem label="部门名称" prop="department" style="width:350px;">
-          <Select @on-create="handleCreate2" allow-create  filterable placeholder="部门名称" v-model="formValidate.department">
-            <Option :key="item.k" :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
-          </Select>
+            <Input
+            placeholder="请输入部门名称"
+            v-model="formValidate.department"
+          ></Input>
         </FormItem>
 <!--        <FormItem label="部门级别" prop="level" style="width:350px;">-->
 <!--          <InputNumber :max="9" :min="1" placeholder="请选择部门级别" v-model="formValidate.level"></InputNumber>-->
@@ -261,11 +267,11 @@
           ]
         },
         columnslist: [
-          {title: '单位名', key: 'department',editable: true},
-          {title: '负责人', key: 'bossname', editable: true},
-          {title: '电话', key: 'tel', editable: true},
-          {title: '邮箱', key: 'email', editable: true},
-          {title: '备注', key: 'remarks', sortable: true},
+          {title: '单位名', key: 'companyname',editable: true},
+          // {title: '负责人', key: 'bossname', editable: true},
+          // {title: '电话', key: 'tel', editable: true},
+          // {title: '邮箱', key: 'email', editable: true},
+          // {title: '备注', key: 'remarks', sortable: true},
         ],
 
         columns: [
@@ -502,6 +508,7 @@
               // }
               this.formValidate = {
                 id: "",
+                companyname: paramsRow.companyname,
                 company_id: paramsRow.id,
                 company: paramsRow.department,
                 addr: '',
@@ -520,6 +527,7 @@
             // put
               this.formValidate = {
                 id: paramsRow.id,
+                companyname: paramsRow.companyname,
                 company_id: paramsRow.company_id,
                 company: paramsRow.company,
                 addr: paramsRow.addr,
@@ -540,6 +548,7 @@
             id:"",
             company_id: "",
             company: "",
+            companyname: "",
             addr: "",
             bossname: "",
             duty: "",
@@ -562,6 +571,7 @@
                 id: paramsRow.id,
                 company_id: paramsRow.company_id,
                 company: paramsRow.company,
+                companyname: paramsRow.companyname,
                 addr: paramsRow.addr,
                 bossname: paramsRow.bossname,
                 duty: paramsRow.duty,
@@ -577,6 +587,7 @@
           this.formValidate = {
             id:"",
             company_id: "",
+            companyname: "",
             company: "",
             addr: "",
             bossname: "",

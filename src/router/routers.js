@@ -138,7 +138,7 @@ export const routerMap = [
         name: 'stakeholder',
         meta: {
           icon: 'ios-people',
-          title: '干系人列表'
+          title: '联系人列表'
         },
         component: () =>
           import ('@/view/user-manage/stakeholder.vue')
@@ -307,69 +307,69 @@ export const routerMap = [
       path: 'science',
       name: 'science',
       meta: {
-        icon: 'md-alarm',
+        icon: 'ios-list-box-outline',
         title: '科技科'
       },
       component: () =>
         import ('@/view/statistics/examination.vue')
     },
-      {
-        path: 'drive',
-        name: 'drive',
-        meta: {
-          icon: 'ios-list-box-outline',
-          title: '驾驶人管理科'
-        },
-        component: () => import ('@/view/statistics/drive_people.vue')
-      },
-      {
-        path: 'supervise',
-        name: 'supervise',
-        meta: {
-          icon: 'ios-list-box-outline',
-          title: '执法监督科'
-        },
-        component: () =>
-          import ('@/view/statistics/supervise.vue')
-      },
-      {
-        path: 'order2',
-        name: 'order2',
-        meta: {
-          icon: 'ios-list-box-outline',
-          title: '执法监督科(秩序管理处)'
-        },
-        component: () => import ('@/view/statistics/illegal.vue')
-      },
-      {
-        path: 'coordinate',
-        name: 'coordinate',
-        meta: {
-          icon: 'ios-list-box-outline',
-          title: '交通安全协调科'
-        },
-        component: () => import ('@/view/statistics/countryside.vue')
-      },
-
-      {
-        path: 'vehicle',
-        name: 'vehicle',
-        meta: {
-          icon: 'ios-list-box-outline',
-          title: '监督科(车管处)'
-        },
-        component: () => import ('@/view/statistics/monthly.vue')
-      },
-      {
-        path: 'vehicle2',
-        name: 'vehicle2',
-        meta: {
-          icon: 'ios-list-box-outline',
-          title: '机动车管理科(车辆管理处)'
-        },
-        component: () =>
-          import ('@/view/statistics/vehicle.vue')
-      },
+      // {
+      //   path: 'drive',
+      //   name: 'drive',
+      //   meta: {
+      //     icon: 'ios-list-box-outline',
+      //     title: '驾驶人管理科'
+      //   },
+      //   component: () => import ('@/view/statistics/drive_people.vue')
+      // },
+      // {
+      //   path: 'supervise',
+      //   name: 'supervise',
+      //   meta: {
+      //     icon: 'ios-list-box-outline',
+      //     title: '执法监督科'
+      //   },
+      //   component: () =>
+      //     import ('@/view/statistics/supervise.vue')
+      // },
+      // {
+      //   path: 'order2',
+      //   name: 'order2',
+      //   meta: {
+      //     icon: 'ios-list-box-outline',
+      //     title: '执法监督科(秩序管理处)'
+      //   },
+      //   component: () => import ('@/view/statistics/illegal.vue')
+      // },
+      // {
+      //   path: 'coordinate',
+      //   name: 'coordinate',
+      //   meta: {
+      //     icon: 'ios-list-box-outline',
+      //     title: '交通安全协调科'
+      //   },
+      //   component: () => import ('@/view/statistics/countryside.vue')
+      // },
+      //
+      // {
+      //   path: 'vehicle',
+      //   name: 'vehicle',
+      //   meta: {
+      //     icon: 'ios-list-box-outline',
+      //     title: '监督科(车管处)'
+      //   },
+      //   component: () => import ('@/view/statistics/monthly.vue')
+      // },
+      // {
+      //   path: 'vehicle2',
+      //   name: 'vehicle2',
+      //   meta: {
+      //     icon: 'ios-list-box-outline',
+      //     title: '机动车管理科(车辆管理处)'
+      //   },
+      //   component: () =>
+      //     import ('@/view/statistics/vehicle.vue')
+      // },
 
     ]
   },
@@ -676,5 +676,36 @@ export const routes = [{
     },
     component: () =>
       import ('@/view/error-page/404.vue')
-  }
+  },
+  // {
+  //   path: '/tips',
+  //   name: 'tips',
+  //   meta: {
+  //     hideInMenu: true
+  //   },
+  //   component: () =>
+  //     import ('@/view/single-page/home/tips.vue')
+  // },
+  {
+    path: '/_tips',
+    name: '_tips',
+    redirect: '/tips',
+    component: Main,
+    meta: {
+      hideInMenu: true,
+      notCache: true
+    },
+    children: [{
+      path: '/tips',
+      name: 'tips',
+      meta: {
+        hideInMenu: true,
+        title: '首页',
+        notCache: true,
+        icon: 'md-home'
+      },
+      component: () =>
+        import ('@/view/single-page/home/tips.vue')
+    }]
+  },
 ]

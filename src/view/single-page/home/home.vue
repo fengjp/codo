@@ -276,7 +276,7 @@
               this.formValidate.username = JSON.parse(sessionStorage.vuex).user.userName;
               operationTmp(this.formValidate, this.editModalData).then(res => {
                 if (res.data.code === 0) {
-                  this.$Message.success(`${res.data.msg}`);
+                  // this.$Message.success(`${res.data.msg}`);
                   this.modalMap.modalVisible = false;
                   this.getTmpList()
                 } else {
@@ -335,7 +335,7 @@
         }
         getQueryListForshow(key, value).then(res => {
           if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
+            // this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
             let data = res.data.data
             let queryObjList = res.data.data
@@ -513,7 +513,7 @@
       getQueryList(key, value) {
         getQueryList(1, 888, key, value).then(res => {
           if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
+            // this.$Message.success(`${res.data.msg}`)
             this.tmpTableDate = res.data.data
           } else {
             this.$Message.error('选择项目' + `${res.data.msg}`)
@@ -522,18 +522,23 @@
       },
       reAuthorization() {
         store.dispatch('authorization').then(rules => {
-          // console.log(rules)
+          console.log(rules)
+          // let  temp_rules  = rules
           store.dispatch('concatRoutes', rules).then(routers => {
+            // router.addRoutes(routers) //加载子路由
             // console.log(routers)
           }).catch((err) => {
             console.log(err)
             setToken('')
-            next({name: 'login'})
+            // next({name: 'login'})
+            this.$router.push({name:'login'})
           })
+
         }).catch((err1) => {
           console.log(err1)
           setToken('')
-          next({name: 'login'})
+          // next({name: 'login'})
+          this.$router.push({name:'login'})
         })
       },
       audioPlay() {
@@ -552,6 +557,7 @@
       }
     },
     beforeMount() {
+      // this.reAuthorization() // 刷新前端权限
       this.createAudio(jinggao1Mp3) // 创建音频对象
 
     },
@@ -562,7 +568,7 @@
         clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
       }
       this.playTimer()// 启用定时器
-      this.reAuthorization() // 刷新前端权限
+      // this.reAuthorization() // 刷新前端权限
 
     },
     watch: {

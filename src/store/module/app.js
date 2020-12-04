@@ -40,7 +40,8 @@ export default {
     allResourceGroup: [], // 所有的资源组/目录
     resourceGroupDir: [], // 可扩展的，可以扩展为目录结构
     resourceGroupTAG: [], // 不能扩展的，当全局标签使用
-    userResourceGroup: []
+    userResourceGroup: [],
+    departmentlist:["222"]
   },
   getters: {
     // menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
@@ -64,7 +65,12 @@ export default {
     //     state.userResourceGroup = dataList
     // },
     setBreadCrumb (state, route) {
-      state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)
+          if(route.name  === 'tips'){
+              state.homeRoute = getHomeRoute(routes,'tips')
+          }
+          else{
+              state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)
+          }
     },
     setTagNavList (state, list) {
       let tagList = []

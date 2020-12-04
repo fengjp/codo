@@ -3,26 +3,26 @@
     <Card :bordered="false" style="margin-bottom: 20px">
         <Row>
           <Col span="24" style="text-align: left; margin-bottom: 1px">
-        <Select v-model="searchValue" clearable placeholder='请选择报表' style="width: 200px;marginRight: 2px;">
-          <Option v-if="item.download_dir != 'xunjian'" v-for="item in reportList" :value="item.download_dir" :key="item.download_dir">
-            {{ item.totitle }}
-          </Option>
-        </Select>
-        <DatePicker type="daterange" :options="optionsDate" confirm
-                    placement="bottom-end" placeholder="请选择开始与结束日期"
-                    :value="todate"
-                    @on-change="todate=$event"
-                    style="width: 230px;marginRight: 2px;">
-        </DatePicker>
-        <Button type="success" style="marginRight: 2px;" @click="handleSubmitTable()">生成报表
-        </Button>
+<!--        <Select v-model="searchValue" clearable placeholder='请选择报表' style="width: 200px;marginRight: 2px;">-->
+<!--          <Option v-if="item.download_dir != 'xunjian'" v-for="item in reportList" :value="item.download_dir" :key="item.download_dir">-->
+<!--            {{ item.totitle }}-->
+<!--          </Option>-->
+<!--        </Select>-->
+<!--        <DatePicker type="daterange" :options="optionsDate" confirm-->
+<!--                    placement="bottom-end" placeholder="请选择开始与结束日期"-->
+<!--                    :value="todate"-->
+<!--                    @on-change="todate=$event"-->
+<!--                    style="width: 230px;marginRight: 2px;">-->
+<!--        </DatePicker>-->
+<!--        <Button type="success" style="marginRight: 2px;" @click="handleSubmitTable()">生成报表-->
+<!--        </Button>-->
         <Button type="primary" style="marginRight: 2px;" @click="handler_sql('','post', '添加脚本')">定制报表</Button>
         <a :href=surl><span id="surl"></span></a>
             </Col>
         </Row>
     </Card>
     <Row :gutter="16">
-      <Col span="8">
+      <Col span="10">
         <Card :bordered="false">
           <Table height="650" size="small" :columns="columns" :data="reportdata" ></Table>
           <div style="margin: 10px;overflow: hidden">
@@ -35,7 +35,7 @@
       </div>
         </Card>
       </Col>
-      <Col span="16">
+      <Col span="14">
         <Card :bordered="false">
           <Table height="700" size="small" :columns="columns2" :data="reportdata2"></Table>
         </Card>
@@ -47,25 +47,6 @@
         <FormItem label="标题" prop="title" style="display: block">
           <Input v-model="formValidate.title"  placeholder='请输入标题'></Input>
         </FormItem>
-<!--        <FormItem label="excel表头" prop="header" style="display: block">-->
-<!--          <Input v-model="formValidate.header" type="textarea"  placeholder='请输入excel表头字段,用竖号分开。例：编号|用户名|手机号|地址'></Input>-->
-<!--        </FormItem>-->
-<!--        <FormItem label="数据库源" prop="dbname_id" style="width: 48%">-->
-<!--          <Select v-model="formValidate.dbname_id" placeholder='请选择数据库源'>-->
-<!--            <Option v-for="item in databaselist" :value="item.id">{{ item.name }}-->
-<!--            </Option>-->
-<!--          </Select>-->
-<!--        </FormItem>-->
-<!--        <FormItem label="数据库源" prop="dbname_id" style="width: 48%">-->
-<!--          <Select v-model="formValidate.dbname_id" placeholder='请选择脚本'>-->
-<!--            <Option v-for="item in databaselist" :value="item.id">{{ item.name }}-->
-<!--            </Option>-->
-<!--          </Select>-->
-<!--        </FormItem>-->
-
-<!--        <FormItem label="数据库名" prop="dataname" style="width: 48%">-->
-<!--          <Input v-model="formValidate.dataname" :maxlength="50" placeholder="请输入数据库名"></Input>-->
-<!--        </FormItem>-->
         <FormItem label="数据库脚本" prop="dbid" style="width: 48%">
           <Select v-model="formValidate.dbid" placeholder='请选择脚本'>
             <Option v-for="item in dbList" :value="item.id">{{ item.name }}
@@ -77,7 +58,9 @@
                     placement="bottom-end" placeholder="请选择开始与结束日期"
                     :value="todate2"
                     @on-change="todate2=$event"
-                    style="width: 230px;marginRight: 2px;">
+                    style="width: 230px;marginRight: 2px;"
+                    :disabled="isDisable2"
+                     >
         </DatePicker>
           </FormItem>
         <FormItem label="日/周" prop="flag" style="width:200px;"  >
@@ -91,7 +74,7 @@
         <Option v-for="obj in todateList" :value="obj.k">{{ obj.v}}</Option>
     </Select>
         </FormItem>
-         <FormItem label="执行周期" prop="cycle"   :disabled="isDisable">
+         <FormItem label="执行周期" prop="cycle"   >
           <Select v-model="formValidate.cycle" multiple style="width:260px"  :disabled="isDisable2" >
             <Option v-for="item in cycleList" :value="item.x">{{ item.q}}</Option>
            </Select>
@@ -103,7 +86,7 @@
           </RadioGroup>
         </FormItem>
         <FormItem style="display: block">
-          <Button type="primary" @click="handleSubmit_sql('formValidate')"  :disabled="isDisable" >提交</Button>
+          <Button type="primary" @click="handleSubmit_sql('formValidate')"  :disabled="isDisable3" >提交</Button>
           <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
         </FormItem>
       </Form>
@@ -186,7 +169,8 @@
         isShow2:false,
         tableData: '',
         isDisable: false,
-        isDisable: false,
+        isDisable2: false,
+        isDisable3: false,
         tabledata3: [],
         mode_type: 'mysql',
         todate: [],
@@ -198,37 +182,37 @@
         },
         searchKey: '',
         cycleList:[{
-                        x: '一',
+                        x: '1',
                         q: '星期一',
                         m:'',
                     },
                     {
-                        x: '二',
+                        x: '2',
                         q: '星期二',
                       m:'',
                     },
                     {
-                        x: '三',
+                        x: '3',
                         q: '星期三',
                       m:'',
                     },
                     {
-                        x: '四',
+                        x: '4',
                         q: '星期四',
                       m:'',
                     },
                     {
-                        x: '五',
+                        x: '5',
                         q: '星期五',
                       m:'',
                     },
                     {
-                        x: '六',
+                        x: '6',
                         q: '星期六',
                       m:'',
                     },
                    {
-                        x: '日',
+                        x: '7',
                         q: '星期日',
                      m:'',
                     }
@@ -264,21 +248,10 @@
           // cycle: [{required: true, message: "执行周期不能为空", trigger: "change"}],
         },
         reportList: [
-          // {
-          //   value: 'xunjian',
-          //   label: '每日巡检报告'
-          // },
-          // {
-          //   value: 'kcjctj',
-          //   label: '客车检查统计'
-          // },
-          // {
-          //   value: 'zfzyyqk',
-          //   label: '执法站应用情况'
-          // }
+
         ],
         columns: [
-          {title: '报表名称', key: 'totitle', align: 'center',
+          {title: '报表名称', key: 'totitle', align: 'center',width: 240,
           render: (h, params) => {
                 return h('div', [
                   h(
@@ -304,7 +277,7 @@
             title: '操作 ',
             key: '',
             align: 'center',
-            width: 240,
+            width: 200,
             render: (h, params) => {
               if (params.row.dbid) {
                 return h('div', [
@@ -390,9 +363,9 @@
               ])
             }
           },
-          {title: '文件大小', key: 'file_size', align: 'center', width: 110, sortable: true},
+          {title: '文件大小', key: 'file_size', align: 'center', width: 90, sortable: true},
           {title: '创建日期', key: 'ctime', align: 'center', sortable: true},
-          {title: '', key: '', align: 'center',render: (h, params) => {
+          {title: '', key: '', width: 100,align: 'center',render: (h, params) => {
               return h('div', [
                 h('a', {
 
@@ -471,7 +444,7 @@
             }
           ).then(res => {
             if (res.data.code === 0) {
-              this.$Message.success(`${res.data.msg}`)
+              // this.$Message.success(`${res.data.msg}`)
               this.customizedList(this.pageNum, this.pageSize)
               this.getFileList(params.row.totitle,params.row.download_dir)
             } else {
@@ -504,7 +477,7 @@
       customizedList(page, limit) {
         customizedList(page, limit).then(res => {
           if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
+            // this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
             this.reportdata = res.data.data
             this.reportList = res.data.data
@@ -558,11 +531,11 @@
         this.$refs[value].validate((valid) => {
           console.log(this.formValidate)
           if (valid) {
-            this.isDisable = true
+            this.isDisable3 = true
             this.formValidate.start_end = this.todate2
             setTimeout(() => {
                   this.customizedAdd(this.formValidate,this.editModalData)
-                  this.isDisable = false
+                  this.isDisable3 = false
             }, 1000)
 
           } else {
@@ -640,7 +613,7 @@
       getFileList(totile,download_dir) {
         getFileList(totile,download_dir).then(res => {
           if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
+            // this.$Message.success(`${res.data.msg}`)
             this.reportdata2 = res.data.data
             console.log(this.reportdata2)
             for (let i in this.reportdata2) {

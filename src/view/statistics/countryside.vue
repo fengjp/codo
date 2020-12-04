@@ -2,29 +2,25 @@
   <div style="height:100%">
     <Card>
       <template>
-        <Form label-position="left" :label-width="50" label-colon=":" style="margin-bottom: -25px;">
+        <Form label-position="left" :label-width="50" label-colon=":" style="margin-bottom: -25px;" inline>
             <FormItem label="报表">
-<!--              <Tag checkable  color="primary" style="margin-left: 1px" @on-change="handleChange"-->
-<!--                v-for="tag in allSysTag" v-bind:name="tag.v"  :checked="istype"-->
-<!--              >{{ tag.v }}</Tag>-->
-              <Col span="4"  v-for="tag in allSysTag">
-              <Button  @click="handleChange(tag.v)" :type="tag.totype" >{{tag.v}}</Button>
-                </Col>
+              <span style="marginRight: 10px;margin-bottom: 10px;" v-for="tag in allSysTag">
+                     <Button  @click="handleChange(tag.v)" :type="tag.totype" >{{tag.v}}</Button>
+              </span>
             </FormItem>
         </Form>
-      </template>
-
+      </template >
       <div style="padding: 1px;">
 
         <Row>
           <Col span="3">
-          <Select  placeholder="请选择脚本" v-model="storage" @on-change="tostorage">
+          <Select  placeholder="请选择脚本" v-model="storage" @on-change="tostorage" style="width: 85%">
             <Option  :value="item.k" v-for="item in allstorageList">{{item.v}}</Option>
           </Select>
             </Col>
-           <Col span="21" >
+           <Col span="21" style="margin-bottom: -18px;">
              <Form v-for="item in temp_parameter_list"  >
-                    <Col span="7"  >
+                    <Col span="5"  >
                     <FormItem  :label="item.remarks" v-if="item.format == 'yyyy-mm'">
                            <DatePicker
                              v-model="item.msg"
@@ -62,7 +58,7 @@
                            </DatePicker>
                     </FormItem>
                       <FormItem  :label="item.remarks"  v-if="item.type == '字符串'">
-                      <Input v-model="item.msg" :placeholder="item.remarks" style="width: 150px;marginRight: 2px;"/>
+                      <Input v-model="item.msg" :placeholder="item.remarks" style="width:65%"/>
                       </FormItem>
                       </Col>
               </Form>
@@ -70,30 +66,29 @@
           </Row>
         <Row>
           <template>
-              <Form label-position="left" :label-width="50" label-colon=":" style="margin-bottom: -25px;" >
-                    <FormItem label="模板" >
-                      <div v-for="item in recordList">
-                        <Col span="4">
-                         <Tooltip  max-width="500" :content="item.zhname" placement="right-start" >
-                             <Button  @click="handleCreate5(item.id)" :type="item.totype" >{{item.recordname}}</Button>
+              <Form label-position="left" :label-width="80" label-colon=":" inline>
+                    <FormItem label="常用查询" >
+                      <span v-for="item in recordList" >
+                         <Tooltip  max-width="800"    :content="item.zhname" placement="bottom-start" >
+                             <Button  @click="handleCreate5(item.id)" :type="item.totype"  style="marginRight: 10px;" >{{item.recordname}}</Button>
                          </Tooltip>
-                          </Col>
-                      </div>
+                      </span>
                     </FormItem>
               </Form>
           </template>
         </Row>
         <Row  style="text-align: right;">
-             <Button @click="tableList()" style="marginRight: 2px; marginLeft: 5px" type="info">选择字段</Button>
-             <Button @click="handleSubmitTable()" style="marginRight: 2px; marginLeft: 5px" type="primary"  :disabled="isDisable2"  >查询</Button>
-             <Button @click="handleSubmitTable2()" style="marginRight: 2px; marginLeft: 5px" type="warning" v-if="isShow"  :disabled="isDisable">重新生成</Button>
+             <Button @click="tableList()" style="marginRight: 2px;" type="info">选择字段</Button>
+             <Button @click="handleSubmitTable()" style="marginRight: 2px;" type="primary"  :disabled="isDisable2"  >查询</Button>
+             <Button @click="handleSubmitTable2()" style="marginRight: 2px;" type="warning" v-if="isShow"  :disabled="isDisable">重新生成</Button>
              <Button @click="exportData()" class="case-btn" type="success">
                <Icon type="ios-download-outline"></Icon>导出数据</Button>
           </Row>
       </div>
        </Card>
     <Card>
-      <span  v-if="isShow6">预计总耗时:{{time_consume}}，  <span class="temp_span">已用{{newTimes.hh}}时{{newTimes.mm}}分{{newTimes.ss}}秒 </span>   </span>
+<!--      <span  v-if="isShow6">预计总耗时:{{time_consume}}，  <span class="temp_span">已用{{newTimes.hh}}时{{newTimes.mm}}分{{newTimes.ss}}秒 </span>   </span>-->
+      <spqn class="temp_span" v-if="isShow6">系统正在统计，请勿刷新或关闭页面......</spqn>
     <Table
         :loading="table_loading"
         :height="800"
@@ -247,9 +242,7 @@ export default {
     })
   },
     parameterFunc(){
-      console.log("123111111111111111111")
       console.log(this.totemp_parameter)
-      console.log("123111111111111111111")
     },
     updaterecordlist(data){
       updaterecordlist(data).then(res => {
@@ -343,10 +336,10 @@ export default {
                 // console.log(this.targetKeys);
             },
     tableList() {
-        if(this.temp_targetKeys_flag  === 0){
-        this.targetKeys = []
-        this.recordname = ''
-          }
+        // if(this.temp_targetKeys_flag  === 0){
+        // this.targetKeys = []
+        // this.recordname = ''
+        //   }
         this.modalMap.modalVisible = true
         this.modalMap.modalTitle = "字段列表"
       },
@@ -397,7 +390,7 @@ export default {
         }
         this.record_getdata(String(this.tousername),String(this.temp_filename))
         this.isShow2 = false
-        this.temp_targetKeys_flag  = 0
+        // this.temp_targetKeys_flag  = 0
         this.modalMap.modalVisible = false
         this.modalMap.modalTitle = "字段列表"
       },
@@ -488,8 +481,8 @@ export default {
                   this.isDisable = false
             }, 1000)
           }
-      this.table_loading = false
-      this.isShow6 = false
+      // this.table_loading = false
+      // this.isShow6 = false
     },
     handleSubmitTable () {
       this.storage_iddata(this.storagename)
@@ -522,8 +515,8 @@ export default {
                this.isDisable2 = false
             }, 1000)
           }
-      this.table_loading = false
-      this.isShow6 = false
+      // this.table_loading = false
+      // this.isShow6 = false
     },
     getimplement (date,storage,targetKeys,flag) {
       getimplement(date,storage,targetKeys,flag).then(res => {
@@ -533,6 +526,9 @@ export default {
           this.columns = res.data.columnslist  //表字段
           this.keylist = res.data.keylist   //excel字段
           this.modalMap2.modalVisible = false
+          this.table_loading = false
+          this.isShow6 = false
+          this.Interval_flag = 2
         } else if(res.data.code === 1){   //执行存储过程没有返回值
             this.tableData = []
             this.titlelist = []
@@ -545,6 +541,9 @@ export default {
           this.titlelist = []
           this.columns = []
           this.keylist = []
+          this.table_loading = false
+          this.isShow6 = false
+          this.Interval_flag = 2
         }
       })
     },
@@ -613,9 +612,6 @@ export default {
     // this.getstoragelist('驾驶人管理科','机动车驾驶人业务数据统计')
     //当前用户名
     let loginUser = JSON.parse(sessionStorage.vuex).user.nickName
-    console.log("100000000000000")
-    console.log(loginUser)
-    console.log("100000000000000")
     this.tousername = loginUser
     this.getobjlist('交通安全协调科')
   }

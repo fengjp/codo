@@ -326,7 +326,7 @@ import "quill/dist/quill.bubble.css";
         columns: [
           {title: '存储过程名', key: 'name', editable: true},
           {title: '执行方式', key: 'mode', editable: true},
-          {title: '执行时长', key: 'consume', editable: true},
+          {title: '执行时长', key: 'consume',width: 260, editable: true},
           {
             title: '详细描述', key: 'remarks', editable: true,
             render:

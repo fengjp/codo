@@ -20,8 +20,8 @@ export default {
   error_store_page: '错误收集',
   error_logger_page: '错误日志',
   //
-  stakeholder_mg: '干系人管理',
-  stakeholder: '干系人列表',
+  stakeholder_mg: '联系人管理',
+  stakeholder: '联系人列表',
   company: '单位列表',
   usermanage: '用户管理',
   typeconf: '个案类型配置',
@@ -58,6 +58,7 @@ export default {
   drive: '驾驶人管理科',
   statistics: '需求统计',
   Jobcronlogs: '任务日志',
+  tips:'首页',
   task_layout: '任务模板',
   commandlist: '命令管理',
   templist: '模板管理',

@@ -70,7 +70,7 @@
               </FormItem>
             </div>
           <FormItem label="单位" prop="company"  style="width:350px;">
-              <Select v-model="formValidate.company" placeholder="单位">
+              <Select v-model="formValidate.company" placeholder="单位" @on-change="tempdepartment">
                 <Option v-for="item in alldemand_unit" :value="item.v" :key="item.k">{{item.v}}</Option>
               </Select>
             </FormItem>
@@ -195,6 +195,7 @@ export default {
       },
       isDisable: false,
       editModalData: '',
+      alldepartment_list:'',
       tokey: '',
       tovalue: '',
       searchValue: '',
@@ -293,11 +294,11 @@ export default {
         { title: '单位', key: 'company', editable: true },
         { title: '部门', key: 'department', editable: true },
         { title: '职位', key: 'position', editable: true },
-        { title: '职责范围', key: 'duty', editable: true },
+        // { title: '职责范围', key: 'duty', editable: true },
         { title: '电话', key: 'tel', editable: true },
-        { title: '地址', key: 'addr', editable: true },
-        { title: '邮箱', key: 'email', editable: true },
-         { title: '备注', key: 'remarks', sortable: true },
+        // { title: '地址', key: 'addr', editable: true },
+        // { title: '邮箱', key: 'email', editable: true },
+        //  { title: '备注', key: 'remarks', sortable: true },
             ],
       columns: [
         // { type: 'selection', title: '', key: '', width: 60, align: 'center' },
@@ -424,6 +425,14 @@ export default {
     }
   },
   methods: {
+    tempdepartment(data){
+        if(this.alldepartment_list.hasOwnProperty(data)){
+                this.alldepartmentList = []
+                for (var i = 0; i < this.alldepartment_list[data].length; i++) {
+                     this.alldepartmentList.push({"k":i,"v":this.alldepartment_list[data][i]})
+                }
+        }
+    },
     handleSuccess (res, file) {
           console.log(file)
           this.getStakeholderList(this.pageNum, this.pageSize)
@@ -471,9 +480,9 @@ export default {
             this.allcompanyList = stakeholder_company_list
             console.log(this.allcompanyList)
           }
-          if (stakeholder_department_list) {
-            this.alldepartmentList = stakeholder_department_list
-          }
+          // if (stakeholder_department_list) {
+          //   this.alldepartmentList = stakeholder_department_list
+          // }
 
         } else {
           this.$Message.error(`${res.data.msg}`)
@@ -501,6 +510,12 @@ export default {
           addr: paramsRow.addr,
           email: paramsRow.email,
           remarks:paramsRow.remarks
+        }
+        if(this.alldepartment_list.hasOwnProperty(paramsRow.company)){
+                this.alldepartmentList = []
+                for (var i = 0; i < this.alldepartment_list[paramsRow.company].length; i++) {
+                     this.alldepartmentList.push({"k":i,"v":this.alldepartment_list[paramsRow.company][i]})
+                }
         }
       }else {
         // post
@@ -590,7 +605,7 @@ export default {
                   newStakeholder(this.formValidate).then(res => {
                        const data = res.data
                        if (res.data.code === 0) {
-                               this.$Message.info(`${data.msg}`)
+                               // this.$Message.info(`${data.msg}`)
                                // 重新获取数据
                                this.getStakeholderList(this.pageNum, this.pageSize)
                        } else {
@@ -604,7 +619,7 @@ export default {
                   updateStakeholder(this.formValidate).then(res => {
                             const data = res.data
                             if (res.data.code === 0) {
-                                    this.$Message.info(`${data.msg}`)
+                                    // this.$Message.info(`${data.msg}`)
                                     // 重新获取数据
                                     this.getStakeholderList(this.pageNum, this.pageSize)
                             } else {
@@ -643,6 +658,8 @@ export default {
             this.$Message.success(`${res.data.msg}`)
             console.log(res.data.data)
             this.alldemand_unit  = res.data.data
+            this.alldepartment_list  = res.data.department_list
+            console.log(this.alldepartment_list)
           } else {
             this.$Message.error(`${res.data.msg}`)
           }

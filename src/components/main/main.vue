@@ -49,6 +49,8 @@ import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
 import './main.less'
 import copyRight from './components/footer/copyright'
+import {authorization} from '@/api/user'
+import {getDictConfList} from '@/api/app'
 export default {
   name: 'Main',
   inject: ["reload"],
@@ -112,9 +114,9 @@ export default {
     ]),
     turnToPage (route) {
       let { name, params, query } = {}
-      if (typeof route === 'string') name = route
+      if (typeof route === 'string') name = String(route)
       else {
-        name = route.name
+        name = String(route.name)
         params = route.params
         query = route.query
       }
@@ -184,6 +186,18 @@ export default {
         name: this.$config.homeName
       })
     }
+    //部门列表
+          getDictConfList().then(res => {
+             if (res.data.code === 0) {
+                        localStorage.departmentlist = JSON.parse(JSON.stringify(res.data.data['statistics_department_list']))
+                 }})
+    //修改‘首页’的默认路由路径
+    if(this.$store.state.app.breadCrumbList[0]){
+    this.$store.state.app.breadCrumbList[0].name =  localStorage.temphome_name
+    this.$store.state.app.breadCrumbList[0].path = localStorage.temphome_path
+    this.$store.state.app.breadCrumbList[0].to = localStorage.temphome_path
+    }
+
   }
 }
 </script>

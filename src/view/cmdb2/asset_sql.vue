@@ -446,10 +446,7 @@
     },
     methods: {
       temp_storage_str(data){
-         console.log("666666666666666666666666666666")
-        console.log(data)
-         console.log(this.storageList2)
-        console.log("666666666666666666666666666666")
+
         for (var i = 0; i < this.storageList2.length; i++) {
                  if (this.storageList2[i].name ===  data){
                         this.formValidate.dictvalue = this.storageList2[i].dictvalue
@@ -536,20 +533,20 @@
       handleRemove2(index) {
         this.formValidate.dictvalue2.splice(index, 1);//(下标index开始，删除1个)
       },
-      gettemplist(){
-        this.router_list = eval(routerMap)
-        for(var i = 0; i < this.router_list.length; i++) {
-                 if (this.router_list[i].name == 'statistics'){
-                        for(var j = 0; j < eval(this.router_list[i].children).length; j++) {
-                             // console.log("55555555555555")
-                             // console.log(eval(this.router_list[i].children)[j].meta.title)
-                             this.alldepartmentList.push({k: j , v: eval(this.router_list[i].children)[j].meta.title});
-                             // console.log("55555555555555")
-                        }
-
-                     }
-            }
-    },
+    //   gettemplist(){
+    //     this.router_list = eval(routerMap)
+    //     for(var i = 0; i < this.router_list.length; i++) {
+    //              if (this.router_list[i].name == 'statistics'){
+    //                     for(var j = 0; j < eval(this.router_list[i].children).length; j++) {
+    //                          // console.log("55555555555555")
+    //                          // console.log(eval(this.router_list[i].children)[j].meta.title)
+    //                          this.alldepartmentList.push({k: j , v: eval(this.router_list[i].children)[j].meta.title});
+    //                          // console.log("55555555555555")
+    //                     }
+    //
+    //                  }
+    //         }
+    // },
       // 获取用户列表
     getUserList () {
       getuserlist(1, 2000).then(res => {
@@ -723,6 +720,13 @@
           if(this.formValidate.mode === "触发" && this.formValidate.totype === "存储过程"){this.isShow3 = true}
           // if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
           // else{this.isShow2 = false,this.isShow = false}
+          if(this.formValidate.mode === "定时" && this.formValidate.totype === "存储过程" ){
+             this.storageList3 = this.storageList6//定时
+             this.storageList5 = this.storageList6 //定时
+        }else{
+           this.storageList3 = this.storageList//触发
+           this.storageList5 = this.storageList //触发
+         }
         } else {
           // post
           this.formValidate = {
@@ -856,9 +860,9 @@
     mounted() {
       this.getSqlList(this.pageNum, this.pageSize, this.tokey, this.tovalue)
       this.getdepartmentlist()
-      // this.getDictConfList()
+      this.getDictConfList()
       this.getUserList()
-      this.gettemplist()
+      // this.gettemplist()
       this.storage_getid()
     }
   }

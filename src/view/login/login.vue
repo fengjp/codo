@@ -23,6 +23,8 @@
 <script>
 import { LoginForm, LoginMFA, RegisterForm, MFA } from '_c/login-form'
 import { mapActions } from 'vuex'
+import {getDictConfList} from '@/api/app'
+import store from '@/store'
 
 export default {
   components: {
@@ -51,13 +53,46 @@ export default {
       this.handleLogin({ username, password, dynamic }).then(res => {
         if (res.code === 0) {
           this.$Message.success(`${res.msg}`)
-          this.$router.push({
-            name: this.$config.homeName
-          })
+          this.$router.push({name: this.$config.homeName})  //正常执行
+          store.dispatch('authorization').then(rules => {
+                   console.log(rules)
+                   let  temp_rules  = rules
+                   if(temp_rules.all === false){
+                        if(rules.hasOwnProperty('_home')) {
+                           console.log("正常执行")
+                           //修改‘首页’的默认路由路径
+                          localStorage.temphome_name = 'home'
+                          localStorage.temphome_path = '/home'
+                           this.$router.push({name: this.$config.homeName})
+
+                        }else{
+                                   //修改‘首页’的默认路由路径
+                                   localStorage.temphome_name = 'tips'
+                                   localStorage.temphome_path = '/tips'
+
+                                  //跳转或替换界面
+                                  // this.$router.push({name:'tips'})
+                                  this.$router.replace({
+                                    path: "/tips",
+                                    name: "tips"
+                                  });
+                        }
+                   }
+                   else{this.$router.push({name: this.$config.homeName})}
+           })
+          // this.$router.push({
+          //   name: this.$config.homeName
+          // })
           // this.$router.replace({
           //   path: "/loginBack",
           //   name: "loginBack"
           // });
+          //部门列表
+          getDictConfList().then(res => {
+             if (res.data.code === 0) {
+                        localStorage.departmentlist = JSON.parse(JSON.stringify(res.data.data['statistics_department_list']))
+                 }})
+
         } else if (res.code === 1) {
           // 这里弹出二次认证
           this.secoundAuth = true
