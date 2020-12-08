@@ -64,6 +64,15 @@ export const getobjlist = (department) => {
     }
   })
 }
+export const getSqlobjlist = (department) => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/Sqlobjlist/',
+    method: 'get',
+    params: {
+      department
+    }
+  })
+}
 export const getimplement = (parameter,storage,targetKeys,flag) => {
   return axios.request({
     url: '/cmdb2/v1/sql/implement/',
@@ -73,6 +82,15 @@ export const getimplement = (parameter,storage,targetKeys,flag) => {
       storage,
       targetKeys,
       flag,
+    }
+  })
+}
+export const getimplement2 = (storage) => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/implement2/',
+    method: 'get',
+    params: {
+      storage,
     }
   })
 }

@@ -295,6 +295,36 @@ export const routerMap = [
         import ('@/view/it-manage/report-manager.vue')
     }]
   },
+    {
+    path: '/Sqlstatistics',
+    name: 'Sqlstatistics',
+    meta: {
+      icon: 'ios-alarm',
+      title: '报表统计'
+    },
+    component: Main,
+    children: [
+      {
+      path: 'Sqlscience',
+      name: 'Sqlscience',
+      meta: {
+        icon: 'ios-list-box-outline',
+        title: '科技科'
+      },
+      component: () =>
+        import ('@/view/statistics/Sqlexamination.vue')
+     },
+      //  {
+      //   path: 'Sqldrive',
+      //   name: 'Sqldrive',
+      //   meta: {
+      //     icon: 'ios-list-box-outline',
+      //     title: '驾驶人管理科'
+      //   },
+      //   component: () => import ('@/view/statistics/Sqlexamination.vue')
+      // },
+    ]
+  },
   {
     path: '/statistics',
     name: 'statistics',

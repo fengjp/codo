@@ -49,223 +49,245 @@
 </template>
 
 <script>
-  import {ChartPie, ChartBar, ChartLine} from '_c/charts'
-  import {operationTmp, getTmpList} from '@/api/dashboard/home.js'
-  import CustomInfo from '_c/custom-card'
-  import {
-    getQueryListForshow,
-    do_sql,
-    getQueryList,
-  } from '@/api/customquery/query'
-  import {dateFormat} from '@/libs/util'
-  import {swapArr, toFirst} from '@/libs/tools'
-  import store from '@/store'
-  import {getToken, setTitle, setToken} from '@/libs/util'
-  import jinggao1Mp3 from '@/assets/mp3/jinggao1.mp3'
-  import jinggao2Mp3 from '@/assets/mp3/jinggao2.mp3'
+import { ChartPie, ChartBar, ChartLine } from '_c/charts'
+import { operationTmp, getTmpList } from '@/api/dashboard/home.js'
+import CustomInfo from '_c/custom-card'
+import {
+  getQueryListForshow,
+  do_sql,
+  getQueryList
+} from '@/api/customquery/query'
+import { dateFormat, getToken, setTitle, setToken } from '@/libs/util'
+import { swapArr, toFirst } from '@/libs/tools'
+import store from '@/store'
 
-  export default {
-    name: 'home',
-    components: {
-      // ChartPie,
-      // ChartBar,
-      // ChartLine,
-      CustomInfo,
+import jinggao1Mp3 from '@/assets/mp3/jinggao1.mp3'
+import jinggao2Mp3 from '@/assets/mp3/jinggao2.mp3'
+
+export default {
+  name: 'home',
+  components: {
+    // ChartPie,
+    // ChartBar,
+    // ChartLine,
+    CustomInfo
+  },
+  data () {
+    return {
+      audio: '',
+      isPlaying: false,
+      canPlaying: false,
+      tid: 0, // 当前模版ID
+      tmpValue: '',
+      tmpList: [],
+      tmpData: [],
+      up_tip: '',
+      queryObjList: [],
+      timer: null, // 保存定时器，用于销毁
+      tList: [
+        {
+          tName: '',
+          expireTime: 0, // 时间戳（13位）
+          interval: 0,
+          xcsj: {
+            dd: '',
+            hh: '',
+            mm: '',
+            ss: ''
+          }
+        }
+      ],
+      modalMap: {
+        modalVisible: false,
+        modalTitle: '添加配置'
+      },
+      formValidate: {
+        id: '',
+        tmpNa: '',
+        username: ''
+      },
+      _formValidate: {},
+      ruleValidate: {
+        tmpNa: [{ required: true, message: '标题不能为空', trigger: 'blur' }]
+      },
+      tmpTableDate: [],
+      selectionAll: [],
+      tmpColumns: [
+        // {
+        //   title: ' ',
+        //   width: 25,
+        //   render: (h, params, vm) => {
+        //     return h('Icon', {
+        //       props: {
+        //         type: 'md-menu'
+        //       },
+        //     }, '')
+        //   }
+        // },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        {
+          title: '标题',
+          key: 'title',
+          align: 'center'
+        },
+        {
+          title: '轮询频率',
+          key: 'timesTy',
+          align: 'center',
+          render: (h, params, vm) => {
+            if (params.row.timesTy === 'timesTy1') {
+              var tt = '每' + params.row.timesTy1Val + '分钟'
+            } else {
+              var tt = '每天' + params.row.timesTy2Val
+            }
+            return h('div', [
+              h('span', {}, tt)
+            ])
+          }
+        }
+      ]
+    }
+  },
+  methods: {
+    // // 拖动行 拖拽排序
+    // dragrow(index1, index2) {
+    //   swapArr(this.tmpTableDate, index1, index2)
+    // },
+    onSelected (selection, row) {
+      // let objData = this.$refs.tmpSelection.$refs.tbody.objData
+      this.selectionAll = selection
     },
-    data() {
-      return {
-        audio: '',
-        isPlaying: false,
-        canPlaying: false,
-        tid: 0, //当前模版ID
-        tmpValue: '',
-        tmpList: [],
-        tmpData: [],
-        up_tip: '',
-        queryObjList: [],
-        timer: null, // 保存定时器，用于销毁
-        tList: [
-          {
-            tName: '',
-            expireTime: 0, // 时间戳（13位）
-            interval: 0,
-            xcsj: {
-              dd: '',
-              hh: '',
-              mm: '',
-              ss: ''
+    onSelectCancel (selection, row) {
+      this.selectionAll = selection
+    },
+    onSelectAll (selection, row) {
+      this.selectionAll = selection
+    },
+    onSelectAllCancel (selection, row) {
+      this.selectionAll = selection
+    },
+    // 获取模版列表
+    getTmpList () {
+      getTmpList().then(res => {
+        if (res.data.code === 0) {
+          // this.$Message.success(`${res.data.msg}`)
+          this.tmpList = res.data.tmpList
+          let loginUser = JSON.parse(sessionStorage.vuex).user.userName
+          this.tmpData = res.data.data
+          this.tid = 0
+          this.tmpValue = ''
+          this.selectionAll = []
+          this._formValidate = {}
+          for (let i in this.tmpData) {
+            if (loginUser === i) {
+              this.tid = this.tmpData[i][0].id
+              this.tmpValue = this.tmpData[i][0].tmpNa
+              this.selectionAll = this.tmpData[i][0].selectionAll
+              this._formValidate = {
+                id: this.tmpData[i][0].id,
+                tmpNa: this.tmpData[i][0].tmpNa,
+                username: i
+              }
             }
           }
-        ],
-        modalMap: {
-          modalVisible: false,
-          modalTitle: '添加配置',
-        },
-        formValidate: {
-          id: '',
-          tmpNa: '',
-          username: '',
-        },
-        _formValidate: {},
-        ruleValidate: {
-          tmpNa: [{required: true, message: "标题不能为空", trigger: "blur"}],
-        },
-        tmpTableDate: [],
-        selectionAll: [],
-        tmpColumns: [
-          // {
-          //   title: ' ',
-          //   width: 25,
-          //   render: (h, params, vm) => {
-          //     return h('Icon', {
-          //       props: {
-          //         type: 'md-menu'
-          //       },
-          //     }, '')
-          //   }
-          // },
-          {
-            type: 'selection',
-            width: 60,
-            align: 'center'
-          },
-          {
-            title: '标题',
-            key: 'title',
-            align: 'center',
-          },
-          {
-            title: '轮询频率',
-            key: 'timesTy',
-            align: 'center',
-            render: (h, params, vm) => {
-              if (params.row.timesTy === 'timesTy1') {
-                var tt = '每' + params.row.timesTy1Val + '分钟'
-              } else {
-                var tt = '每天' + params.row.timesTy2Val
+          this.getQueryListForshow()
+        } else {
+          this.$Message.error('模版列表' + `${res.data.msg}`)
+        }
+      })
+    },
+    // 选择模版
+    selectTmp (val) {
+      // console.log(val)
+      // console.log(this.tmpData)
+      let loginUser = JSON.parse(sessionStorage.vuex).user.userName
+      for (let i in this.tmpData) {
+        if (loginUser === i) {
+          for (let j in this.tmpData[i]) {
+            if (this.tmpData[i][j].tmpNa === val.value) {
+              this.tid = this.tmpData[i][j].id
+              this.tmpValue = this.tmpData[i][j].tmpNa
+              this.selectionAll = this.tmpData[i][j].selectionAll
+              this._formValidate = {
+                id: this.tmpData[i][j].id,
+                tmpNa: this.tmpData[i][j].tmpNa,
+                username: i
               }
-              return h('div', [
-                h('span', {}, tt)
-              ])
             }
-          },
-        ],
+          }
+        }
+      }
+      this.getQueryListForshow()
+    },
+    // 添加/修改模版
+    handlerTmp (paramsRow, meth, mtitle) {
+      this.modalMap.modalVisible = true
+      this.modalMap.modalTitle = mtitle
+      this.editModalData = meth
+      let objData = this.$refs.tmpSelection.$refs.tbody.objData
+      this.formValidate = {
+        id: null,
+        tmpNa: '',
+        username: ''
+      }
+      for (let j in objData) {
+        objData[j]._isChecked = false
+      }
+      if (meth === 'put') {
+        if (this.tid === 0) {
+          this.$Message.error('请先添加模版')
+          this.modalMap.modalVisible = false
+          return
+        }
+        this.formValidate = this._formValidate
+        for (let i in this.selectionAll) {
+          for (let j in objData) {
+            if (this.selectionAll[i].id === objData[j].id) {
+              objData[j]._isChecked = true
+              continue
+            }
+          }
+        }
       }
     },
-    methods: {
-      // // 拖动行 拖拽排序
-      // dragrow(index1, index2) {
-      //   swapArr(this.tmpTableDate, index1, index2)
-      // },
-      onSelected(selection, row) {
-        // let objData = this.$refs.tmpSelection.$refs.tbody.objData
-        this.selectionAll = selection
-      },
-      onSelectCancel(selection, row) {
-        this.selectionAll = selection
-      },
-      onSelectAll(selection, row) {
-        this.selectionAll = selection
-      },
-      onSelectAllCancel(selection, row) {
-        this.selectionAll = selection
-      },
-      // 获取模版列表
-      getTmpList() {
-        getTmpList().then(res => {
-          if (res.data.code === 0) {
-            // this.$Message.success(`${res.data.msg}`)
-            this.tmpList = res.data.tmpList
-            let loginUser = JSON.parse(sessionStorage.vuex).user.userName;
-            this.tmpData = res.data.data
-            this.tid = 0
-            this.tmpValue = ''
-            this.selectionAll = []
-            this._formValidate = {}
-            for (let i in this.tmpData) {
-              if (loginUser === i) {
-                this.tid = this.tmpData[i][0].id
-                this.tmpValue = this.tmpData[i][0].tmpNa
-                this.selectionAll = this.tmpData[i][0].selectionAll
-                this._formValidate = {
-                  id: this.tmpData[i][0].id,
-                  tmpNa: this.tmpData[i][0].tmpNa,
-                  username: i,
-                }
-              }
+    handlerDeleteTmp (tid) {
+      if (tid > 0 && confirm('确定要删除吗')) {
+        operationTmp({ id: tid }, 'delete').then(
+          res => {
+            if (res.data.code === 0) {
+              this.$Message.success(`${res.data.msg}`)
+              this.getTmpList()
+            } else {
+              this.$Message.error(`${res.data.msg}`)
             }
-            this.getQueryListForshow()
-          } else {
-            this.$Message.error('模版列表' + `${res.data.msg}`)
-          }
-        })
-      },
-      // 选择模版
-      selectTmp(val) {
-        // console.log(val)
-        // console.log(this.tmpData)
-        let loginUser = JSON.parse(sessionStorage.vuex).user.userName;
-        for (let i in this.tmpData) {
-          if (loginUser === i) {
-            for (let j in this.tmpData[i]) {
-              if (this.tmpData[i][j].tmpNa === val.value) {
-                this.tid = this.tmpData[i][j].id
-                this.tmpValue = this.tmpData[i][j].tmpNa
-                this.selectionAll = this.tmpData[i][j].selectionAll
-                this._formValidate = {
-                  id: this.tmpData[i][j].id,
-                  tmpNa: this.tmpData[i][j].tmpNa,
-                  username: i,
-                }
-              }
-            }
-          }
-        }
-        this.getQueryListForshow()
-      },
-      // 添加/修改模版
-      handlerTmp(paramsRow, meth, mtitle) {
-        this.modalMap.modalVisible = true
-        this.modalMap.modalTitle = mtitle
-        this.editModalData = meth
-        let objData = this.$refs.tmpSelection.$refs.tbody.objData
-        this.formValidate = {
-          id: null,
-          tmpNa: '',
-          username: '',
-        }
-        for (let j in objData) {
-          objData[j]._isChecked = false
-        }
-        if (meth === 'put') {
-          if (this.tid === 0) {
-            this.$Message.error('请先添加模版')
-            this.modalMap.modalVisible = false
-            return
-          }
-          this.formValidate = this._formValidate
-          for (let i in this.selectionAll) {
-            for (let j in objData) {
-              if (this.selectionAll[i].id === objData[j].id) {
-                objData[j]._isChecked = true
-                continue
-              }
-            }
-          }
-        }
-      },
-      handlerDeleteTmp(tid) {
-        if (tid > 0 && confirm('确定要删除吗')) {
-          operationTmp({id: tid}, 'delete').then(
-            res => {
+          })
+      }
+    },
+    //
+    handleSubmitTmp (value) {
+      this.$refs[value].validate((valid) => {
+        if (valid) {
+          setTimeout(() => {
+            this.formValidate.selectionAll = this.selectionAll
+            this.formValidate.username = JSON.parse(sessionStorage.vuex).user.userName
+            operationTmp(this.formValidate, this.editModalData).then(res => {
               if (res.data.code === 0) {
-                this.$Message.success(`${res.data.msg}`);
+                this.$Message.success(`${res.data.msg}`)
+                this.modalMap.modalVisible = false
                 this.getTmpList()
               } else {
                 this.$Message.error(`${res.data.msg}`)
               }
             })
+          }, 500)
+        } else {
+          this.$Message.error('表单校验错误')
         }
+<<<<<<< HEAD
       },
       //
       handleSubmitTmp(value) {
@@ -284,57 +306,121 @@
                 }
               });
             }, 500)
+=======
+      })
+    },
+    playTimer () {
+      this.timer = setInterval(() => {
+        for (let i in this.tList) {
+          // console.log(this.countTime(this.tList[i].expireTime))
+          let ret = this.countTime(this.tList[i].expireTime)
+          if (ret === false) {
+            this.tList[i].expireTime = this.tList[i].expireTime + this.tList[i].interval
+            this.do_sql(i, this.queryObjList, this.tList)
+>>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
           } else {
-            this.$Message.error('表单校验错误')
+            this.tList[i].xcsj = this.countTime(this.tList[i].expireTime)
+            this.queryObjList[i].up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
           }
-        })
-      },
-      playTimer() {
-        this.timer = setInterval(() => {
-          for (let i in this.tList) {
-            // console.log(this.countTime(this.tList[i].expireTime))
-            let ret = this.countTime(this.tList[i].expireTime)
-            if (ret === false) {
-              this.tList[i].expireTime = this.tList[i].expireTime + this.tList[i].interval
-              this.do_sql(i, this.queryObjList, this.tList)
-            } else {
-              this.tList[i].xcsj = this.countTime(this.tList[i].expireTime)
-              this.queryObjList[i].up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
+        }
+      }, 1000)
+    },
+    // 倒计时
+    countTime (expireTime) {
+      // 获取当前时间
+      let date = new Date()
+      let now = date.getTime()
+      // 设置截止时间
+      // let endDate = new Date('2020-07-24 11:08:00');
+      // let end = endDate.getTime();
+      // 时间差
+      let leftTime = expireTime - now
+      // 定义变量 d,h,m,s保存倒计时的时间
+      if (leftTime >= 0) {
+        var newTimes = {
+          hh: Math.floor(leftTime / 1000 / 60 / 60 % 24),
+          mm: Math.floor(leftTime / 1000 / 60 % 60),
+          ss: Math.floor(leftTime / 1000 % 60)
+        }
+      } else {
+        return false
+      }
+      return newTimes
+    },
+    getQueryListForshow (key, value) {
+      // console.log(this.tid)
+      // console.log(this.selectionAll.length)
+      if (this.tid > 0 && this.selectionAll.length > 0) {
+        key = 'tid'
+        value = JSON.stringify(this.selectionAll)
+      }
+      getQueryListForshow(key, value).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+          this.pageTotal = res.data.count
+          let data = res.data.data
+          let queryObjList = res.data.data
+          this.tList = []
+          this.queryObjList = []
+          for (let i in data) {
+            let item = data[i]
+            let columns = []
+            for (let j in item.colnames) {
+              let col = { title: '', key: '', align: 'center', minWidth: 80 }
+              col.title = item.colnames[j].name
+              col.key = item.colnames[j].col
+              columns.push(col)
             }
+            queryObjList[i].columns = columns
+            queryObjList[i].tableData = []
+            queryObjList[i].isShow = false
+
+            // 处理倒计时参数
+            let t_obj = {
+              tName: '',
+              expireTime: 0, // 时间戳（13位）
+              interval: 0,
+              xcsj: {
+                dd: '',
+                hh: '',
+                mm: '',
+                ss: ''
+              }
+            }
+            let date = new Date()
+            let now = date.getTime()
+            t_obj.tName = item.title
+            if (item.timesTy === 'timesTy1') {
+              t_obj.interval = parseInt(item.timesTyVal) * 60 * 1000
+              t_obj.expireTime = now + t_obj.interval
+            } else {
+              let _date = dateFormat('YYYY-mm-dd HH:MM', date)
+              let dateStr = _date.split(' ')
+              dateStr[1] = item.timesTyVal
+              _date = dateStr.join(' ')
+              let endDate = new Date(_date)
+              t_obj.expireTime = endDate.getTime()
+              t_obj.interval = 24 * 60 * 60 * 1000
+            }
+            this.tList.push(t_obj)
+            queryObjList[i].up_tip = ''
           }
-        }, 1000)
-      },
-      // 倒计时
-      countTime(expireTime) {
-        // 获取当前时间
-        let date = new Date()
-        let now = date.getTime()
-        // 设置截止时间
-        // let endDate = new Date('2020-07-24 11:08:00');
-        // let end = endDate.getTime();
-        // 时间差
-        let leftTime = expireTime - now
-        // 定义变量 d,h,m,s保存倒计时的时间
-        if (leftTime >= 0) {
-          var newTimes = {
-            hh: Math.floor(leftTime / 1000 / 60 / 60 % 24),
-            mm: Math.floor(leftTime / 1000 / 60 % 60),
-            ss: Math.floor(leftTime / 1000 % 60)
+          this.queryObjList = queryObjList
+          // console.log(this.tList)
+          for (let i in this.queryObjList) {
+            this.do_sql(i, this.queryObjList, this.tList)
           }
         } else {
-          return false
+          this.$Message.error(`${res.data.msg}`)
         }
-        return newTimes
-      },
-      getQueryListForshow(key, value) {
-        // console.log(this.tid)
-        // console.log(this.selectionAll.length)
-        if (this.tid > 0 && this.selectionAll.length > 0) {
-          key = 'tid'
-          value = JSON.stringify(this.selectionAll)
-        }
-        getQueryListForshow(key, value).then(res => {
+      })
+    },
+    do_sql (index, queryObjList, tList) {
+      let query_id = queryObjList[index].id
+      do_sql('id', query_id).then(
+        res => {
           if (res.data.code === 0) {
+<<<<<<< HEAD
             // this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
             let data = res.data.data
@@ -364,147 +450,114 @@
                   hh: '',
                   mm: '',
                   ss: ''
+=======
+            let tableData = res.data.data
+            for (let i in tableData) {
+              if (tableData[i].target === '一般') {
+                tableData[i].cellClassName = {
+                  target: 'table-info-cell-target'
                 }
-              }
-              let date = new Date()
-              let now = date.getTime()
-              t_obj.tName = item.title
-              if (item.timesTy === 'timesTy1') {
-                t_obj.interval = parseInt(item.timesTyVal) * 60 * 1000
-                t_obj.expireTime = now + t_obj.interval
+              } else if (tableData[i].target === '严重') {
+                tableData[i].cellClassName = {
+                  target: 'table-warning-cell-target'
+                }
+              } else if (tableData[i].target === '致命') {
+                tableData[i].cellClassName = {
+                  target: 'table-error-cell-target'
+                }
+              } else if (tableData[i].target === '正常') {
+                tableData[i].cellClassName = {
+                  target: 'table-success-cell-target'
+>>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
+                }
               } else {
-                let _date = dateFormat('YYYY-mm-dd HH:MM', date)
-                let dateStr = _date.split(' ')
-                dateStr[1] = item.timesTyVal
-                _date = dateStr.join(' ')
-                let endDate = new Date(_date)
-                t_obj.expireTime = endDate.getTime()
-                t_obj.interval = 24 * 60 * 60 * 1000
-              }
-              this.tList.push(t_obj)
-              queryObjList[i].up_tip = ''
-            }
-            this.queryObjList = queryObjList
-            // console.log(this.tList)
-            for (let i in this.queryObjList) {
-              this.do_sql(i, this.queryObjList, this.tList)
-            }
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      do_sql(index, queryObjList, tList) {
-        let query_id = queryObjList[index].id
-        do_sql('id', query_id).then(
-          res => {
-            if (res.data.code === 0) {
-              let tableData = res.data.data
-              for (let i in tableData) {
-                if (tableData[i].target === '一般') {
-                  tableData[i].cellClassName = {
-                    target: 'table-info-cell-target'
-                  }
-                } else if (tableData[i].target === '严重') {
-                  tableData[i].cellClassName = {
-                    target: 'table-warning-cell-target'
-                  }
-                } else if (tableData[i].target === '致命') {
-                  tableData[i].cellClassName = {
-                    target: 'table-error-cell-target'
-                  }
-                } else if (tableData[i].target === '正常') {
-                  tableData[i].cellClassName = {
-                    target: 'table-success-cell-target'
-                  }
-                } else {
-                  tableData[i].cellClassName = {
-                    target: 'table-disabled-cell-target'
-                  }
+                tableData[i].cellClassName = {
+                  target: 'table-disabled-cell-target'
                 }
               }
-              // console.log(tableData)
-              queryObjList[index].tableData = tableData
-              queryObjList[index].count = res.data.count
+            }
+            // console.log(tableData)
+            queryObjList[index].tableData = tableData
+            queryObjList[index].count = res.data.count
+          } else {
+            queryObjList[index].errormsg = res.data.errormsg
+          }
+          this.checkqueryObjSort(queryObjList, tList)
+        }
+      )
+    },
+    // 全部排序
+    checkqueryObjSort (queryObjList, tList) {
+      let l1 = []
+      let l2 = []
+      let l3 = []
+      let l4 = []
+      let l5 = []
+      for (let i in queryObjList) {
+        let _count = queryObjList[i].count
+        if (_count && Object.keys(_count).length > 0) {
+          for (let j in _count) {
+            if (j === '致命') {
+              l1.push(queryObjList[i])
+              break
+            } else if (j === '严重') {
+              l2.push(queryObjList[i])
+              break
+            } else if (j === '一般') {
+              l3.push(queryObjList[i])
+              break
+            } else if (j === '正常') {
+              l4.push(queryObjList[i])
+              break
             } else {
-              queryObjList[index].errormsg = res.data.errormsg
+              l5.push(queryObjList[i])
+              break
             }
-            this.checkqueryObjSort(queryObjList, tList)
           }
-        )
-      },
-      // 全部排序
-      checkqueryObjSort(queryObjList, tList) {
-        let l1 = []
-        let l2 = []
-        let l3 = []
-        let l4 = []
-        let l5 = []
-        for (let i in queryObjList) {
-          let _count = queryObjList[i].count
-          if (_count && Object.keys(_count).length > 0) {
-            for (let j in _count) {
-              if (j === '致命') {
-                l1.push(queryObjList[i])
-                break
-              } else if (j === '严重') {
-                l2.push(queryObjList[i])
-                break
-              } else if (j === '一般') {
-                l3.push(queryObjList[i])
-                break
-              } else if (j === '正常') {
-                l4.push(queryObjList[i])
-                break
-              } else {
-                l5.push(queryObjList[i])
-                break
-              }
-            }
-          } else {
-            l5.push(queryObjList[i])
-          }
-        }
-
-        // 指定警告声音
-        if (l2.length > 0) {
-          this.audio.src = jinggao2Mp3
-        }
-        if (l1.length > 0) {
-          this.audio.src = jinggao1Mp3
-        }
-
-        if (l1.length > 0 || l2.length > 0) {
-          this.canPlaying = true
-          let audioPlay = this.audio.play()
-          audioPlay.then(() => {
-            this.isPlaying = true
-            // console.log('可以自动播放');
-          }).catch((err) => {
-            console.log(err);
-            console.log("不允许自动播放");
-          })
         } else {
-          this.canPlaying = false
-          this.audio.pause()
-          this.isPlaying = false
+          l5.push(queryObjList[i])
         }
+      }
 
-        // 组合
-        l1.push(...l2)
-        l1.push(...l3)
-        l1.push(...l4)
-        l1.push(...l5)
-        // console.log(queryObjList)
-        // console.log(l1)
-        let new_tList = []
-        for (let i in l1) {
-          for (let j in tList) {
-            if (l1[i].title === tList[j].tName) {
-              new_tList.push(tList[j])
-            }
+      // 指定警告声音
+      if (l2.length > 0) {
+        this.audio.src = jinggao2Mp3
+      }
+      if (l1.length > 0) {
+        this.audio.src = jinggao1Mp3
+      }
+
+      if (l1.length > 0 || l2.length > 0) {
+        this.canPlaying = true
+        let audioPlay = this.audio.play()
+        audioPlay.then(() => {
+          this.isPlaying = true
+          // console.log('可以自动播放');
+        }).catch((err) => {
+          console.log(err)
+          console.log('不允许自动播放')
+        })
+      } else {
+        this.canPlaying = false
+        this.audio.pause()
+        this.isPlaying = false
+      }
+
+      // 组合
+      l1.push(...l2)
+      l1.push(...l3)
+      l1.push(...l4)
+      l1.push(...l5)
+      // console.log(queryObjList)
+      // console.log(l1)
+      let new_tList = []
+      for (let i in l1) {
+        for (let j in tList) {
+          if (l1[i].title === tList[j].tName) {
+            new_tList.push(tList[j])
           }
         }
+<<<<<<< HEAD
         // console.log(this.tList)
         // console.log(new_tList)
         this.queryObjList = l1
@@ -545,52 +598,100 @@
         if (!this.isPlaying && this.canPlaying) {
           this.audio.play()
           this.isPlaying = true
-        } else {
-          this.audio.pause()
-          this.isPlaying = false
-        }
-      },
-      createAudio(src) {
-        this.audio = new Audio();
-        this.audio.loop = true;
-        this.audio.src = src;
+=======
       }
+      // console.log(this.tList)
+      // console.log(new_tList)
+      this.queryObjList = l1
+      this.tList = new_tList
     },
+    getQueryList (key, value) {
+      getQueryList(1, 888, key, value).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+          this.tmpTableDate = res.data.data
+>>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
+        } else {
+          this.$Message.error('选择项目' + `${res.data.msg}`)
+        }
+      })
+    },
+<<<<<<< HEAD
     beforeMount() {
       // this.reAuthorization() // 刷新前端权限
       this.createAudio(jinggao1Mp3) // 创建音频对象
 
+=======
+    reAuthorization () {
+      store.dispatch('authorization').then(rules => {
+        // console.log(rules)
+        store.dispatch('concatRoutes', rules).then(routers => {
+          // console.log(routers)
+        }).catch((err) => {
+          console.log(err)
+          setToken('')
+          next({ name: 'login' })
+        })
+      }).catch((err1) => {
+        console.log(err1)
+        setToken('')
+        next({ name: 'login' })
+      })
+>>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
     },
-    mounted() {
-      this.getTmpList()
-      this.getQueryList('isTmp', 1)
-      if (this.timer) {
-        clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
+    audioPlay () {
+      if (!this.isPlaying && this.canPlaying) {
+        this.audio.play()
+        this.isPlaying = true
+      } else {
+        this.audio.pause()
+        this.isPlaying = false
       }
+<<<<<<< HEAD
       this.playTimer()// 启用定时器
       // this.reAuthorization() // 刷新前端权限
 
+=======
+>>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
     },
-    watch: {
-      // queryObjList: function () {
-      //   for (let i in this.queryObjList) {
-      //     this.do_sql(i, this.queryObjList[i].id)
-      //   }
-      // }
-    },
-    // 组件关闭时，执行此方法来销毁定时器
-    beforeRouteLeave(to, from, next) {
-      this.audio.pause()
-      this.isPlaying = false
-      clearInterval(this.timer)
-      next()
-    },
-    beforeDestroy() {
-      clearInterval(this.timer)
-      this.audio.pause()
-      this.isPlaying = false
+    createAudio (src) {
+      this.audio = new Audio()
+      this.audio.loop = true
+      this.audio.src = src
     }
+  },
+  beforeMount () {
+    this.reAuthorization() // 刷新前端权限
+    this.createAudio(jinggao1Mp3) // 创建音频对象
+  },
+  mounted () {
+    this.getTmpList()
+    this.getQueryList('isTmp', 1)
+    if (this.timer) {
+      clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
+    }
+    this.playTimer()// 启用定时器
+  },
+  watch: {
+    // queryObjList: function () {
+    //   for (let i in this.queryObjList) {
+    //     this.do_sql(i, this.queryObjList[i].id)
+    //   }
+    // }
+  },
+  // 组件关闭时，执行此方法来销毁定时器
+  beforeRouteLeave (to, from, next) {
+    this.audio.pause()
+    this.isPlaying = false
+    clearInterval(this.timer)
+    next()
+  },
+  beforeDestroy () {
+    clearInterval(this.timer)
+    this.audio.pause()
+    this.isPlaying = false
   }
+}
 </script>
 
 <style lang="less">

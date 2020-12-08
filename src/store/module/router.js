@@ -36,24 +36,43 @@ const actions = {
         let routerList = []
         // 拼栏目列表
         let  data_statistics_department_list = []
+        let  data_sqlstatistics_department_list = []
         let  temp_children_list = []
+        let  temp_children_list2 = []
         data_statistics_department_list = eval(localStorage.departmentlist)
+        data_sqlstatistics_department_list = eval(localStorage.sqldepartmentlist)
 
             if (data_statistics_department_list) {
               for (var i = 0; i < routerMap.length; i++) {
-               if (routerMap[i].name === "statistics") {
+                if (routerMap[i].name === "statistics") {
                   console.log(routerMap[i].children[0])
                   for (let j = 0; j < data_statistics_department_list.length; j++) {
-                        let   temp_department = Object.create(routerMap[i].children[0])
-                        temp_department.name = String(data_statistics_department_list[j].v)
-                        temp_department.path = String(data_statistics_department_list[j].v)
-                        temp_department.meta.title = String(data_statistics_department_list[j].v)
-                        temp_children_list.push(temp_department) //组装新的需求统计部门列表
+                    let temp_department = Object.create(routerMap[i].children[0])
+                    temp_department.name = String(data_statistics_department_list[j].v)
+                    temp_department.path = String(data_statistics_department_list[j].v)
+                    temp_department.meta.title = String(data_statistics_department_list[j].v)
+                    temp_children_list.push(temp_department) //组装新的需求统计部门列表
                   }
-                  routerMap[i].children  = temp_children_list
-               }
+                  routerMap[i].children = temp_children_list
+                }
               }
             }
+            if (data_sqlstatistics_department_list) {
+              for (var i = 0; i < routerMap.length; i++) {
+                if (routerMap[i].name === "Sqlstatistics") {
+                  console.log(routerMap[i].children[0])
+                  for (let j = 0; j < data_sqlstatistics_department_list.length; j++) {
+                    let temp_department2 = Object.create(routerMap[i].children[0])
+                    temp_department2.name = String(data_sqlstatistics_department_list[j].v)
+                    temp_department2.path = String(data_sqlstatistics_department_list[j].v)
+                    temp_department2.meta.title = String(data_sqlstatistics_department_list[j].v)
+                    temp_children_list2.push(temp_department2) //组装新的需求统计部门列表
+                  }
+                  routerMap[i].children = temp_children_list2
+                }
+              }
+            }
+
 
         // 如果全部是true 直接返回
         if (Object.entries(rules).every(item => item[1])) {

@@ -14,77 +14,81 @@
       <div style="padding: 1px;">
 
         <Row>
-          <Col span="3">
+<!--          <Col span="3">-->
+            <Form label-position="left" :label-width="50" label-colon=":" style="margin-bottom: -25px;" inline>
+          <FormItem label="脚本">
             <Select placeholder="请选择脚本" v-model="storage" @on-change="tostorage" style="width: 85%">
               <Option :value="item.k" v-for="item in allstorageList">{{item.v}}</Option>
             </Select>
-          </Col>
-          <Col span="21" style="margin-bottom: -18px;">
-            <Form v-for="item in temp_parameter_list">
-              <Col span="5">
-                <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm'">
-                  <DatePicker
-                    v-model="item.msg"
-                    @on-change="item.msg=$event"
-                    format="yyyy-MM" placeholder="请选择年月"
-                    style="width: 55%"
-                    type="month">
-                  </DatePicker>
-                </FormItem>
-                <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd'">
-                  <DatePicker
-                    v-model="item.msg"
-                    @on-change="item.msg=$event"
-                    format="yyyy-MM-dd" placeholder="请选择年月日"
-                    style="width: 75%"
-                    type="date">
-                  </DatePicker>
-                </FormItem>
-                <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd|HHMM'">
-                  <DatePicker
-                    v-model="item.msg"
-                    @on-change="item.msg=$event"
-                    format="yyyy-MM-dd HH:mm" placeholder="请选择时间"
-                    style="width: 75%"
-                    type="datetime">
-                  </DatePicker>
-                </FormItem>
-                <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd|HHMMSS'">
-                  <DatePicker
-                    v-model="item.msg"
-                    @on-change="item.msg=$event"
-                    placeholder="请选择时间"
-                    style="width: 75%"
-                    type="datetime">
-                  </DatePicker>
-                </FormItem>
-                <FormItem :label="item.remarks" v-if="item.type == '字符串'">
-                  <Input v-model="item.msg" :placeholder="item.remarks" style="width:65%"/>
-                </FormItem>
-              </Col>
-            </Form>
-          </Col>
-        </Row>
-        <Row>
-          <template>
-            <Form label-position="left" :label-width="80" label-colon=":" inline>
-              <FormItem label="常用查询">
-                      <span v-for="item in recordList">
-                         <Tooltip max-width="800" :content="item.zhname" placement="bottom-start">
-                             <Button @click="handleCreate5(item.id)" :type="item.totype" style="marginRight: 10px;">{{item.recordname}}</Button>
-                         </Tooltip>
-                      </span>
               </FormItem>
-            </Form>
-          </template>
+        </Form>
+<!--          </Col>-->
+<!--          <Col span="21" style="margin-bottom: -18px;">-->
+<!--            <Form v-for="item in temp_parameter_list">-->
+<!--              <Col span="5">-->
+<!--                <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm'">-->
+<!--                  <DatePicker-->
+<!--                    v-model="item.msg"-->
+<!--                    @on-change="item.msg=$event"-->
+<!--                    format="yyyy-MM" placeholder="请选择年月"-->
+<!--                    style="width: 55%"-->
+<!--                    type="month">-->
+<!--                  </DatePicker>-->
+<!--                </FormItem>-->
+<!--                <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd'">-->
+<!--                  <DatePicker-->
+<!--                    v-model="item.msg"-->
+<!--                    @on-change="item.msg=$event"-->
+<!--                    format="yyyy-MM-dd" placeholder="请选择年月日"-->
+<!--                    style="width: 75%"-->
+<!--                    type="date">-->
+<!--                  </DatePicker>-->
+<!--                </FormItem>-->
+<!--                <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd|HHMM'">-->
+<!--                  <DatePicker-->
+<!--                    v-model="item.msg"-->
+<!--                    @on-change="item.msg=$event"-->
+<!--                    format="yyyy-MM-dd HH:mm" placeholder="请选择时间"-->
+<!--                    style="width: 75%"-->
+<!--                    type="datetime">-->
+<!--                  </DatePicker>-->
+<!--                </FormItem>-->
+<!--                <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd|HHMMSS'">-->
+<!--                  <DatePicker-->
+<!--                    v-model="item.msg"-->
+<!--                    @on-change="item.msg=$event"-->
+<!--                    placeholder="请选择时间"-->
+<!--                    style="width: 75%"-->
+<!--                    type="datetime">-->
+<!--                  </DatePicker>-->
+<!--                </FormItem>-->
+<!--                <FormItem :label="item.remarks" v-if="item.type == '字符串'">-->
+<!--                  <Input v-model="item.msg" :placeholder="item.remarks" style="width:65%"/>-->
+<!--                </FormItem>-->
+<!--              </Col>-->
+<!--            </Form>-->
+<!--          </Col>-->
         </Row>
+<!--        <Row>-->
+<!--          <template>-->
+<!--            <Form label-position="left" :label-width="80" label-colon=":" inline>-->
+<!--              <FormItem label="常用查询">-->
+<!--                      <span v-for="item in recordList">-->
+<!--                         <Tooltip max-width="800" :content="item.zhname" placement="bottom-start">-->
+<!--                             <Button @click="handleCreate5(item.id)" :type="item.totype" style="marginRight: 10px;">{{item.recordname}}</Button>-->
+<!--                         </Tooltip>-->
+<!--                      </span>-->
+<!--              </FormItem>-->
+<!--            </Form>-->
+<!--          </template>-->
+<!--        </Row>-->
         <Row style="text-align: right;">
-          <Button @click="tableList()" style="marginRight: 2px;" type="info">选择字段</Button>
-          <Button @click="handleSubmitTable()" style="marginRight: 2px;" type="primary" :disabled="isDisable2">查询
+<!--          <Button @click="tableList()" style="marginRight: 2px;" type="info">选择字段</Button>-->
+          <Button @click="handleSubmitTable()" style="marginRight: 2px;" type="primary" :disabled="isDisable2">执行脚本
           </Button>
-          <Button @click="handleSubmitTable2()" style="marginRight: 2px;" type="warning" v-if="isShow"
-                  :disabled="isDisable">重新生成
-          </Button>
+<!--          <Button @click="handleSubmitTable2()" style="marginRight: 2px;" type="warning" v-if="isShow"-->
+<!--                  :disabled="isDisable">重新生成-->
+<!--          </Button>-->
           <Button @click="exportData()" class="case-btn" type="success">
             <Icon type="ios-download-outline"></Icon>
             导出数据
@@ -163,7 +167,7 @@
 
 <script>
   import excel from '@/libs/excel'
-  import {getstoragelist, getimplement, getobjlist} from '@/api/cmdb2/asset_sql'
+  import {getstoragelist, getimplement,getimplement2, getobjlist,getSqlobjlist} from '@/api/cmdb2/asset_sql'
   import {
     getrecordlist,
     addrecordlist,
@@ -307,28 +311,28 @@
       },
       tostorage(date) {
         this.Interval_flag = 2
-        this.targetKeys = []
+        // this.targetKeys = []
         for (var i = 0; i < this.allstorageList.length; i++) {
           // if(parseInt(this.allstorageList[i].k) === parseInt(date)){
           if (JSON.stringify(this.allstorageList[i].k) === JSON.stringify(date)) {
             this.tablelistdata = []
-            console.log(this.allstorageList[i].d)
+            // console.log(this.allstorageList[i])
             //表字段列表
-            let temp_list = eval(this.allstorageList[i].d)
-            for (var j = 0; j < temp_list.length; j++) {
-              this.tablelistdata.push({"key": temp_list[j].name, "label": temp_list[j].zh_name})
-            }
+            // let temp_list = eval(this.allstorageList[i].d)
+            // for (var j = 0; j < temp_list.length; j++) {
+            //   this.tablelistdata.push({"key": temp_list[j].name, "label": temp_list[j].zh_name})
+            // }
             //数据表名
             // console.log(this.allstorageList[i].f)
-            this.temp_filename = this.allstorageList[i].f
+            // this.temp_filename = this.allstorageList[i].f
             // console.log(this.allstorageList[i].c)
             //查询存储过程参数列表
-            this.temp_parameter_list = eval(this.allstorageList[i].c)
+            // this.temp_parameter_list = eval(this.allstorageList[i].c)
 
             //获取模板列表
-            this.record_getdata(String(this.tousername), String(this.temp_filename))
-            this.storagename = this.allstorageList[i].s
-            this.storagename2 = this.allstorageList[i].st
+            // this.record_getdata(String(this.tousername), String(this.temp_filename))
+            // this.storagename = this.allstorageList[i].s
+            // this.storagename2 = this.allstorageList[i].st
           }
         }
 
@@ -414,11 +418,11 @@
         if (obj) {
           for (var i = 0; i < this.allSysTag.length; i++) {
             if (obj === this.allSysTag[i].v) {
-              if (this.allSysTag[i].t == "是") {
-                this.isShow = true
-              } else {
-                this.isShow = false
-              }
+              // if (this.allSysTag[i].t == "是") {
+              //   this.isShow = true
+              // } else {
+              //   this.isShow = false
+              // }
               this.allSysTag[i].totype = "primary"
             } else {
               this.allSysTag[i].totype = "default"
@@ -497,16 +501,17 @@
         if (JSON.stringify(this.storage) === '""') {
           temp_flag_str = 0
           this.$Message.error("请选择脚本")
-        } else if (JSON.stringify(this.targetKeys) == '[]') {
-          temp_flag_str = 0
-          this.$Message.error("请选择字段或模板")
         }
-        for (var h = 0; h < this.temp_parameter_list.length; h++) {
-          if (JSON.stringify(this.temp_parameter_list[h].msg) == '""') {
-            temp_flag_str = 0
-            this.$Message.error(this.temp_parameter_list[h].remarks + "不能为空")
-          }
-        }
+        // else if (JSON.stringify(this.targetKeys) == '[]') {
+        //   temp_flag_str = 0
+        //   this.$Message.error("请选择字段或模板")
+        // }
+        // for (var h = 0; h < this.temp_parameter_list.length; h++) {
+        //   if (JSON.stringify(this.temp_parameter_list[h].msg) == '""') {
+        //     temp_flag_str = 0
+        //     this.$Message.error(this.temp_parameter_list[h].remarks + "不能为空")
+        //   }
+        // }
 
         if (temp_flag_str === 1) {
           this.Interval_flag = 0
@@ -516,13 +521,42 @@
           this.table_loading = true
           this.isShow6 = true
           setTimeout(() => {
-            this.playTimer()// 计时器
-            this.getimplement(JSON.stringify(this.temp_parameter_list), this.storage, JSON.stringify(this.targetKeys), "1")
+            // this.playTimer()// 计时器
+            // this.getimplement(JSON.stringify(this.temp_parameter_list), this.storage, JSON.stringify(this.targetKeys), "1")
+            this.getimplement2(this.storage)
             this.isDisable2 = false
           }, 1000)
         }
         // this.table_loading = false
         // this.isShow6 = false
+      },
+      getimplement2(storage) {
+        getimplement2(storage).then(res => {
+          if (res.data.code === 0) {
+            this.tableData = res.data.data  //表数据
+            this.titlelist = res.data.titlelist  //excel表头数据
+            this.columns = res.data.columnslist  //表字段
+            this.keylist = res.data.keylist   //excel字段
+            this.modalMap2.modalVisible = false
+            this.table_loading = false
+            this.isShow6 = false
+            this.Interval_flag = 2
+          } else if (res.data.code === 1) {   //执行存储过程没有返回值
+            this.tableData = []
+            this.titlelist = []
+            this.columns = []
+            this.keylist = []
+            this.handleSubmitTable()
+          } else {
+            this.tableData = []
+            this.titlelist = []
+            this.columns = []
+            this.keylist = []
+            this.table_loading = false
+            this.isShow6 = false
+            this.Interval_flag = 2
+          }
+        })
       },
       getimplement(date, storage, targetKeys, flag) {
         getimplement(date, storage, targetKeys, flag).then(res => {
@@ -566,14 +600,22 @@
           if (res.data.code === 0) {
             this.allSysTag = res.data.data //需求组列表
             this.temp_storagelist = res.data.storagelist //存储过程列表
+          } else {
+            this.allSysTag = []
+          }
+        })
+      },
+       getSqlobjlist(department) {
+        getSqlobjlist(department).then(res => {
+          if (res.data.code === 0) {
+            this.allSysTag = res.data.data //需求组列表
+            this.temp_storagelist = res.data.storagelist //存储过程列表
             this.allstorageList = []
             this.storage = ""
-            this.temp_parameter_list = []
           } else {
             this.allSysTag = []
             this.allstorageList = []
             this.storage = ""
-            this.temp_parameter_list = []
           }
         })
       },
@@ -622,7 +664,10 @@
          $route(newRoute,oldRoute){
             if(newRoute.name != oldRoute.name){
 
-               this.getobjlist(newRoute.name)
+               // this.getobjlist(newRoute.name)
+               this.getSqlobjlist(newRoute.name)
+
+              console.log(newRoute.name)
             }
           }
     },
@@ -631,8 +676,10 @@
       //当前用户名
       let loginUser = JSON.parse(sessionStorage.vuex).user.nickName
       this.tousername = loginUser
-      // this.menuname = String(this.$route.name)
-      this.getobjlist(this.$route.name)
+      // this.getobjlist(this.$route.name)
+      this.getSqlobjlist(this.$route.name)
+      // this.getSqlobjlist("科技科")
+      console.log(this.$route.name)
     }
 
   }

@@ -156,19 +156,19 @@
                 placeholder="SQL语句"
               ></Input>
             </FormItem>
-               <hr v-if="isShow" />
+               <hr/>
                <br>
-            <FormItem label="部门名称" prop="department" style="width:500px;margin-right:500px" v-if="isShow">
+            <FormItem label="部门名称" prop="department" style="width:500px;margin-right:500px" >
           <Select @on-create="handleCreate2" allow-create multiple filterable placeholder="部门名称" v-model="formValidate.department">
             <Option  :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
           </Select>
         </FormItem>
-            <FormItem label="报表名" prop="obj" style="width:500px;margin-right:500px"  v-if="isShow">
+            <FormItem label="报表名" prop="obj" style="width:500px;margin-right:500px"  >
               <Select @on-create="handleCreate5" allow-create  filterable placeholder="报表名" v-model="formValidate.obj">
             <Option  :value="item.v" v-for="item in allobjList">{{item.v}}</Option>
           </Select>
             </FormItem>
-            <FormItem label="授权用户" prop="authorized" style="width:500px;margin-right:500px"  v-if="isShow">
+            <FormItem label="授权用户" prop="authorized" style="width:500px;margin-right:500px" >
               <Select  allow-create filterable  multiple   placeholder="授权用户" v-model="formValidate.authorized" @on-query-change="tempusername">
             <Option  :value="item.nickname" v-for="item in allNameList2">{{ item.nickname }}</Option>
           </Select>
@@ -407,6 +407,8 @@
         tableDataALL: [],
         tomsg: ' ',
         alldepartmentList:[],
+        alldepartmentList2:[],
+        alldepartmentList3:[],
         allobjList:[],
         uploadList: [],
         OSSRegion: '',
@@ -488,10 +490,7 @@
           this.storageList3 = res.data.data2
           this.storageList5 = res.data.data2  //触发
           this.storageList6 = res.data.data  //定时
-          console.log("11111111111111111111111")
-          console.log(this.storageList )
-          console.log(this.storageList5 )
-          console.log("12222222222222222222222222")
+
         } else {
           this.$Message.error(`${res.data.msg}`)
         }
@@ -596,12 +595,14 @@
         }
         if(this.formValidate.totype === "存储过程" ){
           this.isShow = true
+          this.alldepartmentList  =  this.alldepartmentList3
         }
         else{
           this.isShow = false
         }
         if(this.formValidate.totype === "sql"){
           this.isShow2 = true
+          this.alldepartmentList  =  this.alldepartmentList2
         }
         else{
           this.isShow2 = false
@@ -715,8 +716,11 @@
             create_time: String(getDate(new Date().getTime() / 1000, 'year'))
           }
           if(this.formValidate.mode === "触发" || this.formValidate.totype === "存储过程"){this.isShow = true,this.isShow2 = false}
-          else if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false,this.isShow3 = false}
-          else{this.isShow = false,this.isShow2 = false,this.isShow3 = false}
+          if(this.formValidate.totype === "sql"){
+            this.isShow2 = true,
+              this.isShow = false,
+              this.isShow3 = false,this.alldepartmentList  =  this.alldepartmentList2}
+          else{this.isShow = false,this.isShow2 = false,this.isShow3 = false,this.alldepartmentList  =  this.alldepartmentList3}
           if(this.formValidate.mode === "触发" && this.formValidate.totype === "存储过程"){this.isShow3 = true}
           // if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
           // else{this.isShow2 = false,this.isShow = false}
@@ -763,8 +767,8 @@
               }],
             create_time: String(getDate(new Date().getTime() / 1000, 'year'))
           }
-          if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
-          else{this.isShow2 = false,this.isShow = false,this.isShow3 = false}
+          if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false,this.alldepartmentList  =  this.alldepartmentList2}
+          else{this.isShow2 = false,this.isShow = false,this.isShow3 = false,this.alldepartmentList  =  this.alldepartmentList3}
           if(this.formValidate.mode === "触发" && this.formValidate.totype === "存储过程"){this.isShow3 = true}
           else{this.isShow3 = false}
         }
@@ -783,9 +787,7 @@
                   this.formValidate.dbname =  this.databaselist[i]['name']
                 }
             }
-            console.log("6666666666666666666666666666666666666666")
-            console.log(this.formValidate)
-            console.log("6666666666666666666666666666666666666666")
+
             setTimeout(() => {
               SqlAdd(this.formValidate, this.editModalData).then(res => {
                 if (res.data.code === 0) {
@@ -849,7 +851,9 @@
       getDictConfList () {
       getDictConfList().then(res => {
         if (res.data.code === 0) {
-          this.alldepartmentList = eval(res.data.data['statistics_department_list'])
+          this.alldepartmentList3 = eval(res.data.data['statistics_department_list']) //需求统计
+          this.alldepartmentList2 = eval(res.data.data['sql_statistics_department_list']) //报表统计
+          this.alldepartmentList = this.alldepartmentList2
         } else {
           this.$Message.error(`${res.data.msg}`)
         }
