@@ -21,7 +21,7 @@ export const getQueryListForshow = (key, value) => {
     method: 'get',
     params: {
       key,
-      value,
+      value
     }
   })
 }
@@ -34,13 +34,13 @@ export const operationQuery = (data, meth) => {
   })
 }
 
-export const do_sql = (key, value,) => {
+export const do_sql = (key, value) => {
   return axios.request({
     url: '/tk/v1/queryConf/do_sql/',
     method: 'get',
     params: {
       key,
-      value,
+      value
     }
   })
 }
@@ -50,5 +50,24 @@ export const patchquery = (data) => {
     url: '/tk/v1/queryConf/',
     method: 'patch',
     data
+  })
+}
+
+export const operationGroup = (data, meth) => {
+  return axios.request({
+    url: '/tk/v1/operationgroup/',
+    method: meth,
+    data
+  })
+}
+
+export const getGroupList = (key, value) => {
+  return axios.request({
+    url: '/tk/v1/getgroup/',
+    method: 'get',
+    params: {
+      key,
+      value
+    }
   })
 }

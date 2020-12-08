@@ -54,3 +54,21 @@ export const getReportList = () => {
     }
   })
 }
+
+export const getFolderList = (preID) => {
+  return axios.request({
+    url: '/pb/v1/pb/folder/',
+    method: 'get',
+    params: {
+      preID
+    }
+  })
+}
+
+export const operationFolder = (data, meth) => {
+  return axios.request({
+    url: '/pb/v1/pb/folder/',
+    method: meth,
+    data
+  })
+}

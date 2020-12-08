@@ -2,27 +2,37 @@
   <div>
     <Row :gutter="10">
       <Col span="4">
-        <Select :value="tmpValue" @on-select="selectTmp">
+        <Select :value="tmpValue" @on-select="selectTmp" placeholder="选择模版">
           <Option v-for="item in tmpList" :value="item.label" :key="item.value">{{ item.label }}</Option>
         </Select>
       </Col>
       <Col span="4">
         <ButtonGroup>
-          <Button icon="ios-add" @click="handlerTmp('','post', '添加配置')"></Button>
-          <Button icon="ios-settings" @click="handlerTmp('','put', '修改配置')"></Button>
-          <Button icon="ios-trash" @click="handlerDeleteTmp(tid)"></Button>
+          <Tooltip content="添加模版" transfer placement="top">
+            <Button icon="ios-add" @click="handlerTmp('','post', '添加模版配置')"></Button>
+          </Tooltip>
+          <Tooltip content="修改模版" transfer placement="top">
+            <Button icon="ios-settings" @click="handlerTmp('','put', '修改模版配置')"></Button>
+          </Tooltip>
+          <Tooltip content="删除模版" transfer placement="top">
+            <Button icon="ios-trash" @click="handlerDeleteTmp(tid)"></Button>
+          </Tooltip>
         </ButtonGroup>
       </Col>
       <Col span="4" offset="12" style="text-align: right">
         <ButtonGroup>
-          <Button icon="md-volume-up" @click="audioPlay()" v-if="!this.isPlaying"></Button>
-          <Button icon="md-volume-off" @click="audioPlay()" v-else></Button>
+          <Tooltip content="开启告警声音" transfer placement="left" v-if="!this.isPlaying">
+            <Button icon="md-volume-up" @click="audioPlay()"></Button>
+          </Tooltip>
+          <Tooltip content="关闭告警声音" transfer placement="left" v-else>
+            <Button icon="md-volume-off" @click="audioPlay()"></Button>
+          </Tooltip>
         </ButtonGroup>
       </Col>
     </Row>
 
     <Row :gutter="10" style="margin-top: 10px;">
-      <CustomInfo :data="queryObjList"></CustomInfo>
+      <CustomInfo :dataObj="queryObj" :dataObjList="queryGroupObjList"></CustomInfo>
     </Row>
 
     <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="540"
@@ -33,7 +43,7 @@
           <Input v-model="formValidate.tmpNa" :maxlength="50" placeholder='请输入模版名称'></Input>
         </FormItem>
         <FormItem label="选择监控" prop="tmptable">
-          <Table class="tmptable" ref="tmpSelection" size="small" max-height="300" :draggable="true"
+          <Table class="tmptable" ref="tmpSelection" size="small" max-height="500" :draggable="true"
                  :columns="tmpColumns" :data="tmpTableDate" @on-select="onSelected"
                  @on-select-cancel="onSelectCancel" @on-select-all="onSelectAll"
                  @on-select-all-cancel="onSelectAllCancel">
@@ -75,6 +85,7 @@ export default {
   data () {
     return {
       audio: '',
+      choseMP3: '',
       isPlaying: false,
       canPlaying: false,
       tid: 0, // 当前模版ID
@@ -83,6 +94,8 @@ export default {
       tmpData: [],
       up_tip: '',
       queryObjList: [],
+      queryObj: {},
+      queryGroupObjList: [],
       timer: null, // 保存定时器，用于销毁
       tList: [
         {
@@ -287,26 +300,6 @@ export default {
         } else {
           this.$Message.error('表单校验错误')
         }
-<<<<<<< HEAD
-      },
-      //
-      handleSubmitTmp(value) {
-        this.$refs[value].validate((valid) => {
-          if (valid) {
-            setTimeout(() => {
-              this.formValidate.selectionAll = this.selectionAll;
-              this.formValidate.username = JSON.parse(sessionStorage.vuex).user.userName;
-              operationTmp(this.formValidate, this.editModalData).then(res => {
-                if (res.data.code === 0) {
-                  // this.$Message.success(`${res.data.msg}`);
-                  this.modalMap.modalVisible = false;
-                  this.getTmpList()
-                } else {
-                  this.$Message.error(`${res.data.msg}`);
-                }
-              });
-            }, 500)
-=======
       })
     },
     playTimer () {
@@ -317,7 +310,6 @@ export default {
           if (ret === false) {
             this.tList[i].expireTime = this.tList[i].expireTime + this.tList[i].interval
             this.do_sql(i, this.queryObjList, this.tList)
->>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
           } else {
             this.tList[i].xcsj = this.countTime(this.tList[i].expireTime)
             this.queryObjList[i].up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
@@ -356,7 +348,7 @@ export default {
       }
       getQueryListForshow(key, value).then(res => {
         if (res.data.code === 0) {
-          this.$Message.success(`${res.data.msg}`)
+          // this.$Message.success(`${res.data.msg}`)
           this.pageTotal = res.data.count
           let data = res.data.data
           let queryObjList = res.data.data
@@ -410,6 +402,7 @@ export default {
           for (let i in this.queryObjList) {
             this.do_sql(i, this.queryObjList, this.tList)
           }
+          this.createQueryObj()
         } else {
           this.$Message.error(`${res.data.msg}`)
         }
@@ -420,37 +413,6 @@ export default {
       do_sql('id', query_id).then(
         res => {
           if (res.data.code === 0) {
-<<<<<<< HEAD
-            // this.$Message.success(`${res.data.msg}`)
-            this.pageTotal = res.data.count
-            let data = res.data.data
-            let queryObjList = res.data.data
-            this.tList = []
-            this.queryObjList = []
-            for (let i in data) {
-              let item = data[i]
-              let columns = []
-              for (let j in item.colnames) {
-                let col = {title: '', key: '', align: 'center', minWidth: 80}
-                col.title = item.colnames[j].name
-                col.key = item.colnames[j].col
-                columns.push(col)
-              }
-              queryObjList[i].columns = columns
-              queryObjList[i].tableData = []
-              queryObjList[i].isShow = false
-
-              // 处理倒计时参数
-              let t_obj = {
-                tName: '',
-                expireTime: 0, // 时间戳（13位）
-                interval: 0,
-                xcsj: {
-                  dd: '',
-                  hh: '',
-                  mm: '',
-                  ss: ''
-=======
             let tableData = res.data.data
             for (let i in tableData) {
               if (tableData[i].target === '一般') {
@@ -468,7 +430,6 @@ export default {
               } else if (tableData[i].target === '正常') {
                 tableData[i].cellClassName = {
                   target: 'table-success-cell-target'
->>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
                 }
               } else {
                 tableData[i].cellClassName = {
@@ -482,7 +443,56 @@ export default {
           } else {
             queryObjList[index].errormsg = res.data.errormsg
           }
-          this.checkqueryObjSort(queryObjList, tList)
+          // this.checkqueryObjSort(queryObjList, tList)
+
+          if (queryObjList[index].count['一般'] > 0) {
+            queryObjList[index].ty = 'yellow'
+          }
+          if (queryObjList[index].count['严重'] > 0) {
+            queryObjList[index].ty = 'warning'
+          }
+          if (queryObjList[index].count['致命'] > 0) {
+            queryObjList[index].ty = 'error'
+          }
+          if (!queryObjList[index].ty) {
+            queryObjList[index].ty = 'success'
+          }
+          // 组装数据
+          for (let g in this.queryGroupObjList) {
+            let group1st = this.queryGroupObjList[g]
+            for (let gg in group1st.child) {
+              let group2nd = group1st.child[gg]
+              let showList2nd = []
+              for (let ggg in group2nd.child) {
+                let _d2 = {}
+                _d2['name'] = group2nd.child[ggg].title
+                _d2['ty'] = group2nd.child[ggg].ty
+                showList2nd.push(_d2)
+                if (_d2['ty'] === 'yellow') {
+                  group1st.color = '#fadb14'
+                }
+                if (_d2['ty'] === 'warning') {
+                  group1st.color = '#ff9900'
+                  if (this.choseMP3 !== '1') {
+                    this.audio.src = jinggao2Mp3
+                  }
+                  this.canPlaying = true
+                  this.choseMP3 = '2'
+                }
+                if (_d2['ty'] === 'error') {
+                  group1st.color = '#ed4014'
+                  this.audio.src = jinggao1Mp3
+                  this.canPlaying = true
+                  this.choseMP3 = '1'
+                }
+                if (!group1st.color) {
+                  group1st.color = '#19be6b'
+                }
+              }
+              group2nd.showList = showList2nd
+            }
+          }
+          this.checkAudioPlay()
         }
       )
     },
@@ -557,75 +567,89 @@ export default {
             new_tList.push(tList[j])
           }
         }
-<<<<<<< HEAD
-        // console.log(this.tList)
-        // console.log(new_tList)
-        this.queryObjList = l1
-        this.tList = new_tList
-      },
-      getQueryList(key, value) {
-        getQueryList(1, 888, key, value).then(res => {
-          if (res.data.code === 0) {
-            // this.$Message.success(`${res.data.msg}`)
-            this.tmpTableDate = res.data.data
-          } else {
-            this.$Message.error('选择项目' + `${res.data.msg}`)
-          }
-        })
-      },
-      reAuthorization() {
-        store.dispatch('authorization').then(rules => {
-          console.log(rules)
-          // let  temp_rules  = rules
-          store.dispatch('concatRoutes', rules).then(routers => {
-            // router.addRoutes(routers) //加载子路由
-            // console.log(routers)
-          }).catch((err) => {
-            console.log(err)
-            setToken('')
-            // next({name: 'login'})
-            this.$router.push({name:'login'})
-          })
-
-        }).catch((err1) => {
-          console.log(err1)
-          setToken('')
-          // next({name: 'login'})
-          this.$router.push({name:'login'})
-        })
-      },
-      audioPlay() {
-        if (!this.isPlaying && this.canPlaying) {
-          this.audio.play()
-          this.isPlaying = true
-=======
       }
       // console.log(this.tList)
       // console.log(new_tList)
       this.queryObjList = l1
       this.tList = new_tList
     },
+
+    createQueryObj () {
+      this.queryObj = {}
+      this.queryGroupObjList = []
+      for (let i in this.queryObjList) {
+        if (!this.queryObj[this.queryObjList[i]['groupID'][0]]) {
+          this.queryObj[this.queryObjList[i]['groupID'][0]] = {}
+        }
+        var _obj = this.queryObj[this.queryObjList[i]['groupID'][0]]
+        if (!_obj[this.queryObjList[i]['groupID'][1]]) {
+          _obj[this.queryObjList[i]['groupID'][1]] = []
+        }
+        _obj[this.queryObjList[i]['groupID'][1]].push(this.queryObjList[i])
+      }
+      // console.log(this.queryObj)
+
+      for (let i in this.queryObj) {
+        var _queryObj = {}
+        _queryObj['gid'] = i
+        _queryObj['seq'] = 0
+        _queryObj['name'] = ''
+        _queryObj['child'] = []
+        _queryObj['isShow'] = true
+        let child = []
+        for (let j in this.queryObj[_queryObj['gid']]) {
+          _queryObj['name'] = this.queryObj[_queryObj['gid']][j][0].group1stNa
+          _queryObj['seq'] = this.queryObj[_queryObj['gid']][j][0].group1stSeq
+          let c_obj = {}
+          c_obj['gid'] = j
+          c_obj['name'] = this.queryObj[_queryObj['gid']][j][0].group2ndNa
+          c_obj['seq'] = this.queryObj[_queryObj['gid']][j][0].group2ndSeq
+          c_obj['child'] = this.queryObj[_queryObj['gid']][j]
+          c_obj['isShow'] = false
+          c_obj['showList'] = []
+          child.push(c_obj)
+        }
+        // 排序
+        child.sort(this.compareFunction('seq'))
+        _queryObj['child'] = child
+        // console.log(_queryObj)
+        this.queryGroupObjList.push(_queryObj)
+      }
+      // 排序
+      this.queryGroupObjList.sort(this.compareFunction('seq'))
+      // console.log(this.queryGroupObjList)
+    },
+    // 排序函数
+    compareFunction (propertyName) {
+      return function (src, tar) {
+        // 获取比较的值
+        var v1 = src[propertyName]
+        var v2 = tar[propertyName]
+        if (v1 > v2) {
+          return 1
+        }
+        if (v1 < v2) {
+          return -1
+        }
+        return 0
+      }
+    },
+
     getQueryList (key, value) {
       getQueryList(1, 888, key, value).then(res => {
         if (res.data.code === 0) {
-          this.$Message.success(`${res.data.msg}`)
+          // this.$Message.success(`${res.data.msg}`)
           this.tmpTableDate = res.data.data
->>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
         } else {
           this.$Message.error('选择项目' + `${res.data.msg}`)
         }
       })
     },
-<<<<<<< HEAD
-    beforeMount() {
-      // this.reAuthorization() // 刷新前端权限
-      this.createAudio(jinggao1Mp3) // 创建音频对象
-
-=======
     reAuthorization () {
       store.dispatch('authorization').then(rules => {
         // console.log(rules)
         store.dispatch('concatRoutes', rules).then(routers => {
+          this.$router.addRoutes(routers)
           // console.log(routers)
         }).catch((err) => {
           console.log(err)
@@ -637,7 +661,23 @@ export default {
         setToken('')
         next({ name: 'login' })
       })
->>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
+    },
+    // 检查警告声音是否可以播放
+    checkAudioPlay () {
+      if (this.canPlaying) {
+        let audioPlay = this.audio.play()
+        audioPlay.then(() => {
+          this.isPlaying = true
+          // console.log('可以自动播放');
+        }).catch((err) => {
+          console.log(err)
+          console.log('不允许自动播放')
+        })
+      } else {
+        this.canPlaying = false
+        this.audio.pause()
+        this.isPlaying = false
+      }
     },
     audioPlay () {
       if (!this.isPlaying && this.canPlaying) {
@@ -647,12 +687,6 @@ export default {
         this.audio.pause()
         this.isPlaying = false
       }
-<<<<<<< HEAD
-      this.playTimer()// 启用定时器
-      // this.reAuthorization() // 刷新前端权限
-
-=======
->>>>>>> 171386e87e95e977b7869829ac9fb80e006c3649
     },
     createAudio (src) {
       this.audio = new Audio()
