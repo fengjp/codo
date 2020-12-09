@@ -67,7 +67,7 @@
                   </div>
                   <div v-else>
             <span v-for="showObj2 in item2.showList" style="margin-left: 10px;margin-right: 10px">
-              <Button :type="showObj2.ty" size="small"
+              <Button :type="showObj2.ty" size="small" style="margin-bottom: 10px"
                       @click="changeSubShow(showObj2.name,item2)">{{showObj2.name}}</Button>
             </span>
                   </div>
@@ -82,45 +82,45 @@
 </template>
 
 <script>
-export default {
-  name: 'CustomInfo',
-  props: {
-    dataObjList: Array,
-    dataQuery: Array,
-    dataObj: Object,
-    nameObj: Object
-  },
-  data () {
-    return {}
-  },
-  methods: {
-    changeShow (item) {
-      item.isShow = !item.isShow
+  export default {
+    name: 'CustomInfo',
+    props: {
+      dataObjList: Array,
+      dataQuery: Array,
+      dataObj: Object,
+      nameObj: Object
     },
-    changeSubShow (na, item) {
-      // console.log(item.child)
-      item.isShow = true
-      for (let i in item.child) {
-        if (item.child[i].title === na) {
-          item.child[i].isShow = true
+    data() {
+      return {}
+    },
+    methods: {
+      changeShow(item) {
+        item.isShow = !item.isShow
+      },
+      changeSubShow(na, item) {
+        // console.log(item.child)
+        item.isShow = true
+        for (let i in item.child) {
+          if (item.child[i].title === na) {
+            item.child[i].isShow = true
+          }
         }
-      }
-    },
-    getColor (k) {
-      if (k === '正常') {
-        return '#19be6b'
-      } else if (k === '一般') {
-        return '#fadb14'
-      } else if (k === '严重') {
-        return '#ff9900'
-      } else if (k === '致命') {
-        return '#ed4014'
-      } else if (k === '未知') {
-        return '#c5c8ce'
+      },
+      getColor(k) {
+        if (k === '正常') {
+          return '#19be6b'
+        } else if (k === '一般') {
+          return '#fadb14'
+        } else if (k === '严重') {
+          return '#ff9900'
+        } else if (k === '致命') {
+          return '#ed4014'
+        } else if (k === '未知') {
+          return '#c5c8ce'
+        }
       }
     }
   }
-}
 </script>
 
 <style lang="less" scoped>

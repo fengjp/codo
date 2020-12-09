@@ -1,6 +1,6 @@
 <template>
   <Card :bordered="false" dis-hover>
-    <Alert>管理用户是用来可以登陆你的主机的用户，管理用户默认限制15个，一般来说运维管理用户不会有多个</Alert>
+    <Alert>主机账号用来可以登陆你的主机的用户，主机账号默认限制15个，一般来说运维主机账号不会有多个</Alert>
     <div class="search-con search-con-top">
       <Select
         v-model="searchKey"
@@ -90,7 +90,7 @@
             sortable: true
           },
           {
-            title: "管理用户",
+            title: "主机账号",
             key: "admin_user",
             align: "center",
             width: 200,
@@ -256,8 +256,8 @@
             name: "admin_user",
             type: "i-input",
             value: meth === "put" ? this.tableData[index].admin_user : "",
-            label: "管理用户",
-            placeholder: "管理用户，建议使用英文",
+            label: "账号昵称",
+            placeholder: "",
             rule: [{required: true, message: "名称不能为空", trigger: "blur"}]
           },
           {

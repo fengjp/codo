@@ -88,7 +88,7 @@
             :styles="{top: '50px'}"
           >
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="85">
-              <Alert closable>管理用户：用来登陆你的主机获取资产信息，请务必配置！</Alert>
+              <Alert closable>主机账号：用来登陆你的主机获取资产信息，请务必配置！</Alert>
               <div v-if="editModalData && editModalData == 'put'">
                 <FormItem label="主机名称" prop="hostname">
                   <Input v-model="formValidate.hostname" :maxlength="45" placeholder="请输入主机名"></Input>
@@ -140,8 +140,8 @@
                   placeholder="Region区域，如：cn-shanghai, us-east-1"
                 ></Input>
               </FormItem> -->
-              <FormItem label="管理用户" prop="admin_user">
-                <Select v-model="formValidate.admin_user" placeholder="请选择一个管理用户" filterable>
+              <FormItem label="主机账号" prop="admin_user">
+                <Select v-model="formValidate.admin_user" placeholder="请选择一个主机账号" filterable>
                   <Option v-for="item in admUserList" :value="item.admin_user">{{item.admin_user}}</Option>
                 </Select>
               </FormItem>
@@ -287,7 +287,7 @@
           hostname: [{required: true, message: '请输入主机名', trigger: 'blur'}],
           private_ip: [{required: true, message: '请输入IP', trigger: 'blur'}],
           port: [{required: true, message: '请输入端口', trigger: 'blur'}],
-          admin_user: [{required: true, message: '请选择管理用户', trigger: 'blur'}]
+          admin_user: [{required: true, message: '请选择主机账号', trigger: 'blur'}]
         },
         columns: [
           {type: 'selection', key: 'id', width: 60, align: 'center', fixed: 'left'},
@@ -316,7 +316,7 @@
           {title: '公网IP', key: 'public_ip', minWidth: 140, align: 'center', sortable: true},
           // {title: "IDC", key: "idc", width: 130, align: "center", sortable: true},
           // {title: "区域", key: "region", width: 150, align: "center", sortable: true},
-          {title: '管理用户', key: 'admin_user', width: 150, align: 'center', sortable: true},
+          {title: '主机账号', key: 'admin_user', width: 150, align: 'center', sortable: true},
           {
             title: '状态',
             key: 'handle',
@@ -564,7 +564,7 @@
         })
       },
 
-      // 获取管理用户列表
+      // 获取主机账号列表
       getAdminUserList(page, limit, key, value) {
         getAdminUserList(page, limit, key, value).then(res => {
           if (res.data.code === 0) {

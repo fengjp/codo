@@ -128,7 +128,7 @@ export const routerMap = [
         name: 'admin_user',
         meta: {
           icon: 'ios-ribbon',
-          title: '管理用户'
+          title: '主机账号'
         },
         component: () =>
           import ('@/view/cmdb2/admin_user.vue')

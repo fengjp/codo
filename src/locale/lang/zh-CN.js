@@ -129,7 +129,7 @@ export default {
   asset_idc: 'IDC管理',
   operational_audit: '操作审计',
   tag_mg: '标签管理',
-  admin_user: '管理用户',
+  admin_user: '主机账号',
   system_user: '系统用户',
   asset_config: '资产配置',
   //

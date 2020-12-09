@@ -96,11 +96,11 @@
             <p style="display: initial;color: red;margin-left: 10px;" v-text="message"></p>
             <!--<Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colalarms',index)"></Button>-->
             <div v-for="(subCol, subColIndex) in item.subColList">
-              <Col span="12" offset="5">
+              <Col span="14" offset="5">
                 <Select style="width:60px" v-model="subCol.sign">
                   <Option v-for="s in signList" :value="s.name" :key="`sign-${s.id}`">{{ s.name }}</Option>
                 </Select>
-                <InputNumber style="width: 65px; margin-left: 5px; margin-right: 5px" v-model="subCol.alarmVal"
+                <InputNumber style="width: 110px; margin-left: 5px; margin-right: 5px" v-model="subCol.alarmVal"
                              placeholder="指标值"></InputNumber>
                 <Select style="width:80px" v-model="subCol.alarmType">
                   <Option v-for="t in typeList" :value="t.name" :key="`type-${t.id}`">{{ t.name }}</Option>
