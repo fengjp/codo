@@ -1,6 +1,6 @@
 <template>
   <Row>
-    <div>
+    <div v-if="versions === '1'">
       <Row :gutter="10" v-for="item in dataObjList">
         <Col>
           <Card :bordered="false" style="margin-bottom: 10px;">
@@ -78,6 +78,61 @@
         </Col>
       </Row>
     </div>
+    <div v-if="versions === '2'">
+      <Row :gutter="10" v-for="(item,key) in dataObjList[0]">
+        <div v-if="key === 'child'">
+          <Card :bordered="false" dis-hover style="margin-bottom: 10px;" v-for="item2 in item">
+            <p slot="title" @click="changeShow(item2)">
+              <Icon type="ios-arrow-down" size="18" v-if="item2.isShow"></Icon>
+              <Icon type="ios-arrow-forward" size="18" v-else></Icon>
+              <Tooltip content="收起" transfer placement="top" v-if="item2.isShow">
+                <span style="margin-left: 5px">{{item2.name}}</span>
+              </Tooltip>
+              <Tooltip content="展开" transfer placement="top" v-else>
+                <span style="margin-left: 5px">{{item2.name}}</span>
+              </Tooltip>
+            </p>
+            <Row :gutter="10">
+              <div v-if="item2.isShow">
+                <Col span="12" v-for="item3 in item2.child">
+                  <Card :bordered="false" dis-hover style="margin-bottom: 10px;">
+                    <p slot="title" @click="changeShow(item3)">
+                      <Icon type="ios-arrow-down" size="18" v-if="item3.isShow"></Icon>
+                      <Icon type="ios-arrow-forward" size="18" v-else></Icon>
+                      <Tooltip content="收起" transfer placement="top" v-if="item3.isShow">
+                        <span style="margin-left: 5px">{{item3.title}}</span>
+                      </Tooltip>
+                      <Tooltip content="展开" transfer placement="top" v-else>
+                        <span style="margin-left: 5px">{{item3.title}}</span>
+                      </Tooltip>
+                    </p>
+                    <p slot="extra" style="font-size: 12px;">
+                      <Badge status="processing"/>
+                      <span v-text="item3.up_tip"></span>
+                    </p>
+                    <Table v-if="item3.isShow" class="customtable" :no-data-text="item3.errormsg"
+                           :columns="item3.columns"
+                           :data="item3.tableData"
+                           size="small" height="250">
+                    </Table>
+                    <div class="customspan" v-else>
+                <span v-for="(val, k) in item3.count"
+                      :style="{width:(100*val/item3.tableData.length) + '%',backgroundColor:getColor(k)}">{{k}}</span>
+                    </div>
+                  </Card>
+                </Col>
+              </div>
+              <div v-else>
+            <span v-for="showObj2 in item2.showList" style="margin-left: 10px;margin-right: 10px">
+              <Button :type="showObj2.ty" size="small" style="margin-bottom: 10px"
+                      @click="changeSubShow(showObj2.name,item2)">{{showObj2.name}}</Button>
+            </span>
+              </div>
+            </Row>
+          </Card>
+        </div>
+      </Row>
+    </div>
   </Row>
 </template>
 
@@ -85,13 +140,12 @@
   export default {
     name: 'CustomInfo',
     props: {
-      dataObjList: Array,
-      dataQuery: Array,
-      dataObj: Object,
-      nameObj: Object
+      dataObjList: Array
     },
     data() {
-      return {}
+      return {
+        versions: this.$config.versions,
+      }
     },
     methods: {
       changeShow(item) {
@@ -119,7 +173,7 @@
           return '#c5c8ce'
         }
       }
-    }
+    },
   }
 </script>
 

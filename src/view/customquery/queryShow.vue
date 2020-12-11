@@ -1,7 +1,7 @@
 <template>
   <div>
     <Row :gutter="10" style="margin-top: 10px;">
-      <CustomInfo :dataObj="queryObj" :dataObjList="queryGroupObjList"></CustomInfo>
+      <CustomInfo :dataObjList="queryGroupObjList"></CustomInfo>
     </Row>
   </div>
 </template>

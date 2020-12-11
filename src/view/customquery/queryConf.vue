@@ -46,7 +46,7 @@
         <FormItem label="密码" prop="password" style="width: 48%">
           <Input v-model="formValidate.password" type="password" password placeholder="连接数据库密码"></Input>
         </FormItem>
-        <FormItem label="一级分组" prop="group1stID" style="width: 100%">
+        <FormItem label="一级分组" prop="group1stID" style="width: 100%" v-if="versions === '1'">
           <Select v-model="formValidate.group1stID" placeholder='一级分组' style="width: 48%">
             <Option v-for="item in group1stList" :value="item.id">{{ item.name }}
             </Option>
@@ -180,6 +180,7 @@
     components: {editor},
     data() {
       return {
+        versions: this.$config.versions,
         message: '',
         signList: [
           {'id': 0, 'name': '>'},
@@ -270,6 +271,9 @@
                   tt = this.group1stList[i].name
                   break
                 }
+              }
+              if (this.versions === '2'){
+                var tt = '-'
               }
               return h('div', [
                 h('span', {}, tt)
@@ -455,9 +459,9 @@
           status: '',
           description: '',
           seq: 0,
-          group1stID: '',
+          group1stID: 0,
           group1stSeq: 0,
-          group2ndID: '',
+          group2ndID: 0,
           group2ndSeq: 0
         },
         ruleValidate: {
@@ -567,9 +571,9 @@
             timesTy2Val: '',
             description: '',
             seq: 0,
-            group1stID: '',
+            group1stID: 0,
             group1stSeq: 0,
-            group2ndID: '',
+            group2ndID: 0,
             group2ndSeq: 0
           }
         }
