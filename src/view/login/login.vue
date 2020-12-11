@@ -80,8 +80,8 @@ export default {
                    }
                    else{
                      //修改‘首页’的默认路由路径
-                     localStorage.temphome_name = 'tips'
-                     localStorage.temphome_path = '/tips'
+                     localStorage.temphome_name = 'home'
+                     localStorage.temphome_path = '/home'
                      this.$router.push({name: this.$config.homeName
                      })}
            })
