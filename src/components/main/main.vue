@@ -92,6 +92,12 @@ export default {
       return this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []
     },
     menuList () {
+      //修改‘首页’的默认路由路径
+    if(this.$store.state.app.breadCrumbList[0]){
+    this.$store.state.app.breadCrumbList[0].name =  localStorage.temphome_name
+    this.$store.state.app.breadCrumbList[0].path = localStorage.temphome_path
+    this.$store.state.app.breadCrumbList[0].to = localStorage.temphome_path
+    }
       return this.$store.getters.menuList
     },
     local () {

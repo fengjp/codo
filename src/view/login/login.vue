@@ -78,7 +78,12 @@ export default {
                                   });
                         }
                    }
-                   else{this.$router.push({name: this.$config.homeName})}
+                   else{
+                     //修改‘首页’的默认路由路径
+                     localStorage.temphome_name = 'tips'
+                     localStorage.temphome_path = '/tips'
+                     this.$router.push({name: this.$config.homeName
+                     })}
            })
           // this.$router.push({
           //   name: this.$config.homeName
