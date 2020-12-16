@@ -70,7 +70,7 @@
             <Form :label-width="80" inline label-colon=":" label-position="left">
               <FormItem label="常用查询">
                       <span v-for="item in recordList">
-                         <Tooltip :content="item.zhname" max-width="1500" placement="bottom-start">
+                         <Tooltip :content="item.zhname" max-width="800" placement="bottom">
                              <Button :type="item.totype" @click="handleCreate5(item.id)" style="marginRight: 10px;">{{item.recordname}}</Button>
                          </Tooltip>
                       </span>
@@ -633,6 +633,22 @@
         this.record_getdata(String(this.tousername), String(this.temp_filename))
         this.temp_recordList_one = []
         this.isShow2 = false
+         this.tablelistdata = this.all_tablelistdata
+        this.tablelistdata2 = []
+        this.targetKeys = []
+
+        this.tablenum_str = String(this.tablelistdata.length )
+        this.tablenum_str2 = String(this.tablelistdata2.length )
+        this.columns8 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str, key: '', editable: true}
+        ]
+        this.columns9 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str2, key: '', editable: true}
+        ]
       },
       handleChange(obj) {
         this.targetKeys = []
@@ -727,7 +743,11 @@
           this.$Message.error("请选择脚本")
         } else if (JSON.stringify(this.targetKeys) == '[]') {
           temp_flag_str = 0
-          this.$Message.error("请选择字段或模板")
+          // this.$Message.error("请选择字段或模板")
+           for (let i = 0; i < this.all_tablelistdata.length; i++) {
+             // var index = this.targetKeys.indexOf(this.all_tablelistdata[i].key) //查看是否存在
+             this.targetKeys.push(this.all_tablelistdata[i].key)
+           }
         }
         for (var h = 0; h < this.temp_parameter_list.length; h++) {
           if (JSON.stringify(this.temp_parameter_list[h].msg) == '""') {
