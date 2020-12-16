@@ -70,7 +70,7 @@
             <Form :label-width="80" inline label-colon=":" label-position="left">
               <FormItem label="常用查询">
                       <span v-for="item in recordList">
-                         <Tooltip :content="item.zhname" max-width="800" placement="bottom-start">
+                         <Tooltip :content="item.zhname" max-width="1500" placement="bottom-start">
                              <Button :type="item.totype" @click="handleCreate5(item.id)" style="marginRight: 10px;">{{item.recordname}}</Button>
                          </Tooltip>
                       </span>
@@ -280,6 +280,7 @@
         temp_recordList_one: [],
         tablelistdata_temp:[],
         keylist: [],
+        all_tablelistdata:[],
         modalMap: {
           modalVisible: false,
           modalTitle: '选择字段'
@@ -476,6 +477,8 @@
       },
       handleCreate5(data) {
         this.Interval_flag = 2
+        var temp_zhname = []
+        var temp_zhname2 = []
         for (var i = 0; i < this.recordList.length; i++) {
           if (JSON.stringify(this.recordList[i].id) === JSON.stringify(data)) {
             this.temp_recordList_one = this.recordList[i]
@@ -483,6 +486,17 @@
             this.recordname = this.recordList[i].recordname
             this.temp_filename_title = this.recordList[i].recordname //当选择模板时的execle文件名
             this.recordList[i].totype = "info"
+
+            for (let i = 0; i < this.all_tablelistdata.length; i++) {
+             var index = this.targetKeys.indexOf(this.all_tablelistdata[i].key) //查看是否存在
+             if(index < 0){
+                 temp_zhname.push(this.all_tablelistdata[i])
+             }else{
+                 temp_zhname2.push(this.all_tablelistdata[i])
+             }
+        }
+            this.tablelistdata   =  temp_zhname
+            this.tablelistdata2  =  temp_zhname2
           } else {
             this.recordList[i].totype = "default"
           }
@@ -502,6 +516,7 @@
             let temp_list = eval(this.allstorageList[i].d)
             for (var j = 0; j < temp_list.length; j++) {
               this.tablelistdata.push({"key": temp_list[j].name, "label": temp_list[j].zh_name})
+              this.all_tablelistdata .push({"key": temp_list[j].name, "label": temp_list[j].zh_name}) //全局用
             }
             //数据表名
             // console.log(this.allstorageList[i].f)
@@ -555,17 +570,31 @@
       },
       handleadd() {
         this.temp_recordList_one = []
+        this.tablelistdata = this.all_tablelistdata
+        this.tablelistdata2 = []
         this.targetKeys = []
         this.recordname = ''
         this.isShow2 = false
+        this.tablenum_str = String(this.tablelistdata.length )
+        this.tablenum_str2 = String(this.tablelistdata2.length )
+        this.columns8 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str, key: '', editable: true}
+        ]
+        this.columns9 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str2, key: '', editable: true}
+        ]
       },
       tableList2() {
         if (JSON.stringify(this.recordname) != '""') {
           let temp_zhname = []
           for (var i = 0; i < this.targetKeys.length; i++) {
-            for (var h = 0; h < this.tablelistdata.length; h++) {
-              if (this.tablelistdata[h].key == this.targetKeys[i]) {
-                temp_zhname.push(this.tablelistdata[h].label)
+            for (var h = 0; h < this.tablelistdata2.length; h++) {
+              if (this.tablelistdata2[h].key == this.targetKeys[i]) {
+                temp_zhname.push(this.tablelistdata2[h].label)
               }
             }
           }
