@@ -2,10 +2,10 @@
   <div style="height:100%">
     <Card>
       <template>
-        <Form label-position="left" :label-width="50" label-colon=":" style="margin-bottom: -25px;" inline>
+        <Form :label-width="50" inline label-colon=":" label-position="left" style="margin-bottom: -25px;">
           <FormItem label="报表">
               <span style="marginRight: 10px;margin-bottom: 10px;" v-for="tag in allSysTag">
-                     <Button @click="handleChange(tag.v)" :type="tag.totype">{{tag.v}}</Button>
+                     <Button :type="tag.totype" @click="handleChange(tag.v)">{{tag.v}}</Button>
               </span>
           </FormItem>
         </Form>
@@ -15,7 +15,7 @@
 
         <Row>
           <Col span="3">
-            <Select placeholder="请选择脚本" v-model="storage" @on-change="tostorage" style="width: 85%">
+            <Select @on-change="tostorage" placeholder="请选择脚本" style="width: 85%" v-model="storage">
               <Option :value="item.k" v-for="item in allstorageList">{{item.v}}</Option>
             </Select>
           </Col>
@@ -24,42 +24,42 @@
               <Col span="5">
                 <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm'">
                   <DatePicker
-                    v-model="item.msg"
                     @on-change="item.msg=$event"
-                    format="yyyy-MM" placeholder="请选择年月"
-                    style="width: 55%"
-                    type="month">
+                    format="yyyy-MM"
+                    placeholder="请选择年月" style="width: 55%"
+                    type="month"
+                    v-model="item.msg">
                   </DatePicker>
                 </FormItem>
                 <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd'">
                   <DatePicker
-                    v-model="item.msg"
                     @on-change="item.msg=$event"
-                    format="yyyy-MM-dd" placeholder="请选择年月日"
-                    style="width: 75%"
-                    type="date">
+                    format="yyyy-MM-dd"
+                    placeholder="请选择年月日" style="width: 75%"
+                    type="date"
+                    v-model="item.msg">
                   </DatePicker>
                 </FormItem>
                 <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd|HHMM'">
                   <DatePicker
-                    v-model="item.msg"
                     @on-change="item.msg=$event"
-                    format="yyyy-MM-dd HH:mm" placeholder="请选择时间"
-                    style="width: 75%"
-                    type="datetime">
+                    format="yyyy-MM-dd HH:mm"
+                    placeholder="请选择时间" style="width: 75%"
+                    type="datetime"
+                    v-model="item.msg">
                   </DatePicker>
                 </FormItem>
                 <FormItem :label="item.remarks" v-if="item.format == 'yyyy-mm-dd|HHMMSS'">
                   <DatePicker
-                    v-model="item.msg"
                     @on-change="item.msg=$event"
                     placeholder="请选择时间"
                     style="width: 75%"
-                    type="datetime">
+                    type="datetime"
+                    v-model="item.msg">
                   </DatePicker>
                 </FormItem>
                 <FormItem :label="item.remarks" v-if="item.type == '字符串'">
-                  <Input v-model="item.msg" :placeholder="item.remarks" style="width:65%"/>
+                  <Input :placeholder="item.remarks" style="width:65%" v-model="item.msg"/>
                 </FormItem>
               </Col>
             </Form>
@@ -67,11 +67,11 @@
         </Row>
         <Row>
           <template>
-            <Form label-position="left" :label-width="80" label-colon=":" inline>
+            <Form :label-width="80" inline label-colon=":" label-position="left">
               <FormItem label="常用查询">
                       <span v-for="item in recordList">
-                         <Tooltip max-width="800" :content="item.zhname" placement="bottom-start">
-                             <Button @click="handleCreate5(item.id)" :type="item.totype" style="marginRight: 10px;">{{item.recordname}}</Button>
+                         <Tooltip :content="item.zhname" max-width="800" placement="bottom-start">
+                             <Button :type="item.totype" @click="handleCreate5(item.id)" style="marginRight: 10px;">{{item.recordname}}</Button>
                          </Tooltip>
                       </span>
               </FormItem>
@@ -80,10 +80,10 @@
         </Row>
         <Row style="text-align: right;">
           <Button @click="tableList()" style="marginRight: 2px;" type="info">选择字段</Button>
-          <Button @click="handleSubmitTable()" style="marginRight: 2px;" type="primary" :disabled="isDisable2">查询
+          <Button :disabled="isDisable2" @click="handleSubmitTable()" style="marginRight: 2px;" type="primary">查询
           </Button>
-          <Button @click="handleSubmitTable2()" style="marginRight: 2px;" type="warning" v-if="isShow"
-                  :disabled="isDisable">重新生成
+          <Button :disabled="isDisable" @click="handleSubmitTable2()" style="marginRight: 2px;" type="warning"
+                  v-if="isShow">重新生成
           </Button>
           <Button @click="exportData()" class="case-btn" type="success">
             <Icon type="ios-download-outline"></Icon>
@@ -96,41 +96,78 @@
       <!--      <span  v-if="isShow6">预计总耗时:{{time_consume}}，  <span class="temp_span">已用{{newTimes.hh}}时{{newTimes.mm}}分{{newTimes.ss}}秒 </span>   </span>-->
       <span class="temp_span" v-if="isShow6">系统正在统计，请勿刷新或关闭页面......</span>
       <Table
-        :loading="table_loading"
-        :height="800"
         :columns="columns"
         :data="tableData"
+        :height="800"
+        :loading="table_loading"
+        border
         ref="selection"
         size="small"
         stripe
-        border
       >
       </Table>
     </Card>
     <Modal
-      v-model="modalMap.modalVisible"
-      :title="modalMap.modalTitle"
-      :loading=true
       :footer-hide=true
+      :loading=true
+      :title="modalMap.modalTitle"
+      v-model="modalMap.modalVisible"
       width="820"
     >
-      <Transfer
+<!--      <Transfer-->
+<!--        :data="tablelistdata"-->
+<!--        :target-keys="targetKeys"-->
+<!--        :render-format="render"-->
+<!--        :list-style="listStyle"-->
+<!--        :titles="['备选字段', '已选字段']"-->
+<!--        @on-change="tableHandleChange">-->
+<!--      </Transfer>-->
+      <Row>
+        <Col span="11">
+       <Card>
+      <Table
+        ref="selection"
+        type="selection"
+        :columns="columns8"
         :data="tablelistdata"
-        :target-keys="targetKeys"
-        :render-format="render"
-        :list-style="listStyle"
-        :titles="['备选字段', '已选字段']"
-        @on-change="tableHandleChange">
-      </Transfer>
-      <Form label-position="left" label-colon=":">
+        size="small"
+        height="400px"
+        @on-selection-change="allchangetable"
+      >
+        </Table>
+         </Card>
+           </Col>
+          <Col span="2" >
+            <div align="center" >
+            <Button :disabled="isDisable9" @click="Table_list()" class="case-btn"  :type="table_type_str2" style="marginLeft: 15px;marginRight: 15px;marginTop:180px"><</Button>
+            <Button :disabled="isDisable8" @click="Table_list2()" class="case-btn"  :type="table_type_str" style="marginLeft: 15px;marginRight: 15px;">></Button>
+            </div>
+          </Col>
+        <Col span="11">
+       <Card>
+        <Table
+          draggable
+          type="selection"
+        :columns="columns9"
+        :data="tablelistdata2"
+        size="small"
+          height="400px"
+          @on-selection-change="allchangetable2"
+          @on-drag-drop="listdraggable"
+      >
+      </Table>
+          </Card>
+          </Col>
+        </Row>
+      <Form label-colon=":" label-position="left">
         <Row>
           <Col span="18">
             <FormItem label="模板名">
-              <Input v-model="recordname" placeholder="模板名" style="width: 150px;marginRight: 2px; marginLeft: 5px"/>
+              <Input placeholder="模板名" style="width: 150px;marginRight: 2px; marginLeft: 5px" v-model="recordname"/>
               <Button @click="handleReset()" class="case-btn" style="marginRight: 2px;">重置</Button>
-              <Button @click="handleadd()" class="case-btn" type="info" v-if="isShow2" style="marginRight: 2px;">新模板
+              <Button @click="handleadd()" class="case-btn" style="marginRight: 2px;" type="info" v-if="isShow2">新模板
               </Button>
-              <Button @click="tableList3()" type="error" v-if="isShow2" style="marginRight: 2px;">删除模板</Button>
+              <Button @click="tableList3()" style="marginRight: 2px;" type="error" v-if="isShow2">删除模板</Button>
             </FormItem>
           </Col>
           <Col span="6">
@@ -142,16 +179,16 @@
       </Form>
     </Modal>
     <Modal
-      v-model="modalMap2.modalVisible"
-      :title="modalMap2.modalTitle"
-      :loading=true
       :footer-hide=true
+      :loading=true
+      :title="modalMap2.modalTitle"
+      v-model="modalMap2.modalVisible"
       width="800px"
     >
       <div style="width:780px; height: 500px">
         <Col class="demo-spin-col" span="24" style="width:780px; height: 500px">
           <Spin fix>
-            <Icon type="ios-loading" size=150 class="demo-spin-icon-load"></Icon>
+            <Icon class="demo-spin-icon-load" size=150 type="ios-loading"></Icon>
             <div>Loading</div>
             <div>请耐心等待......</div>
           </Spin>
@@ -188,6 +225,8 @@
         },
         isDisable: false,
         isDisable2: false,
+        isDisable8:false,
+        isDisable9:false,
         isShow: false,
         isShow2: false,
         isShow6: false,
@@ -205,12 +244,18 @@
         tousername: '',
         recordname: '',
         tablelistdata: [], // [{ "key": "1", "label": "Content 1"},{ "key": "2", "label": "Content 2"},{ "key": "3", "label": "Content 3"},],
+        tablelistdata2: [],
         targetKeys: [],
         allstorageList: [],
         temp_storagelist: [],
         storage: '',
         storagename: '',
         storagename2: '',
+        table_type_str:'default',
+        table_type_str2:'default',
+        Transfer_table_list:'',
+        Transfer_table_list2:'',
+        Transfer_table_list3:'',
         record: '',
         temp_targetKeys_flag: 0, //1为真，0为假
         allSysTag: [],
@@ -219,9 +264,21 @@
           {title: '离职', key: 'nosum', editable: true},
           {title: '总数', key: 'allsum', editable: true}
         ],
+        columns8: [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: '', key: '', editable: true}
+        ],
+         columns9: [
+           {type: 'selection', width: 60, align: 'center'},
+          {title: '已选字段', key: 'label', editable: true},
+          {title: '', key: '', editable: true}
+        ],
         columns: [],
+        tablenum_str:'',
         titlelist: [],
         temp_recordList_one: [],
+        tablelistdata_temp:[],
         keylist: [],
         modalMap: {
           modalVisible: false,
@@ -235,6 +292,134 @@
       }
     },
     methods: {
+      //深拷贝
+       deepdict(obj) {
+            var _obj = JSON.stringify(obj)
+            var cloneObj = JSON.parse(_obj)
+            return cloneObj
+     },
+      listdraggable(index1,index2){
+           this.targetKeys = []
+           var  temp_str = this.deepdict(this.tablelistdata2[index1])
+           this.tablelistdata2[index1].key = this.tablelistdata2[index2].key
+           this.tablelistdata2[index1].label = this.tablelistdata2[index2].label
+           this.tablelistdata2[index2].key = temp_str.key
+           this.tablelistdata2[index2].label = temp_str.label
+           for (let i = 0; i < this.tablelistdata2.length; i++) {
+             this.targetKeys.push(this.tablelistdata2[i].key)
+           }
+      },
+      Table_list(){
+        this.isDisable9 = true
+        let temp_flag = 0
+        this.tablelistdata_temp2 = []
+        this.targetKeys = []
+        var  temp_list = []
+        // 遍历arr1
+        for (var i = 0; i < this.Transfer_table_list3.length; i++) {  //左边列表
+              this.tablelistdata_temp.push(this.Transfer_table_list3[i]) //数据叠加
+        }
+        this.tablelistdata =  this.tablelistdata_temp //左边列表
+        this.table_type_str = "default"
+        for (var i = 0; i < this.Transfer_table_list3.length; i++) {
+          temp_list.push(this.Transfer_table_list3[i].key)
+        }
+
+        for (let i = 0; i < this.tablelistdata2.length; i++) {
+             var index = temp_list.indexOf(this.tablelistdata2[i].key)  //右边列表
+             if(index < 0){
+                 this.tablelistdata_temp2.push(this.tablelistdata2[i])
+             }
+        }
+        this.tablelistdata2 =  this.tablelistdata_temp2 //右边列表
+         for (let i = 0; i < this.tablelistdata2.length; i++) {
+             this.targetKeys.push(this.tablelistdata2[i].key)
+        }
+        this.tablenum_str = String(this.tablelistdata.length )
+        this.columns8 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str, key: '', editable: true}
+        ]
+        var tablenum_str2 = String(this.tablelistdata2.length )
+        this.columns9 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: tablenum_str2, key: '', editable: true}
+        ]
+      },
+      Table_list2(){
+        this.isDisable8 = true
+        this.isDisable9 = true
+        let temp_flag = 0
+        this.tablelistdata_temp = []
+        this.targetKeys = []
+        for (var i = 0; i < this.Transfer_table_list2.length; i++) {
+              this.tablelistdata2.push(this.Transfer_table_list2[i])
+        }
+        this.table_type_str = "default"
+        for (var i = 0; i < this.tablelistdata2.length; i++) {
+          this.targetKeys.push(this.tablelistdata2[i].key)
+        }
+
+        for (let i = 0; i < this.tablelistdata.length; i++) {
+             var index = this.targetKeys.indexOf(this.tablelistdata[i].key) //查看是否存在
+             if(index < 0){
+                 this.tablelistdata_temp.push(this.tablelistdata[i])
+             }
+        }
+        this.tablenum_str = String(this.tablelistdata_temp.length )
+        this.tablenum_str2 = String(this.tablelistdata2.length )
+        this.columns8 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str, key: '', editable: true}
+        ]
+        this.columns9 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str2, key: '', editable: true}
+        ]
+        this.tablelistdata = []
+        this.tablelistdata =  this.tablelistdata_temp
+      },
+      allchangetable(data){
+
+         this.tablenum_str = String(data.length ) + '/' + String(this.tablelistdata.length)
+        this.columns8 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str, key: '', editable: true}
+        ]
+        if( data.length > 0){this.table_type_str = "primary"}
+        else{this.table_type_str = "default"}
+        this.Transfer_table_list2 = data
+        if(this.Transfer_table_list2.length > 0){
+          this.isDisable8 = false
+        }
+        else{
+          this.isDisable8 = true
+        }
+
+      },
+      allchangetable2(data){
+
+         this.tablenum_str = String(data.length ) + '/' + String(this.tablelistdata2 .length)
+        this.columns9 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str, key: '', editable: true}
+        ]
+        if( data.length > 0){this.table_type_str2 = "primary"}
+        else{this.table_type_str2 = "default"}
+        this.Transfer_table_list3 = data
+         if(this.Transfer_table_list3.length > 0){
+          this.isDisable9 = false
+        }
+        else{
+          this.isDisable9 = true
+        }
+      },
       storage_iddata(name) {
         storage_iddata(name).then(res => {
           if (res.data.code === 0) {
@@ -283,7 +468,7 @@
         record_getdata(username, tablename).then(res => {
           if (res.data.code === 0) {
             this.recordList = res.data.data //存储过程列表
-            console.log(this.recordList)
+
           } else {
             this.recordList = []
           }
@@ -346,6 +531,20 @@
         // this.targetKeys = []
         // this.recordname = ''
         //   }
+        this.isDisable8 = true
+        this.isDisable9 = true
+        this.tablenum_str = String(this.tablelistdata.length )
+        this.tablenum_str2 = String(this.tablelistdata2.length )
+        this.columns8 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str, key: '', editable: true}
+        ]
+        this.columns9 = [
+          {type: 'selection', width: 60, align: 'center'},
+          {title: '备选字段', key: 'label', editable: true},
+          {title: this.tablenum_str2, key: '', editable: true}
+        ]
         this.modalMap.modalVisible = true
         this.modalMap.modalTitle = "字段列表"
       },
