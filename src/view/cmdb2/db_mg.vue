@@ -1,12 +1,12 @@
 <template>
   <div>
     <Row :gutter="10">
-      <i-col :md="24" :lg="5" style="margin-bottom: 20px;">
-        <Card :bordered="false" dis-hover>
-          <Tree ref="tree" :data="tagTreeData" @on-select-change="handlerTreeChange" getSelectedNodes></Tree>
-        </Card>
-      </i-col>
-      <i-col :md="24" :lg="19" style="margin-bottom: 10px;">
+      <!--<i-col :md="24" :lg="5" style="margin-bottom: 20px;">-->
+        <!--<Card :bordered="false" dis-hover>-->
+          <!--<Tree ref="tree" :data="tagTreeData" @on-select-change="handlerTreeChange" getSelectedNodes></Tree>-->
+        <!--</Card>-->
+      <!--</i-col>-->
+      <i-col :md="24" :lg="24" style="margin-bottom: 10px;">
         <Card :bordered="false" dis-hover>
           <!--<alert>提示：支持云RDS自动获取</alert>-->
           <div class="search-con search-con-top">
@@ -38,7 +38,7 @@
           </div>
           <Modal v-model="modalMap1.modalVisible" :title="modalMap1.modalTitle" :loading=true :footer-hide=true
                  :mask-closable=false width="650" :styles="{top: '0px'}">
-            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
+            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="120">
               <FormItem label="数据库名称" prop="db_code">
                 <div v-if="editModalData && editModalData ==='put'">
                   <Input v-model="formValidate.db_code" :maxlength="120" disabled
@@ -113,14 +113,14 @@
                   </Option>
                 </Select>
               </FormItem>
-              <FormItem label="标签" prop="tag_list">
-                <Select class="search-input-long" v-model="formValidate.tag_list" filterable multiple
-                        placeholder="请选择关联的标签">
-                  <Option v-for="item in allTagList" :value="item.tag_name" :key="item.id">{{ item.tag_name
-                    }}
-                  </Option>
-                </Select>
-              </FormItem>
+              <!--<FormItem label="标签" prop="tag_list">-->
+                <!--<Select class="search-input-long" v-model="formValidate.tag_list" filterable multiple-->
+                        <!--placeholder="请选择关联的标签">-->
+                  <!--<Option v-for="item in allTagList" :value="item.tag_name" :key="item.id">{{ item.tag_name-->
+                    <!--}}-->
+                  <!--</Option>-->
+                <!--</Select>-->
+              <!--</FormItem>-->
               <FormItem label="备注" prop="db_detail">
                 <Input v-model="formValidate.db_detail" :maxlength=200 placeholder='请输入备注'></Input>
               </FormItem>
@@ -217,9 +217,9 @@
           proxy_host: '',
           db_type: 'mysql',
           db_version: '',
-          db_mark: '写',
+          db_mark: '读',
           tag_list: [],
-          db_detail: '介绍一下吧'
+          db_detail: ''
 
         },
         envList: [
@@ -257,27 +257,28 @@
 
         columns: [
           {type: 'selection', key: 'id', width: 60, align: 'center', fixed: 'left'},
-          {
-            title: 'DB名称',
-            key: 'db_code',
-            align: 'center',
-            minWidth: 100,
-            render: (h, params) => {
-              return h('div', [
-                h(
-                  'a',
-                  {
-                    on: {
-                      click: () => {
-                        // this.handleDetail(params.row)
-                      }
-                    }
-                  },
-                  params.row.db_code
-                )
-              ])
-            }
-          },
+          // {
+          //   title: 'DB名称',
+          //   key: 'db_code',
+          //   align: 'center',
+          //   minWidth: 100,
+          //   render: (h, params) => {
+          //     return h('div', [
+          //       h(
+          //         'a',
+          //         {
+          //           on: {
+          //             click: () => {
+          //               // this.handleDetail(params.row)
+          //             }
+          //           }
+          //         },
+          //         params.row.db_code
+          //       )
+          //     ])
+          //   }
+          // },
+          {title: 'DB名称', key: 'db_code', align: 'center', minWidth: 120},
           // {title: 'IDC', key: 'idc', width: 150, align: 'center', sortable: true},
           // {title: '可用区', key: 'db_region', width: 150, align: 'center', sortable: true},
           {title: 'DB地址', key: 'db_host', align: 'center', sortable: true, minWidth: 120},
@@ -645,7 +646,7 @@
             // proxy_host:'',
             db_type: 'oracle',
             db_version: '',
-            db_mark: '写',
+            db_mark: '读',
             tag_list: [],
             db_detail: '介绍一下吧'
           }
@@ -795,7 +796,7 @@
 
     mounted() {
       this.getDBList()
-      this.getTagTree()
+      // this.getTagTree()
       // this.getIDCList()
     }
   }

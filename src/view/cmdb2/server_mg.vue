@@ -1,17 +1,17 @@
 <template>
   <div>
     <Row :gutter="10">
-      <i-col :md="24" :lg="5" style="margin-bottom: 20px;">
-        <Card :bordered="false" dis-hover>
-          <Tree
-            ref="tree"
-            :data="tagTreeData"
-            @on-select-change="handlerTreeChange"
-            getSelectedNodes
-          ></Tree>
-        </Card>
-      </i-col>
-      <i-col :md="24" :lg="19" style="margin-bottom: 10px;">
+      <!--<i-col :md="24" :lg="5" style="margin-bottom: 20px;">-->
+        <!--<Card :bordered="false" dis-hover>-->
+          <!--<Tree-->
+            <!--ref="tree"-->
+            <!--:data="tagTreeData"-->
+            <!--@on-select-change="handlerTreeChange"-->
+            <!--getSelectedNodes-->
+          <!--&gt;</Tree>-->
+        <!--</Card>-->
+      <!--</i-col>-->
+      <i-col :md="24" :lg="24" style="margin-bottom: 10px;">
         <Card :bordered="false" dis-hover>
           <!--<Alert-->
           <!--banner-->
@@ -145,22 +145,22 @@
                   <Option v-for="item in admUserList" :value="item.admin_user">{{item.admin_user}}</Option>
                 </Select>
               </FormItem>
-              <FormItem label="标签" prop="tag_list">
-                <Select
-                  class="search-input-long"
-                  v-model="formValidate.tag_list"
-                  filterable
-                  multiple
-                  placeholder="请选择关联的标签"
-                >
-                  <Option
-                    v-for="item in allTagList"
-                    :value="item.tag_name"
-                    :key="item.id"
-                  >{{ item.tag_name }}
-                  </Option>
-                </Select>
-              </FormItem>
+              <!--<FormItem label="标签" prop="tag_list">-->
+                <!--<Select-->
+                  <!--class="search-input-long"-->
+                  <!--v-model="formValidate.tag_list"-->
+                  <!--filterable-->
+                  <!--multiple-->
+                  <!--placeholder="请选择关联的标签"-->
+                <!--&gt;-->
+                  <!--<Option-->
+                    <!--v-for="item in allTagList"-->
+                    <!--:value="item.tag_name"-->
+                    <!--:key="item.id"-->
+                  <!--&gt;{{ item.tag_name }}-->
+                  <!--</Option>-->
+                <!--</Select>-->
+              <!--</FormItem>-->
               <FormItem label="备注" prop="detail">
                 <Input
                   v-model="formValidate.detail"
@@ -851,7 +851,7 @@
       this.getServerList(this.searchValue)
       this.getTagList()
       this.getAdminUserList()
-      this.getTagTree()
+      // this.getTagTree()
       // this.getIDCList();
     }
   }
