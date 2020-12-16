@@ -314,13 +314,10 @@
         this.isDisable9 = true
         let temp_flag = 0
         this.tablelistdata_temp2 = []
+        var  tablelistdata_temp5 = []
         this.targetKeys = []
         var  temp_list = []
-        // 遍历arr1
-        for (var i = 0; i < this.Transfer_table_list3.length; i++) {  //左边列表
-              this.tablelistdata_temp.push(this.Transfer_table_list3[i]) //数据叠加
-        }
-        this.tablelistdata =  this.tablelistdata_temp //左边列表
+
         this.table_type_str = "default"
         for (var i = 0; i < this.Transfer_table_list3.length; i++) {
           temp_list.push(this.Transfer_table_list3[i].key)
@@ -336,6 +333,14 @@
          for (let i = 0; i < this.tablelistdata2.length; i++) {
              this.targetKeys.push(this.tablelistdata2[i].key)
         }
+         // 遍历arr1
+        for (var i = 0; i < this.all_tablelistdata.length; i++) {  //左边列表
+              var index = this.targetKeys.indexOf(this.all_tablelistdata[i].key)  //左边列表
+              if(index < 0){
+                 tablelistdata_temp5.push(this.all_tablelistdata[i])
+             }
+        }
+        this.tablelistdata =  tablelistdata_temp5 //左边列表
         this.tablenum_str = String(this.tablelistdata.length )
         this.columns8 = [
           {type: 'selection', width: 60, align: 'center'},
