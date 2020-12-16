@@ -101,7 +101,7 @@
                 </Option>
               </Select>
             </FormItem>
-          <FormItem label="数据表名" prop="fieldname" style="width:350px;" >
+          <FormItem label="数据表名" prop="fieldname" style="width:350px;" v-if="isShow">
               <Input v-model="formValidate.fieldname" placeholder="请输入数据表的名称"></Input>
             </FormItem>
           <FormItem label="类型" prop="totype" style="width:500px;">
@@ -737,12 +737,14 @@ export default {
           dictvalue2: eval(paramsRow.dictvalue2),
           create_time: String(getDate(new Date().getTime() / 1000, 'year'))
         }
-        if (this.formValidate.mode === '触发' || this.formValidate.totype === '存储过程') { this.isShow = true, this.isShow2 = false }
+        if (this.formValidate.mode === '触发' || this.formValidate.totype === '存储过程')
+        { this.isShow = true, this.isShow2 = false }
         if (this.formValidate.totype === 'sql') {
           this.isShow2 = true,
           this.isShow = false,
           this.isShow3 = false, this.alldepartmentList = this.alldepartmentList2
-        } else { this.isShow = false, this.isShow2 = false, this.isShow3 = false, this.alldepartmentList = this.alldepartmentList3 }
+        } else
+          { this.isShow = true, this.isShow2 = false, this.isShow3 = false, this.alldepartmentList = this.alldepartmentList3 }
         if (this.formValidate.mode === '触发' && this.formValidate.totype === '存储过程') { this.isShow3 = true }
         // if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
         // else{this.isShow2 = false,this.isShow = false}

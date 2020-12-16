@@ -93,26 +93,7 @@ export const routerMap = [
         component: () =>
           import ('@/view/cmdb2/db_mg.vue')
       },
-      {
-        path: 'storage_admin',
-        name: 'storage_admin',
-        meta: {
-          icon: 'ios-cube',
-          title: '存储过程管理'
-        },
-        component: () =>
-          import ('@/view/cmdb2/storage.vue')
-      },
-      {
-        path: 'asset_sql',
-        name: 'asset_sql',
-        meta: {
-          icon: 'ios-cube',
-          title: '脚本管理'
-        },
-        component: () =>
-          import ('@/view/cmdb2/asset_sql.vue')
-      },
+
       {
         path: 'tag_mg',
         name: 'tag_mg',
@@ -240,7 +221,7 @@ export const routerMap = [
     path: '/people_admin',
     name: 'people_admin',
     meta: {
-      icon: 'ios-alarm',
+      icon: 'ios-cube',
       title: '团队管理'
     },
     component: Main,
@@ -248,7 +229,7 @@ export const routerMap = [
       path: 'peoples',
       name: 'peoples',
       meta: {
-        icon: 'md-alarm',
+        icon: 'md-contacts',
         title: '人员'
       },
       component: () =>
@@ -258,7 +239,7 @@ export const routerMap = [
         path: 'JobPost',
         name: 'JobPost',
         meta: {
-          icon: 'ios-list-box-outline',
+          icon: 'md-desktop',
           title: '岗位'
         },
         component: () =>
@@ -268,14 +249,43 @@ export const routerMap = [
         path: 'meter',
         name: 'meter',
         meta: {
-          icon: 'ios-list-box-outline',
+          icon: 'ios-speedometer-outline',
           title: '仪表'
         },
         component: () =>
           import ('@/view/user-manage/meter.vue')
       }
     ]
+  },{
+    path: '/SQLreport',
+    name: 'SQLreport',
+    meta: {
+      icon: 'ios-cube',
+      title: '脚本管理'
+    },
+    component: Main,
+    children: [{
+        path: 'storage_admin',
+        name: 'storage_admin',
+        meta: {
+          icon: 'ios-build-outline',
+          title: '存储过程配置'
+        },
+        component: () =>
+          import ('@/view/cmdb2/storage.vue')
+      },
+      {
+        path: 'asset_sql',
+        name: 'asset_sql',
+        meta: {
+          icon: 'ios-build-outline',
+          title: '脚本配置'
+        },
+        component: () =>
+          import ('@/view/cmdb2/asset_sql.vue')
+      },]
   },
+
   {
     path: '/report',
     name: 'report',
@@ -288,7 +298,7 @@ export const routerMap = [
       path: 'report_mg',
       name: 'report_mg',
       meta: {
-        icon: 'md-book',
+        icon: 'ios-cube',
         title: '报表管理'
       },
       component: () =>
@@ -299,7 +309,7 @@ export const routerMap = [
     path: '/Sqlstatistics',
     name: 'Sqlstatistics',
     meta: {
-      icon: 'ios-alarm',
+      icon: 'md-folder',
       title: '报表统计'
     },
     component: Main,
@@ -329,7 +339,7 @@ export const routerMap = [
     path: '/statistics',
     name: 'statistics',
     meta: {
-      icon: 'ios-alarm',
+      icon: 'md-folder',
       title: '需求统计'
     },
     component: Main,
