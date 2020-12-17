@@ -97,7 +97,16 @@ export default {
              if (res.data.code === 0) {
                  localStorage.departmentlist = res.data.data['statistics_department_list']
                  localStorage.sqldepartmentlist = res.data.data['sql_statistics_department_list']
-                 }})
+                 if(localStorage.departmentlist === "undefined"){
+
+                     localStorage.departmentlist = '[]'
+                 }
+                 if(localStorage.departmentlist === "undefined"){
+
+                     localStorage.sqldepartmentlist = '[]'
+                 }
+             }
+          })
 
         } else if (res.code === 1) {
           // 这里弹出二次认证

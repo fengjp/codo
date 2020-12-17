@@ -323,16 +323,7 @@ export const routerMap = [
       },
       component: () =>
         import ('@/view/statistics/Sqlexamination.vue')
-     },
-      //  {
-      //   path: 'Sqldrive',
-      //   name: 'Sqldrive',
-      //   meta: {
-      //     icon: 'ios-list-box-outline',
-      //     title: '驾驶人管理科'
-      //   },
-      //   component: () => import ('@/view/statistics/Sqlexamination.vue')
-      // },
+     }
     ]
   },
   {
@@ -352,65 +343,7 @@ export const routerMap = [
       },
       component: () =>
         import ('@/view/statistics/examination.vue')
-    },
-      // {
-      //   path: 'drive',
-      //   name: 'drive',
-      //   meta: {
-      //     icon: 'ios-list-box-outline',
-      //     title: '驾驶人管理科'
-      //   },
-      //   component: () => import ('@/view/statistics/drive_people.vue')
-      // },
-      // {
-      //   path: 'supervise',
-      //   name: 'supervise',
-      //   meta: {
-      //     icon: 'ios-list-box-outline',
-      //     title: '执法监督科'
-      //   },
-      //   component: () =>
-      //     import ('@/view/statistics/supervise.vue')
-      // },
-      // {
-      //   path: 'order2',
-      //   name: 'order2',
-      //   meta: {
-      //     icon: 'ios-list-box-outline',
-      //     title: '执法监督科(秩序管理处)'
-      //   },
-      //   component: () => import ('@/view/statistics/illegal.vue')
-      // },
-      // {
-      //   path: 'coordinate',
-      //   name: 'coordinate',
-      //   meta: {
-      //     icon: 'ios-list-box-outline',
-      //     title: '交通安全协调科'
-      //   },
-      //   component: () => import ('@/view/statistics/countryside.vue')
-      // },
-      //
-      // {
-      //   path: 'vehicle',
-      //   name: 'vehicle',
-      //   meta: {
-      //     icon: 'ios-list-box-outline',
-      //     title: '监督科(车管处)'
-      //   },
-      //   component: () => import ('@/view/statistics/monthly.vue')
-      // },
-      // {
-      //   path: 'vehicle2',
-      //   name: 'vehicle2',
-      //   meta: {
-      //     icon: 'ios-list-box-outline',
-      //     title: '机动车管理科(车辆管理处)'
-      //   },
-      //   component: () =>
-      //     import ('@/view/statistics/vehicle.vue')
-      // },
-
+    }
     ]
   },
   {
