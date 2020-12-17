@@ -576,9 +576,7 @@ export default {
         if (res.data.code === 0) {
           this.allNameList = res.data.data
           this.allNameList2 = res.data.data
-          console.log('3333333')
-          console.log(this.allNameList)
-          console.log('3333333')
+
         } else {
           this.$Message.error(`${res.data.msg}`)
         }
@@ -686,7 +684,7 @@ export default {
             this.toflag = 0
           }
           let loginUser = JSON.parse(sessionStorage.vuex).user.nickName
-          console.log(loginUser)
+          // console.log(loginUser)
           this.tousername = loginUser
         } else {
           this.$Message.error(`${res.data.msg}`)
@@ -804,7 +802,7 @@ export default {
           this.formValidate.username = loginUser
           // console.log(this.databaselist)
           for (let i = 0, len = this.databaselist.length; i < len; i++) {
-            console.log(this.databaselist[i]['id'])
+            // console.log(this.databaselist[i]['id'])
             if (this.formValidate.dbname_id === this.databaselist[i]['id']) {
               this.formValidate.dbname = this.databaselist[i]['name']
             }

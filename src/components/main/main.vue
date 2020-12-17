@@ -197,7 +197,7 @@ export default {
              if (res.data.code === 0) {
                         localStorage.departmentlist = JSON.parse(JSON.stringify(res.data.data['statistics_department_list']))
                         localStorage.sqldepartmentlist = JSON.parse(JSON.stringify(res.data.data['sql_statistics_department_list']))
-                         console.log(localStorage.sqldepartmentlist)
+                        // console.log(localStorage.sqldepartmentlist)
                  }})
     //修改‘首页’的默认路由路径
     // if(this.$store.state.app.breadCrumbList[0]){

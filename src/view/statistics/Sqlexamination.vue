@@ -287,7 +287,7 @@
         record_getdata(username, tablename).then(res => {
           if (res.data.code === 0) {
             this.recordList = res.data.data //存储过程列表
-            console.log(this.recordList)
+            // console.log(this.recordList)
           } else {
             this.recordList = []
           }
@@ -667,7 +667,7 @@
                // this.getobjlist(newRoute.name)
                this.getSqlobjlist(newRoute.name)
 
-              console.log(newRoute.name)
+              // console.log(newRoute.name)
             }
           }
     },
@@ -679,7 +679,7 @@
       // this.getobjlist(this.$route.name)
       this.getSqlobjlist(this.$route.name)
       // this.getSqlobjlist("科技科")
-      console.log(this.$route.name)
+      // console.log(this.$route.name)
     }
 
   }

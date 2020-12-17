@@ -516,7 +516,7 @@
           // if(parseInt(this.allstorageList[i].k) === parseInt(date)){
           if (JSON.stringify(this.allstorageList[i].k) === JSON.stringify(date)) {
             this.tablelistdata = []
-            console.log(this.allstorageList[i].d)
+            // console.log(this.allstorageList[i].d)
             //表字段列表
             let temp_list = eval(this.allstorageList[i].d)
             for (var j = 0; j < temp_list.length; j++) {

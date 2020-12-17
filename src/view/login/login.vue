@@ -55,7 +55,7 @@ export default {
           this.$Message.success(`${res.msg}`)
           this.$router.push({name: this.$config.homeName})  //正常执行
           store.dispatch('authorization').then(rules => {
-                   console.log(rules)
+                   // console.log(rules)
                    let  temp_rules  = rules
                    if(temp_rules.all === false){
                         if(rules.hasOwnProperty('_home')) {

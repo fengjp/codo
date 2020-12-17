@@ -482,7 +482,7 @@
             let stakeholder_department_list = eval(res.data.data['stakeholder_department_list'])
             if (stakeholder_company_list) {
               this.allcompanyList = stakeholder_company_list
-              console.log(this.allcompanyList)
+              // console.log(this.allcompanyList)
             }
             if (stakeholder_department_list) {
               this.alldepartmentList = stakeholder_department_list
@@ -706,7 +706,7 @@
             }
             setTimeout(() => {
               if (this.editModalData == "post") {
-                console.log(this.formValidate)
+                // console.log(this.formValidate)
                 if(this.formValidate.department === ""){
                   this.formValidate.department = this.formValidate.company
                 }
@@ -763,7 +763,7 @@
         })
       },
       handleDetail(params) {
-        console.log(params.row.company)
+        // console.log(params.row.company)
         if(params.row.company_id === "/"){
         this.getList("company",params.row.company)
         this.getcaseList("company",params.row.company,)

@@ -325,13 +325,13 @@
         this.formValidate.remarks.splice(index, 1);//(下标index开始，删除1个)
       },
       handleSuccess(res, file) {
-        console.log(file)
+        // console.log(file)
         this.getpostlist(this.pageNum, this.pageSize)
         this.modalMap2.modalVisible = false
         this.$Message.success("文件上传成功")
       },
       handleError(error) {
-        console.log(error)
+        // console.log(error)
         this.modalMap2.modalVisible = false
         this.$Message.success("文件上传失败")
       },
@@ -344,7 +344,7 @@
             let stakeholder_department_list = eval(res.data.data['stakeholder_department_list'])
             if (stakeholder_company_list) {
               this.allcompanyList = stakeholder_company_list
-              console.log(this.allcompanyList)
+              // console.log(this.allcompanyList)
             }
             if (stakeholder_department_list) {
               this.alldepartmentList = stakeholder_department_list
@@ -512,7 +512,7 @@
         companylist(key, value).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
-            console.log(res.data.data)
+            // console.log(res.data.data)
             this.alldemand_unit = res.data.data
           } else {
             this.$Message.error(`${res.data.msg}`)
