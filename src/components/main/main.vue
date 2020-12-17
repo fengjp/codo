@@ -195,8 +195,8 @@ export default {
     //部门列表
           getDictConfList().then(res => {
              if (res.data.code === 0) {
-                        localStorage.departmentlist = JSON.parse(JSON.stringify(res.data.data['statistics_department_list']))
-                        localStorage.sqldepartmentlist = JSON.parse(JSON.stringify(res.data.data['sql_statistics_department_list']))
+                        localStorage.departmentlist = res.data.data['statistics_department_list']
+                        localStorage.sqldepartmentlist = res.data.data['sql_statistics_department_list']
                         // console.log(localStorage.sqldepartmentlist)
                  }})
     //修改‘首页’的默认路由路径

@@ -516,7 +516,11 @@ export default {
           this.storageList5 = res.data.data2 // 触发
           this.storageList6 = res.data.data // 定时
         } else {
-          this.$Message.error(`${res.data.msg}`)
+          this.storageList = []
+            this.storageList6 = []
+              this.storageList2 = []
+                this.storageList3 = []
+          // this.$Message.error(`${res.data.msg}`)
         }
       })
     },
@@ -578,7 +582,9 @@ export default {
           this.allNameList2 = res.data.data
 
         } else {
-          this.$Message.error(`${res.data.msg}`)
+          this.allNameList = []
+          this.allNameList2 = []
+          // this.$Message.error(`${res.data.msg}`)
         }
       })
     },
@@ -588,7 +594,7 @@ export default {
           // this.alldepartmentList = res.data.data
           this.allobjList = res.data.objlist
         } else {
-          this.$Message.error(`${res.data.msg}`)
+          // this.$Message.error(`${res.data.msg}`)
           // this.alldepartmentList = []
           this.allobjList = []
         }
@@ -875,7 +881,9 @@ export default {
           this.alldepartmentList2 = eval(res.data.data['sql_statistics_department_list']) // 报表统计
           this.alldepartmentList = this.alldepartmentList2
         } else {
-          this.$Message.error(`${res.data.msg}`)
+          this.alldepartmentList3 = []
+          this.alldepartmentList2 = []
+          // this.$Message.error(`${res.data.msg}`)
         }
       })
     }
