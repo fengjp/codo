@@ -101,10 +101,11 @@ export default {
 
                      localStorage.departmentlist = '[]'
                  }
-                 if(localStorage.departmentlist === "undefined"){
+                 if(localStorage.sqldepartmentlist === "undefined"){
 
                      localStorage.sqldepartmentlist = '[]'
                  }
+               // console.log(res.data.data)
              }
           })
 

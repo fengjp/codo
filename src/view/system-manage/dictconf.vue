@@ -64,6 +64,7 @@
     getDictList,
     operationDict,
   } from '@/api/app'
+  import {getDictConfList} from '@/api/app'
 
   export default {
     data() {
@@ -193,7 +194,7 @@
         this.modalMap.modalVisible = true
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
-        console.log(paramsRow.dictvalue)
+        // console.log(paramsRow.dictvalue)
         if (paramsRow && paramsRow.id) {
           this.formDynamic = {
             id: paramsRow.id,
@@ -222,8 +223,21 @@
                 res => {
                   if (res.data.code === 0) {
                     this.$Message.success(`${res.data.msg}`);
+                    getDictConfList().then(res => {
+                       if (res.data.code === 0) {
+                           localStorage.departmentlist = res.data.data['statistics_department_list']
+                           localStorage.sqldepartmentlist = res.data.data['sql_statistics_department_list']
+                           if(localStorage.departmentlist === "undefined"){
+                               localStorage.departmentlist = '[]'
+                           }
+                           if(localStorage.sqldepartmentlist === "undefined"){
+                               localStorage.sqldepartmentlist = '[]'
+                           }
+                       }
+                    })
                     this.getDictList(this.pageNum, this.pageSize, this.searchKey, this.searchVal);
                     this.modalMap.modalVisible = false;
+
                   } else {
                     this.$Message.error(`${res.data.msg}`);
                   }
@@ -242,6 +256,18 @@
               if (res.data.code === 0) {
                 this.$Message.success(`${res.data.msg}`);
                 this.getDictList(this.pageNum, this.pageSize, this.searchKey, this.searchVal);
+                 getDictConfList().then(res => {
+                       if (res.data.code === 0) {
+                           localStorage.departmentlist = res.data.data['statistics_department_list']
+                           localStorage.sqldepartmentlist = res.data.data['sql_statistics_department_list']
+                           if(localStorage.departmentlist === "undefined"){
+                               localStorage.departmentlist = '[]'
+                           }
+                           if(localStorage.sqldepartmentlist === "undefined"){
+                               localStorage.sqldepartmentlist = '[]'
+                           }
+                       }
+                    })
               } else {
                 this.$Message.error(`${res.data.msg}`)
               }
