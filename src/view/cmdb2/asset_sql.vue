@@ -1,9 +1,10 @@
 <template>
   <div>
-    <Card style="margin-top: 5px">
-      <Row>
+    <Card >
+      <div class="search-con search-con-top"  >
+        <Row >
         <Col span="12">
-          <Form autocomplete="off" label-colon=":" class="case-form" ref="formValidate2" :model="formValidate2">
+          <Form autocomplete="off" label-colon=":"  ref="formValidate2" :model="formValidate2">
             <Col span="8">
               <FormItem label="脚本名称" prop="name" :label-width="100">
                 <Input
@@ -30,7 +31,7 @@
             </Col>
           </Form>
         </Col>
-        <Col span="12" style="text-align: right; margin-bottom: 5px">
+        <Col span="12" style="text-align: right; ">
           <Button
             @click="handleSearch" class="case-btn"
             type="primary"
@@ -56,7 +57,8 @@
             导出数据
           </Button>
         </Col>
-      </Row>
+        </Row>
+      </div>
       <Table
         id="table"
         size="small"
@@ -212,7 +214,7 @@
         <Input v-model="modalMapShow.user_key" type="textarea" :autosize="{minRows: 30,maxRows: 300}"
                placeholder="Enter something..."></Input>
       </Modal>
-      <div style="margin: 10px;overflow: hidden">
+      <div style="margin: 10px;overflow: hidden;margin-top: 13px;margin-bottom: -2px">
         <div style="float: left;">
           <Page :total="pageTotal" :current="pageNum" :page-size="pageSize"
                 :page-size-opts=[10,15,25,35,50,100,150,200,300,500,800,1000,1500]
@@ -903,5 +905,25 @@ export default {
 <style lang="less" scoped>
   .case-btn {
     margin-right: 5px
+  }
+   .search-con {
+    padding: 10px 0;
+
+    .search {
+      &-col {
+        display: inline-block;
+        width: 400px;
+      }
+
+      &-input {
+        display: inline-block;
+        width: 200px;
+        margin-left: 2px;
+      }
+
+      &-btn {
+        margin-left: 2px;
+      }
+    }
   }
 </style>

@@ -711,6 +711,10 @@
         this.Interval_flag = 0
         this.storage_iddata(this.storagename2)
         let temp_flag_str = 1
+        if (this.storage === undefined) {
+          temp_flag_str = 0
+          this.$Message.error("请选择脚本")
+        }
         if (JSON.stringify(this.storage) === '""') {
           temp_flag_str = 0
           this.$Message.error("请选择脚本")

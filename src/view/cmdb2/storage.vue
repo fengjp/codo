@@ -1,7 +1,7 @@
 <template>
-  <div style="height:100%">
-    <Card style="margin-top: 5px;">
-      <div>
+  <div >
+    <Card >
+      <div class="search-con search-con-top">
         <Row>
           <Select v-model="searchKey" class="search-col" style="width:150px;margin-right:5px">
             <Option v-for="item in columnslist" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}
@@ -21,7 +21,7 @@
         ref="selection"
         size="small"
       ></Table>
-      <div style="margin: 10px; overflow: hidden">
+      <div style="margin: 10px; overflow: hidden;margin-top: 13px;margin-bottom: -2px">
         <div style="float: left;">
           <Page :total="pageTotal" :current="pageNum" :page-size="pageSize" :page-size-opts=[10,15,25,35,50,100]
                 show-sizer show-total @on-change="changePage" @on-page-size-change="handlePageSize"></Page>

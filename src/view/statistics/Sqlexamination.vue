@@ -468,6 +468,7 @@
         let temp_flag_str = 1
         if (JSON.stringify(this.storage) === '""') {
           temp_flag_str = 0
+
           this.$Message.error("请选择脚本")
         } else if (JSON.stringify(this.targetKeys) == '[]') {
           temp_flag_str = 0
@@ -502,6 +503,11 @@
           temp_flag_str = 0
           this.$Message.error("请选择脚本")
         }
+        if (this.storage === undefined) {
+          temp_flag_str = 0
+          this.$Message.error("请选择脚本")
+        }
+
         // else if (JSON.stringify(this.targetKeys) == '[]') {
         //   temp_flag_str = 0
         //   this.$Message.error("请选择字段或模板")
