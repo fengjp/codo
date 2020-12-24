@@ -175,6 +175,16 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/customquery/queryConf.vue')
+      },
+      {
+        path: 'querySubConf',
+        name: 'querySubConf',
+        meta: {
+          icon: 'ios-settings',
+          title: '支队监控配置'
+        },
+        component: () =>
+          import ('@/view/customquery/querySubConf.vue')
       }
     ]
   },
@@ -256,7 +266,7 @@ export const routerMap = [
           import ('@/view/user-manage/meter.vue')
       }
     ]
-  },{
+  }, {
     path: '/SQLreport',
     name: 'SQLreport',
     meta: {
@@ -265,15 +275,15 @@ export const routerMap = [
     },
     component: Main,
     children: [{
-        path: 'storage_admin',
-        name: 'storage_admin',
-        meta: {
-          icon: 'ios-build-outline',
-          title: '存储过程配置'
-        },
-        component: () =>
-          import ('@/view/cmdb2/storage.vue')
+      path: 'storage_admin',
+      name: 'storage_admin',
+      meta: {
+        icon: 'ios-build-outline',
+        title: '存储过程配置'
       },
+      component: () =>
+        import ('@/view/cmdb2/storage.vue')
+    },
       {
         path: 'asset_sql',
         name: 'asset_sql',
@@ -305,7 +315,7 @@ export const routerMap = [
         import ('@/view/it-manage/report-manager.vue')
     }]
   },
-    {
+  {
     path: '/Sqlstatistics',
     name: 'Sqlstatistics',
     meta: {
@@ -315,15 +325,15 @@ export const routerMap = [
     component: Main,
     children: [
       {
-      path: 'Sqlscience',
-      name: 'Sqlscience',
-      meta: {
-        icon: 'ios-list-box-outline',
-        title: '科技科'
-      },
-      component: () =>
-        import ('@/view/statistics/Sqlexamination.vue')
-     }
+        path: 'Sqlscience',
+        name: 'Sqlscience',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '科技科'
+        },
+        component: () =>
+          import ('@/view/statistics/Sqlexamination.vue')
+      }
     ]
   },
   {
@@ -530,37 +540,6 @@ export const routerMap = [
       }
     ]
   },
-  // {
-  //   path: '/monitor',
-  //   name: 'monitor',
-  //   meta: {
-  //     icon: 'md-paper',
-  //     title: '监控巡检'
-  //   },
-  //   component: Main,
-  //   children: [{
-  //     path: 'monitorhome_mg',
-  //     name: 'monitor_home_mg',
-  //     meta: {
-  //       icon: 'ios-paper',
-  //       title: '总览'
-  //     },
-  //     component: () =>
-  //       import ('@/view/monitor/monitorhome.vue')
-  //   },
-  //   {
-  //     path: 'monitor_mg',
-  //     name: 'monitor_mg',
-  //     meta: {
-  //       icon: 'ios-paper',
-  //       title: '监控详情'
-  //     },
-  //     component: () =>
-  //         import ('@/view/monitor/monitor.vue')
-  //   }
-  //   ]
-  // }
-
 ]
 
 export const routes = [{
@@ -650,15 +629,6 @@ export const routes = [{
     component: () =>
       import ('@/view/error-page/404.vue')
   },
-  // {
-  //   path: '/tips',
-  //   name: 'tips',
-  //   meta: {
-  //     hideInMenu: true
-  //   },
-  //   component: () =>
-  //     import ('@/view/single-page/home/tips.vue')
-  // },
   {
     path: '/_tips',
     name: '_tips',

@@ -41,7 +41,8 @@ export const do_sql = (key, value) => {
     params: {
       key,
       value
-    }
+    },
+    timeout: 3000,
   })
 }
 

@@ -113,6 +113,7 @@ export default {
   facility_mg: '设备管理',
   customquery: '自定义监控',
   queryConf: '监控配置',
+  querySubConf: '支队监控配置',
   queryShow: '监控展示',
   itmanage: 'ITSM',
   case_mg: '个案管理',

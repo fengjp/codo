@@ -210,12 +210,12 @@
           db_region: '',
           db_instance: '',
           db_host: '',
-          db_port: '3306',
-          db_user: 'root',
+          db_port: '',
+          db_user: '',
           db_pwd: '',
           db_env: 'dev',
           proxy_host: '',
-          db_type: 'mysql',
+          db_type: '',
           db_version: '',
           db_mark: '读',
           tag_list: [],
@@ -526,7 +526,7 @@
               })
           }
         } else {
-          this.$Message.info(`你总要选中点什么吧`)
+          this.$Message.info(`没有选择`)
         }
       },
 
@@ -640,7 +640,7 @@
             db_host: '',
             db_instance: '',
             db_port: '',
-            db_user: 'root',
+            db_user: '',
             db_pwd: '',
             db_env: '',
             // proxy_host:'',
@@ -648,7 +648,7 @@
             db_version: '',
             db_mark: '读',
             tag_list: [],
-            db_detail: '介绍一下吧'
+            db_detail: '描述'
           }
         }
       },
