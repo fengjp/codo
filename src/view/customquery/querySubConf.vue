@@ -56,16 +56,16 @@
         <FormItem label="密码" prop="password" style="width: 48%">
           <Input v-model="formValidate.password" type="password" password placeholder="连接数据库密码"></Input>
         </FormItem>
-        <!--<FormItem label="一级分组" prop="group1stID" style="width: 100%" v-if="versions === '1'">-->
-        <!--<Select v-model="formValidate.group1stID" placeholder='一级分组' style="width: 48%">-->
-        <!--<Option v-for="item in group1stList" :value="item.id">{{ item.name }}-->
-        <!--</Option>-->
-        <!--</Select>-->
-        <!--<span style="margin-left: 20px;margin-right: 10px">排序</span>-->
-        <!--<InputNumber v-model="formValidate.group1stSeq" style="width: 12%;margin-right: 10px;"-->
-        <!--:maxlength="50" placeholder="升序"></InputNumber>-->
-        <!--<Button type="primary" @click="handlerAddGroup('1','post','添加一级分组')">添加分组</Button>-->
-        <!--</FormItem>-->
+        <FormItem label="一级分组" prop="group1stID" style="width: 100%" v-if="versions === '1'">
+          <Select v-model="formValidate.group1stID" placeholder='一级分组' style="width: 48%">
+            <Option v-for="item in group1stList" :value="item.id">{{ item.name }}
+            </Option>
+          </Select>
+          <span style="margin-left: 20px;margin-right: 10px">排序</span>
+          <InputNumber v-model="formValidate.group1stSeq" style="width: 12%;margin-right: 10px;"
+                       :maxlength="50" placeholder="升序"></InputNumber>
+          <Button type="primary" @click="handlerAddGroup('1','post','添加一级分组')">添加分组</Button>
+        </FormItem>
         <FormItem label="二级分组" prop="group2ndID" style="width: 100%">
           <Select v-model="formValidate.group2ndID" placeholder='二级分组' style="width: 48%">
             <Option v-for="item in group2ndList" :value="item.id">{{ item.name }}
@@ -151,10 +151,11 @@
       </Form>
     </Modal>
     <Modal v-model="modalGroup.modalVisible" :title="modalGroup.modalTitle" :footer-hide=true :mask-closable="false">
-      <Form ref="groupFormValidate" :model="groupFormValidate" :rules="groupRuleValidate" :label-width="80">
+      <Form ref="groupFormValidate" :model="groupFormValidate" :rules="groupRuleValidate" :label-width="80"
+            v-if="modalGroup.modalTitle === '添加一级分组'">
         <FormItem label="已有分组" prop="groupTable">
           <Table ref="groupSelection" size="small" max-height="500" :show-header="false"
-                 :columns="groupColumns" :data="groupTableDate">
+                 :columns="groupColumns" :data="group1TableDate">
           </Table>
         </FormItem>
         <FormItem label="组名" prop="groupName">
@@ -162,6 +163,20 @@
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSubmitGroup('groupFormValidate')">新增分组</Button>
+        </FormItem>
+      </Form>
+      <Form ref="groupFormValidate" :model="groupFormValidate" :rules="groupRuleValidate" :label-width="80"
+            v-else>
+        <FormItem label="已有分组" prop="groupTable">
+          <Table ref="groupSelection" size="small" max-height="500" :show-header="false"
+                 :columns="groupColumns" :data="group2TableDate">
+          </Table>
+        </FormItem>
+        <FormItem label="组名" prop="groupName">
+          <Input v-model="groupFormValidate.groupName" :maxlength="50" placeholder='组名'></Input>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="handleSubmitZdGroup('groupFormValidate')">新增分组</Button>
         </FormItem>
       </Form>
     </Modal>
@@ -217,7 +232,12 @@
     queryPushConf,
     queryPullConf,
     getZdInfo,
+    operationZdGroup,
   } from '@/api/customquery/subquery'
+  import {
+    operationGroup,
+    getGroupList,
+  } from '@/api/customquery/query'
 
   export default {
     components: {editor},
@@ -243,6 +263,8 @@
         group1stList: [],
         group2ndList: [],
         groupTableDate: [],
+        group1TableDate: [],
+        group2TableDate: [],
         groupColumns: [
           {
             title: '组名',
@@ -543,7 +565,11 @@
       handlerAddGroup(val, meth, mtitle) {
         this.modalGroup.modalVisible = true
         this.modalGroup.modalTitle = mtitle
-        this.groupFormValidate.grouptype = val
+        this.groupFormValidate = {
+          id: null,
+          groupName: '',
+          grouptype: val
+        }
       },
       // 添加支队连接
       handlerZdLink(val, meth, mtitle) {
@@ -564,7 +590,7 @@
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
         // this.getDBListForQry()
-        // this.getGroupList()
+        this.getGroupList()
         if (paramsRow && paramsRow.id) {
           this.formValidate = {
             id: paramsRow.id,
@@ -718,8 +744,29 @@
               operationGroup(this.groupFormValidate, 'post').then(res => {
                 if (res.data.code === 0) {
                   this.$Message.success(`${res.data.msg}`)
-                  // this.getGroupList()
+                  this.getGroupList()
                   this.modalGroup.modalVisible = false
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
+                }
+              })
+            }, 500)
+          } else {
+            this.$Message.error('表单校验错误')
+          }
+        })
+      },
+      handleSubmitZdGroup(value) {
+        this.$refs[value].validate((valid) => {
+          if (valid) {
+            setTimeout(() => {
+              var linkId = this.formValidate.linkId
+              this.groupFormValidate.linkId = linkId
+              operationZdGroup(this.groupFormValidate, 'post').then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`)
+                  this.modalGroup.modalVisible = false
+                  this.linkchange(linkId)
                 } else {
                   this.$Message.error(`${res.data.msg}`)
                 }
@@ -784,15 +831,33 @@
       },
       handlerDeleteGroup(params) {
         if (confirm('确定要删除吗')) {
-          operationGroup({id: params.row.id}, 'delete').then(
-            res => {
-              if (res.data.code === 0) {
-                this.$Message.success(`${res.data.msg}`)
-                // this.getGroupList()
-              } else {
-                this.$Message.error(`${res.data.msg}`)
-              }
-            })
+          if (params.row.grouptype === 1) {
+            operationGroup({id: params.row.id}, 'delete').then(
+              res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`)
+                  this.getGroupList()
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
+                }
+              })
+          }
+
+          if (params.row.grouptype === 2) {
+            var payload = {}
+            payload['id'] = params.row.id
+            payload['linkId'] = this.formValidate.linkId
+            operationZdGroup(payload, 'delete').then(
+              res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`)
+                  this.linkchange(payload['linkId'])
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
+                }
+              })
+          }
+
         }
       },
       getQueryList(page, limit, key, value, dateValue) {
@@ -806,18 +871,25 @@
           }
         })
       },
-      // getGroupList(key, value) {
-      //   getGroupList(key, value).then(res => {
-      //     if (res.data.code === 0) {
-      //       // this.$Message.success(`${res.data.msg}`)
-      //       this.groupTableDate = res.data.data
-      //       this.group1stList = res.data.groupObj[1]
-      //       this.group2ndList = res.data.groupObj[2]
-      //     } else {
-      //       // this.$Message.error(`${res.data.msg}`)
-      //     }
-      //   })
-      // },
+      getGroupList(key, value) {
+        getGroupList(key, value).then(res => {
+          if (res.data.code === 0) {
+            // this.$Message.success(`${res.data.msg}`)
+            this.groupTableDate = res.data.data
+            this.group1stList = res.data.groupObj[1]
+            // this.group2ndList = res.data.groupObj[2]
+            let group1TableDate = []
+            for (let i in this.groupTableDate) {
+              if (this.groupTableDate[i].grouptype === 1) {
+                group1TableDate.push(this.groupTableDate[i])
+              }
+            }
+            this.group1TableDate = group1TableDate
+          } else {
+            // this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
       handlerDeleteLink(params) {
         if (confirm('确定要删除吗')) {
           operationZd({id: params.row.id}, 'delete').then(
@@ -866,9 +938,17 @@
       linkchange(value) {
         if (value) {
           getZdInfo(value).then(res => {
-            console.log(res.data)
             this.group2ndList = res.data.groupObj
             this.dbList = res.data.db_list
+            let group2TableDate = []
+            for (let i in this.group2ndList) {
+              let _d = {}
+              _d['id'] = this.group2ndList[i].id
+              _d['groupName'] = this.group2ndList[i].name
+              _d['grouptype'] = 2
+              group2TableDate.push(_d)
+            }
+            this.group2TableDate = group2TableDate
           })
         }
       },

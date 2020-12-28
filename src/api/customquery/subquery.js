@@ -72,3 +72,11 @@ export const getZdInfo = (id) => {
     }
   })
 }
+
+export const operationZdGroup = (data, meth) => {
+  return axios.request({
+    url: '/tk/v1/changeZdGroup/',
+    method: meth,
+    data
+  })
+}
