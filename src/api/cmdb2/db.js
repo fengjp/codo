@@ -70,3 +70,13 @@ export const getTagtree = (key, value) => {
     }
   })
 }
+
+// 测试数据库连接
+export const testDB = (data) => {
+  return axios.request({
+    url: '/cmdb2/v1/cmdb/db/test/',
+    method: 'post',
+    data
+  })
+}
+
