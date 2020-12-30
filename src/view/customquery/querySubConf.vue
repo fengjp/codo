@@ -191,15 +191,15 @@
       <Card :bordered="false" style="margin-top: 5px">
         <p slot="title">添加连接</p>
         <Form ref="zdFormValidate" :model="zdFormValidate" :rules="zdRuleValidate" :label-width="80" inline>
-          <FormItem label="名称" prop="name">
+          <FormItem label="名称" prop="name" style="width: 40%">
             <Input v-model="zdFormValidate.name" :maxlength="50" placeholder='名称'></Input>
           </FormItem>
-          <FormItem label="连接" prop="link">
+          <FormItem label="连接" prop="link" style="width: 55%">
             <Input v-model="zdFormValidate.link">
               <span slot="prepend">http://</span>
             </Input>
           </FormItem>
-          <FormItem>
+          <FormItem style="display: block">
             <Button type="primary" @click="handleSubmitZD('zdFormValidate')">新增连接</Button>
           </FormItem>
         </Form>
