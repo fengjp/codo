@@ -560,7 +560,6 @@ export const routerMap = [
       }
     ]
   },
-<<<<<<< HEAD
   {
     path: '/allmeter',
     name: 'allmeter',
@@ -582,39 +581,6 @@ export const routerMap = [
       }
     ]
   },
-  // {
-  //   path: '/monitor',
-  //   name: 'monitor',
-  //   meta: {
-  //     icon: 'md-paper',
-  //     title: '监控巡检'
-  //   },
-  //   component: Main,
-  //   children: [{
-  //     path: 'monitorhome_mg',
-  //     name: 'monitor_home_mg',
-  //     meta: {
-  //       icon: 'ios-paper',
-  //       title: '总览'
-  //     },
-  //     component: () =>
-  //       import ('@/view/monitor/monitorhome.vue')
-  //   },
-  //   {
-  //     path: 'monitor_mg',
-  //     name: 'monitor_mg',
-  //     meta: {
-  //       icon: 'ios-paper',
-  //       title: '监控详情'
-  //     },
-  //     component: () =>
-  //         import ('@/view/monitor/monitor.vue')
-  //   }
-  //   ]
-  // }
-
-=======
->>>>>>> 3074f9f695ad90dccc70aeec78db3cfc3c5ff253
 ]
 
 export const routes = [{
