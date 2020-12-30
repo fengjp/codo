@@ -73,6 +73,15 @@ export const getSqlobjlist = (department) => {
     }
   })
 }
+export const getSpoonobjlist = (department) => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/Spoonobjlist/',
+    method: 'get',
+    params: {
+      department
+    }
+  })
+}
 export const getimplement = (parameter,storage,targetKeys,flag) => {
   return axios.request({
     url: '/cmdb2/v1/sql/implement/',

@@ -197,6 +197,7 @@ export default {
              if (res.data.code === 0) {
                         localStorage.departmentlist = res.data.data['statistics_department_list']
                         localStorage.sqldepartmentlist = res.data.data['sql_statistics_department_list']
+                        localStorage.spoonsqldepartmentlist = res.data.data['spoon_statistics_department_list']
                         // console.log(localStorage)
                         if(localStorage.departmentlist === "undefined"){
 
@@ -205,6 +206,10 @@ export default {
                         if(localStorage.sqldepartmentlist === "undefined"){
 
                           localStorage.sqldepartmentlist = '[]'
+                        }
+                        if(localStorage.spoonsqldepartmentlist === "undefined"){
+
+                          localStorage.spoonsqldepartmentlist = '[]'
                         }
                  }})
     //修改‘首页’的默认路由路径

@@ -72,13 +72,13 @@
         :title="modalMap.modalTitle"
         :loading=true
         :footer-hide=true
-        width="680"
+        width="850"
       >
         <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="105" :inline="true">
 
           <div v-if="editModalData && editModalData == 'put'">
-            <FormItem label="脚本名" prop="name" style="width:350px;margin-right:20px">
+            <FormItem label="脚本名" prop="name" style="width:790px;">
               <Input
                 v-model="formValidate.name"
                 disabled
@@ -88,7 +88,7 @@
             </FormItem>
           </div>
           <div v-else>
-            <FormItem label="脚本名" prop="name" style="width:350px;margin-right:20px">
+            <FormItem label="脚本名" prop="name" style="width:790px;">
               <Input
                 v-model="formValidate.name"
                 :maxlength="45"
@@ -96,92 +96,123 @@
               ></Input>
             </FormItem>
           </div>
-
-          <FormItem label="数据库源" prop="dbname_id" style="width:350px;">
+           <Row>
+             <Col span="12">
+                   <FormItem label="数据库源" prop="dbname_id" style="width:380px;">
               <Select placeholder="数据库源" v-model="formValidate.dbname_id">
                 <Option :value="item.id" v-for="item in databaselist">{{item.name}}
                 </Option>
               </Select>
             </FormItem>
-          <FormItem label="数据表名" prop="fieldname" style="width:350px;" v-if="isShow">
-              <Input v-model="formValidate.fieldname" placeholder="请输入数据表的名称"></Input>
+               </Col >
+               <Col span="12">
+                  <FormItem label="报表名" prop="obj" style="width:380px;"  >
+              <Select @on-create="handleCreate5" allow-create  filterable placeholder="报表名" v-model="formValidate.obj">
+            <Option  :value="item.v" v-for="item in allobjList">{{item.v}}</Option>
+          </Select>
             </FormItem>
-          <FormItem label="类型" prop="totype" style="width:500px;">
+                 </Col >
+           </Row>
+
+          <Row>
+             <Col span="10">
+          <FormItem label="类型" prop="totype" style="width:550px;">
               <RadioGroup v-model="formValidate.totype"   @on-change="change_totype">
                 <Radio label="sql"></Radio>
                 <Radio label="存储过程"></Radio>
+                <Radio label="自定义sql"></Radio>
               </RadioGroup>
             </FormItem>
-          <FormItem label="执行方式" prop="mode" style="width:500px;">
+               </Col >
+            <Col  span="12">
+            <Col span="14">
+          <FormItem label="执行方式" prop="mode" style="width:400px;">
               <RadioGroup v-model="formValidate.mode"   @on-change="change_totype">
                 <Radio label="定时"></Radio>
                 <Radio label="触发"></Radio>
               </RadioGroup>
             </FormItem>
-          <FormItem label="状态" prop="state" style="width:500px;">
+               </Col >
+            <Col span="8">
+              <FormItem label="状态" prop="state" style="width:500px;">
               <RadioGroup v-model="formValidate.state" >
                 <Radio label="运行"></Radio>
                 <Radio label="停止"></Radio>
               </RadioGroup>
             </FormItem>
-            <FormItem label="重新生成" prop="flag" style="width:500px;"  v-if="isShow3">
+              </Col >
+            </Col>
+           </Row>
+
+          <Row>
+             <Col span="12">
+           <FormItem label="数据表名" prop="fieldname" style="width:380px;" v-if="isShow8">
+              <Input v-model="formValidate.fieldname" placeholder="请输入数据表的名称"></Input>
+            </FormItem>
+               </Col>
+             <Col span="8">
+               <FormItem label="重新生成" prop="flag" style="width:300px;"  v-if="isShow3">
               <RadioGroup v-model="formValidate.flag" >
                 <Radio label="是"></Radio>
                 <Radio label="否"></Radio>
               </RadioGroup>
             </FormItem>
-
-            <FormItem label="查询存储过程" prop="storage" style="width:350px;" v-if="isShow">
+               </Col >
+                </Row>
+            <Row>
+             <Col span="12">
+            <FormItem label="查询存储过程" prop="storage" style="width:380px;" v-if="isShow">
               <Select  allow-create filterable   placeholder="查询存储过程" v-model="formValidate.storage" @on-query-change="tempusername2"  @on-change="temp_storage_str">
             <Option  :value="item.name" v-for="item in storageList2"  >{{ item.name }}</Option>
           </Select>
             </FormItem>
-             <Row :gutter="5" style="margin-bottom: 5px">
-            <FormItem label="生成存储过程" prop="storage2" style="width:350px;" v-if="isShow">
+               </Col >
+              <Col span="12">
+                <FormItem label="生成存储过程" prop="storage2" style="width:380px;" v-if="isShow">
               <Select  allow-create filterable  placeholder="生成存储过程" v-model="formValidate.storage2" @on-query-change="tempusername3" @on-change="temp_storage_str2">
             <Option  :value="item.name" v-for="item in storageList5">{{ item.name }}</Option>
           </Select>
             </FormItem>
-            <FormItem label="excel表头" prop="header" style="display: block"  v-if="isShow2">
+                </Col >
+               </Row>
+             <Row :gutter="5" style="margin-bottom: 5px">
+            <FormItem label="excel表头" prop="header" style="width:790px;"  v-if="isShow2">
             <Input v-model="formValidate.header" type="textarea"
                    placeholder='请输入excel表头字段,用竖号分开。例：编号|用户名|手机号|地址'></Input>
           </FormItem>
             <FormItem
               label="SQL语句"
-              prop="sqlstr" style="width:500px;margin-right:500px"
+              prop="sqlstr" style="width:790px;"
               v-if="isShow2"
             >
               <Input
                 v-model="formValidate.sqlstr"
                 type="textarea"
-                :rows="5"
+                :rows="2"
                 placeholder="SQL语句"
               ></Input>
             </FormItem>
                <hr/>
                <br>
-            <FormItem label="部门名称" prop="department" style="width:500px;margin-right:500px" >
+            <FormItem label="部门名称" prop="department" style="width:790px;" >
           <Select @on-create="handleCreate2" allow-create multiple filterable placeholder="部门名称" v-model="formValidate.department">
             <Option  :value="item.v" v-for="item in alldepartmentList">{{item.v}}</Option>
           </Select>
         </FormItem>
-            <FormItem label="报表名" prop="obj" style="width:500px;margin-right:500px"  >
-              <Select @on-create="handleCreate5" allow-create  filterable placeholder="报表名" v-model="formValidate.obj">
-            <Option  :value="item.v" v-for="item in allobjList">{{item.v}}</Option>
-          </Select>
-            </FormItem>
-            <FormItem label="授权用户" prop="authorized" style="width:500px;margin-right:500px" >
+
+            <FormItem label="授权用户" prop="authorized" style="width:790px;" >
               <Select  allow-create filterable  multiple   placeholder="授权用户" v-model="formValidate.authorized" @on-query-change="tempusername">
             <Option  :value="item.nickname" v-for="item in allNameList2">{{ item.nickname }}</Option>
           </Select>
             </FormItem>
             <FormItem
               label="详情描述"
-              prop="remarks" style="width:500px;margin-right:500px"
+              prop="remarks" style="width:790px;"
             >
               <Input
                 v-model="formValidate.remarks"
                 type="textarea"
+                :rows="2"
                 placeholder="详细描述"
               ></Input>
             </FormItem>
@@ -243,10 +274,11 @@ export default {
     return {
       typelist: [{ 'k': 1, 'v': 'sql' }, { 'k': 2, 'v': '存储过程' }],
       btnText: '展开',
-      isShow: false,
+      isShow:  false,
       isShow2: false,
       isShow3: false,
       isShow5: false,
+      isShow8: false,
       toflag: 0,
       router_list: [],
       tousername: '',
@@ -437,6 +469,7 @@ export default {
       alldepartmentList: [],
       alldepartmentList2: [],
       alldepartmentList3: [],
+      alldepartmentList5: [],
       allobjList: [],
       uploadList: [],
       OSSRegion: '',
@@ -625,15 +658,30 @@ export default {
       }
       if (this.formValidate.totype === '存储过程') {
         this.isShow = true
+        this.isShow8 = true
         this.alldepartmentList = this.alldepartmentList3
+      }
+       else if (this.formValidate.totype === '自定义sql') {
+        this.isShow2 = false
+        this.isShow = false
+        this.isShow8 = true
+        this.alldepartmentList = this.alldepartmentList5
       } else {
         this.isShow = false
+
+        this.isShow8 = false
       }
+      //  {
+      //   this.isShow = false
+      //   this.isShow8 = false
+      // }
       if (this.formValidate.totype === 'sql') {
         this.isShow2 = true
+        this.isShow8 = false
         this.alldepartmentList = this.alldepartmentList2
       } else {
         this.isShow2 = false
+        this.isShow8 = true
       }
       if (this.formValidate.mode === '定时' && this.formValidate.totype === '存储过程') {
         this.storageList3 = this.storageList6// 定时
@@ -642,6 +690,7 @@ export default {
         this.storageList3 = this.storageList// 触发
         this.storageList5 = this.storageList // 触发
       }
+
     },
     // 获取数据库源
     getDBListForQry (key, value) {
@@ -748,9 +797,10 @@ export default {
         if (this.formValidate.totype === 'sql') {
           this.isShow2 = true,
           this.isShow = false,
+            this.isShow8 = false,
           this.isShow3 = false, this.alldepartmentList = this.alldepartmentList2
-        } else
-          { this.isShow = true, this.isShow2 = false, this.isShow3 = false, this.alldepartmentList = this.alldepartmentList3 }
+        }
+        else { this.isShow = true, this.isShow8 = true , this.isShow2 = false, this.isShow3 = false, this.alldepartmentList = this.alldepartmentList3 }
         if (this.formValidate.mode === '触发' && this.formValidate.totype === '存储过程') { this.isShow3 = true }
         // if(this.formValidate.totype === "sql"){this.isShow2 = true,this.isShow = false}
         // else{this.isShow2 = false,this.isShow = false}
@@ -761,6 +811,7 @@ export default {
           this.storageList3 = this.storageList// 触发
           this.storageList5 = this.storageList // 触发
         }
+        if (this.formValidate.totype === '自定义sql') { this.isShow = false, this.isShow8 = true ,this.alldepartmentList = this.alldepartmentList5 }
       } else {
         // post
         this.formValidate = {
@@ -797,7 +848,9 @@ export default {
             }],
           create_time: String(getDate(new Date().getTime() / 1000, 'year'))
         }
-        if (this.formValidate.totype === 'sql') { this.isShow2 = true, this.isShow = false, this.alldepartmentList = this.alldepartmentList2 } else { this.isShow2 = false, this.isShow = false, this.isShow3 = false, this.alldepartmentList = this.alldepartmentList3 }
+        if (this.formValidate.totype === 'sql') { this.isShow2 = true, this.isShow = false,this.isShow8 = false, this.alldepartmentList = this.alldepartmentList2 }
+        else{ this.isShow2 = false,this.isShow8 = true, this.isShow = true, this.isShow3 = false, this.alldepartmentList = this.alldepartmentList3 }
+        if (this.formValidate.totype === '自定义sql')  { this.isShow2 = false,this.isShow8 = true, this.isShow = false, this.isShow3 = false, this.alldepartmentList = this.alldepartmentList5 }
         if (this.formValidate.mode === '触发' && this.formValidate.totype === '存储过程') { this.isShow3 = true } else { this.isShow3 = false }
       }
     },
@@ -879,10 +932,12 @@ export default {
     getDictConfList () {
       getDictConfList().then(res => {
         if (res.data.code === 0) {
+          this.alldepartmentList5 = eval(res.data.data['spoon_statistics_department_list']) // 自定义sql统计
           this.alldepartmentList3 = eval(res.data.data['statistics_department_list']) // 需求统计
           this.alldepartmentList2 = eval(res.data.data['sql_statistics_department_list']) // 报表统计
           this.alldepartmentList = this.alldepartmentList2
         } else {
+          this.alldepartmentList5 = []
           this.alldepartmentList3 = []
           this.alldepartmentList2 = []
           // this.$Message.error(`${res.data.msg}`)

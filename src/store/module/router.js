@@ -47,10 +47,13 @@ const  setList =() =>{
        // 拼栏目列表
         let  data_statistics_department_list = []
         let  data_sqlstatistics_department_list = []
+        let  data_spoonsqldepartmentlist_department_list = []
         let  temp_children_list = []
         let  temp_children_list2 = []
+        let  temp_children_list3 = []
         data_statistics_department_list = eval(localStorage.departmentlist)
         data_sqlstatistics_department_list = eval(localStorage.sqldepartmentlist)
+        data_spoonsqldepartmentlist_department_list = eval(localStorage.spoonsqldepartmentlist)
 
             if (data_statistics_department_list) {
               for (var i = 0; i < routerMap.length; i++) {
@@ -81,6 +84,22 @@ const  setList =() =>{
                     temp_children_list2.push(temp_department2) //组装新的需求统计部门列表
                   }
                   routerMap[i].children = temp_children_list2
+                }
+              }
+            }
+            if (data_spoonsqldepartmentlist_department_list) {
+              for (var i = 0; i < routerMap.length; i++) {
+                if (routerMap[i].name === "SpoonStatistics") {
+                  console.log(routerMap[i].children[0])
+                  for (let j = 0; j < data_spoonsqldepartmentlist_department_list.length; j++) {
+                    // let temp_department2 = Object.create(routerMap[i].children[0])
+                    let temp_department3 = deepCopy(routerMap[i].children[0])
+                    temp_department3.name = String(data_spoonsqldepartmentlist_department_list[j].v)
+                    temp_department3.path = String(data_spoonsqldepartmentlist_department_list[j].v)
+                    temp_department3.meta.title = String(data_spoonsqldepartmentlist_department_list[j].v)
+                    temp_children_list3.push(temp_department3) //组装新的需求统计部门列表
+                  }
+                  routerMap[i].children = temp_children_list3
                 }
               }
             }

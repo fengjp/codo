@@ -97,6 +97,7 @@ export default {
              if (res.data.code === 0) {
                  localStorage.departmentlist = res.data.data['statistics_department_list']
                  localStorage.sqldepartmentlist = res.data.data['sql_statistics_department_list']
+                 localStorage.spoonsqldepartmentlist = res.data.data['spoon_statistics_department_list']
                  if(localStorage.departmentlist === "undefined"){
 
                      localStorage.departmentlist = '[]'
@@ -105,6 +106,10 @@ export default {
 
                      localStorage.sqldepartmentlist = '[]'
                  }
+                 if(localStorage.spoonsqldepartmentlist === "undefined"){
+
+                          localStorage.spoonsqldepartmentlist = '[]'
+                        }
                // console.log(res.data.data)
              }
           })

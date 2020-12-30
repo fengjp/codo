@@ -1,6 +1,17 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
 
+
+export const meterList = (value) => {
+    return axios.request({
+        url: '/tk/v2/accounts/meter/',
+        method: 'get',
+        params: {
+            value
+        }
+    })
+}
+
 export const getCommandlist = (key, value) => {
     return axios.request({
         url: '/task/v2/task_layout/command/',

@@ -347,6 +347,26 @@ export const routerMap = [
     ]
   },
   {
+    path: '/SpoonStatistics',
+    name: 'SpoonStatistics',
+    meta: {
+      icon: 'md-folder',
+      title: 'SPOON需求统计'
+    },
+    component: Main,
+    children: [{
+      path: 'Spoonscience',
+      name: 'Spoonscience',
+      meta: {
+        icon: 'ios-list-box-outline',
+        title: '科技科'
+      },
+      component: () =>
+        import ('@/view/statistics/SpoonExamination.vue')
+    }
+    ]
+  },
+  {
     path: '/dataService',
     name: 'dataService',
     meta: {
@@ -527,6 +547,27 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/it-manage/faq.vue')
+      }
+    ]
+  },
+  {
+    path: '/allmeter',
+    name: 'allmeter',
+    meta: {
+      icon: 'md-book',
+      title: '仪表管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'assessment',
+        name: 'assessment',
+        meta: {
+          icon: 'ios-speedometer-outline',
+          title: '评估仪表'
+        },
+        component: () =>
+          import ('@/view/meter/assessment.vue')
       }
     ]
   },

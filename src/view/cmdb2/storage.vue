@@ -33,15 +33,14 @@
       :title="modalMap.modalTitle"
       :loading=true
       :footer-hide=true
-      width="630px"
+      width="830px"
     >
       <!--<Alert show-icon>记录一些运维过程中的故障信息，附件我们存储在阿里云OSS.</Alert>-->
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="105" :inline="true">
-        <Row>
-          <Col span="12">
+
             <div v-if="editModalData && editModalData == 'put'">
 
-              <FormItem label="存储过程名" prop="name" style="width:350px;">
+              <FormItem label="存储过程名" prop="name" style="width:780px;">
                 <Input
                   v-model="formValidate.name"
                   disabled
@@ -51,7 +50,7 @@
               </FormItem>
             </div>
             <div v-else>
-              <FormItem label="存储过程名" prop="name" style="width:350px;">
+              <FormItem label="存储过程名" prop="name" style="width:780px;">
                 <Input
                   v-model="formValidate.name"
                   :maxlength="45"
@@ -59,16 +58,27 @@
                 ></Input>
               </FormItem>
             </div>
-          </Col>
-          <FormItem label="执行方式" prop="mode" style="width:500px;">
+        <Row>
+          <Col span="17">
+           <FormItem label="授权用户" prop="authorized" style="width:500px;" >
+              <Select  allow-create filterable  multiple   placeholder="授权用户" v-model="formValidate.authorized" @on-query-change="tempusername">
+            <Option  :value="item.nickname" v-for="item in allNameList2">{{ item.nickname }}</Option>
+          </Select>
+            </FormItem>
+            </Col>
+              <Col span="7">
+          <FormItem label="执行方式" prop="mode" style="width:300px;">
               <RadioGroup v-model="formValidate.mode"   @on-change="change_totype">
                 <Radio label="定时"></Radio>
                 <Radio label="触发"></Radio>
               </RadioGroup>
             </FormItem>
+            </Col >
+          </Row>
+            <Row>
           <FormItem label="存储过程入参" style="width: 100%" v-if="isShow">
                 <Row v-for="(item, index) in formValidate.dictvalue">
-                  <Col span="20">
+<!--                  <Col span="20">-->
                    <Input style="width: 30px" type="text" v-model="item.toindex" placeholder="请输入字段key"></Input>:
 <!--                   <Input style="width: 100px" type="text" v-model="item.v" placeholder="字段类型"></Input>-->
                     <Select placeholder="字段类型" style="width: 100px"  v-model="item.type" >
@@ -80,22 +90,18 @@
                        </Option>
                     </Select>
                     <Input style="width: 110px" type="text" v-model="item.remarks" placeholder="字段描述"></Input>
-                  </Col>
-                  <Col span="3" offset="1">
+<!--                  </Col>-->
+<!--                  <Col span="3" offset="1">-->
                   <Button @click="handleRemove(index)">删除</Button>
-                  </Col>
+<!--                  </Col>-->
                 </Row>
         </FormItem>
         <FormItem  v-if="isShow">
               <Button style="width: 80px" long @click="handleAdd" icon="md-add">添加</Button>
         </FormItem>
         </Row>
-        <FormItem label="授权用户" prop="authorized" style="width:500px;margin-right:500px" >
-              <Select  allow-create filterable  multiple   placeholder="授权用户" v-model="formValidate.authorized" @on-query-change="tempusername">
-            <Option  :value="item.nickname" v-for="item in allNameList2">{{ item.nickname }}</Option>
-          </Select>
-            </FormItem>
-        <FormItem label="详细描述" prop="remarks" style="width:500px;margin-right:500px">
+
+        <FormItem label="详细描述" prop="remarks" style="width:780px;margin-right:500px">
 <!--              <Input-->
 <!--                v-model="formValidate.remarks"-->
 <!--                type="textarea"-->
@@ -113,7 +119,7 @@
                        @change="onEditorChange($event)"
                       ></quill-editor>
         </FormItem>
-        <FormItem   style="margin-top:130px">
+        <FormItem   style="margin-top:70px">
           <Button
             type="primary"
             @click="handleSubmit('formValidate')"

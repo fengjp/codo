@@ -41,50 +41,68 @@
         </Card>
       </Col>
     </Row>
-        <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="1000"
+        <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="770"
            :mask-closable=false :styles="{top: '20px'}">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100" inline>
-        <FormItem label="标题" prop="title" style="display: block">
+        <FormItem label="标题" prop="title" style="width: 730px">
           <Input v-model="formValidate.title"  placeholder='请输入标题'></Input>
         </FormItem>
-        <FormItem label="数据库脚本" prop="dbid" style="width: 48%">
+        <Row>
+             <Col span="12">
+                <FormItem label="数据库脚本" prop="dbid" style="width: 362px">
           <Select v-model="formValidate.dbid" placeholder='请选择脚本'>
             <Option v-for="item in dbList" :value="item.id">{{ item.name }}
             </Option>
           </Select>
         </FormItem>
-        <FormItem label="日期范围" prop="todate2" style="width: 48%">
-        <DatePicker type="daterange"
-                    placement="bottom-end" placeholder="请选择开始与结束日期"
-                    :value="todate2"
-                    @on-change="todate2=$event"
-                    style="width: 230px;marginRight: 2px;"
-                    :disabled="isDisable2"
-                     >
-        </DatePicker>
-          </FormItem>
-        <FormItem label="日/周" prop="flag" style="width:200px;"  >
+               </Col >
+               <Col span="12">
+                <FormItem label="日/周" prop="flag" style="width:260px;"  >
               <RadioGroup v-model="formValidate.flag" @on-change="change_totype">
                 <Radio label="日"></Radio>
                 <Radio label="周"></Radio>
               </RadioGroup>
             </FormItem>
-        <FormItem label="指定日期" prop="todate" style="width:350px;"   >
-          <Select v-model="formValidate.todate" multiple style="width:260px" :disabled="isDisable" >
-        <Option v-for="obj in todateList" :value="obj.k">{{ obj.v}}</Option>
-    </Select>
-        </FormItem>
-         <FormItem label="执行周期" prop="cycle"   >
+                 </Col >
+               </Row>
+        <Row>
+             <Col span="12">
+        <FormItem label="日期范围" prop="todate2" style="width: 260px">
+        <DatePicker type="daterange"
+                    placement="bottom-end" placeholder="请选择开始与结束日期"
+                    :value="todate2"
+                    @on-change="todate2=$event"
+                    style="width: 260px;"
+                    :disabled="isDisable2"
+                     >
+        </DatePicker>
+          </FormItem>
+          </Col >
+          <Col span="12">
+             <FormItem label="执行周期" prop="cycle"   >
           <Select v-model="formValidate.cycle" multiple style="width:260px"  :disabled="isDisable2" >
             <Option v-for="item in cycleList" :value="item.x">{{ item.q}}</Option>
            </Select>
           </FormItem>
+               </Col >
+               </Row>
+           <Row>
+             <Col span="12">
+          <FormItem label="指定日期" prop="todate" style="width:260px;"   >
+          <Select v-model="formValidate.todate" multiple style="width:260px" :disabled="isDisable" >
+        <Option v-for="obj in todateList" :value="obj.k">{{ obj.v}}</Option>
+    </Select>
+        </FormItem>
+               </Col >
+             <Col span="12">
         <FormItem label="执行时间" prop="times">
           <RadioGroup  vertical>
               <TimePicker size="small" format="HH:mm"
-                          v-model="formValidate.times" style="width: 100px;" placeholder="选择时分"></TimePicker>
+                          v-model="formValidate.times" style="width: 260px;" placeholder="选择时分"></TimePicker>
           </RadioGroup>
         </FormItem>
+               </Col >
+             </Row>
         <FormItem style="display: block">
           <Button type="primary" @click="handleSubmit_sql('formValidate')"  :disabled="isDisable3" >提交</Button>
           <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
