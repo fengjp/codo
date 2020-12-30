@@ -11,8 +11,12 @@
         <Input @on-change="handleClear" clearable placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
         <Button @click="handleSearch" class="search-btn" type="primary">搜索</Button>
         <Button type="info" class="search-btn" @click="handlerQuery('','post', '添加配置')">添加配置</Button>
+        <Button type="success" class="search-btn" @click="handlerZdLink('','post', '添加支队连接')">添加支队连接</Button>
+        <Button type="warning" class="search-btn" @click="handlerPushConf('','post', '下发配置')">下发配置</Button>
+        <Button type="error" class="search-btn" @click="handlerPullConf('','post', '拉取配置')">拉取配置</Button>
       </div>
-      <Table stripe size="small" :columns="columns" :data="tableData"></Table>
+      <Table stripe size="small" :columns="columns" :data="tableData" :loading="loading"
+             @on-selection-change="handleSelectChange"></Table>
       <div style="margin: 10px;overflow: hidden">
         <div style="float: left;">
           <Page :total="pageTotal" :current="pageNum" :page-size="pageSize" :page-size-opts=[10,15,25,35,50,100]
@@ -27,8 +31,14 @@
         <!--<alert>温馨提示：xxx</alert>-->
         <FormItem label="标题" prop="title" style="width: 100%">
           <Input v-model="formValidate.title" style="width: 70%" :maxlength="50" placeholder='请输入标题'></Input>
-          <span style="margin-left: 10px;margin-right: 10px">排序</span>
+          <span style="margin-left: 20px;margin-right: 10px">排序</span>
           <InputNumber v-model="formValidate.seq" style="width: 15%;" placeholder="升序"></InputNumber>
+        </FormItem>
+        <FormItem label="支队连接" prop="linkId" style="width: 98%">
+          <Select v-model="formValidate.linkId" placeholder='请选择支队连接' @on-change="linkchange">
+            <Option v-for="item in linkList" :value="item.id">{{ item.name }}
+            </Option>
+          </Select>
         </FormItem>
         <FormItem label="数据库源" prop="dblinkId" style="width: 48%">
           <!--<Input v-model="formValidate.dblinkId" :maxlength="50" placeholder="数据库源"></Input>-->
@@ -51,7 +61,7 @@
             <Option v-for="item in group1stList" :value="item.id">{{ item.name }}
             </Option>
           </Select>
-          <span style="margin-left: 10px;margin-right: 10px">排序</span>
+          <span style="margin-left: 20px;margin-right: 10px">排序</span>
           <InputNumber v-model="formValidate.group1stSeq" style="width: 12%;margin-right: 10px;"
                        :maxlength="50" placeholder="升序"></InputNumber>
           <Button type="primary" @click="handlerAddGroup('1','post','添加一级分组')">添加分组</Button>
@@ -61,7 +71,7 @@
             <Option v-for="item in group2ndList" :value="item.id">{{ item.name }}
             </Option>
           </Select>
-          <span style="margin-left: 10px;margin-right: 10px">排序</span>
+          <span style="margin-left: 20px;margin-right: 10px">排序</span>
           <InputNumber v-model="formValidate.group2ndSeq" style="width: 12%;margin-right: 10px;"
                        :maxlength="50" placeholder="升序"></InputNumber>
           <Button type="primary" @click="handlerAddGroup('2','post','添加二级分组')">添加分组</Button>
@@ -117,13 +127,6 @@
             </div>
           </Row>
         </FormItem>
-        <!--<FormItem>-->
-        <!--<Row>-->
-        <!--<Col span="12">-->
-        <!--<Button type="dashed" long @click="handleColAdd('colalarms')" icon="md-add">增加配置</Button>-->
-        <!--</Col>-->
-        <!--</Row>-->
-        <!--</FormItem>-->
         <FormItem label="轮询频率" prop="times">
           <RadioGroup v-model="formValidate.timesTy" vertical>
             <Radio label="timesTy1">
@@ -148,10 +151,11 @@
       </Form>
     </Modal>
     <Modal v-model="modalGroup.modalVisible" :title="modalGroup.modalTitle" :footer-hide=true :mask-closable="false">
-      <Form ref="groupFormValidate" :model="groupFormValidate" :rules="groupRuleValidate" :label-width="80">
+      <Form ref="groupFormValidate" :model="groupFormValidate" :rules="groupRuleValidate" :label-width="80"
+            v-if="modalGroup.modalTitle === '添加一级分组'">
         <FormItem label="已有分组" prop="groupTable">
           <Table ref="groupSelection" size="small" max-height="500" :show-header="false"
-                 :columns="groupColumns" :data="groupTableDate">
+                 :columns="groupColumns" :data="group1TableDate">
           </Table>
         </FormItem>
         <FormItem label="组名" prop="groupName">
@@ -159,6 +163,58 @@
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSubmitGroup('groupFormValidate')">新增分组</Button>
+        </FormItem>
+      </Form>
+      <Form ref="groupFormValidate" :model="groupFormValidate" :rules="groupRuleValidate" :label-width="80"
+            v-else>
+        <FormItem label="已有分组" prop="groupTable">
+          <Table ref="groupSelection" size="small" max-height="500" :show-header="false"
+                 :columns="groupColumns" :data="group2TableDate">
+          </Table>
+        </FormItem>
+        <FormItem label="组名" prop="groupName">
+          <Input v-model="groupFormValidate.groupName" :maxlength="50" placeholder='组名'></Input>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="handleSubmitZdGroup('groupFormValidate')">新增分组</Button>
+        </FormItem>
+      </Form>
+    </Modal>
+    <Modal v-model="modalZd.modalVisible" :title="modalZd.modalTitle" :footer-hide=true :mask-closable="false"
+           width="625">
+      <Card :bordered="false">
+        <p slot="title">连接表</p>
+        <Table size="small" max-height="500" :show-header="false"
+               :columns="zdColumns" :data="zdTableDate">
+        </Table>
+      </Card>
+      <Card :bordered="false" style="margin-top: 5px">
+        <p slot="title">添加连接</p>
+        <Form ref="zdFormValidate" :model="zdFormValidate" :rules="zdRuleValidate" :label-width="80" inline>
+          <FormItem label="名称" prop="name" style="width: 40%">
+            <Input v-model="zdFormValidate.name" :maxlength="50" placeholder='名称'></Input>
+          </FormItem>
+          <FormItem label="连接" prop="link" style="width: 55%">
+            <Input v-model="zdFormValidate.link">
+              <span slot="prepend">http://</span>
+            </Input>
+          </FormItem>
+          <FormItem style="display: block">
+            <Button type="primary" @click="handleSubmitZD('zdFormValidate')">新增连接</Button>
+          </FormItem>
+        </Form>
+      </Card>
+    </Modal>
+    <Modal v-model="modalPull.modalVisible" :title="modalPull.modalTitle" :footer-hide=true :mask-closable="false">
+      <Form :model="pillFormValidate" :label-width="80">
+        <FormItem label="支队连接" prop="linkId">
+          <Select v-model="pillFormValidate.linkId" placeholder='请选择支队连接'>
+            <Option v-for="item in linkList" :value="item.id">{{ item.name }}
+            </Option>
+          </Select>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="handlePull()">确定</Button>
         </FormItem>
       </Form>
     </Modal>
@@ -171,16 +227,24 @@
     getQueryList,
     operationQuery,
     patchquery,
+    operationZd,
+    getZdLinkList,
+    queryPushConf,
+    queryPullConf,
+    getZdInfo,
+    operationZdGroup,
+  } from '@/api/customquery/subquery'
+  import {
     operationGroup,
-    getGroupList
+    getGroupList,
   } from '@/api/customquery/query'
-  import {getDBListForQry} from '@/api/cmdb2/db.js'
 
   export default {
     components: {editor},
     data() {
       return {
         versions: this.$config.versions,
+        loading: false,
         message: '',
         signList: [
           {'id': 0, 'name': '>'},
@@ -195,9 +259,12 @@
           {'id': 2, 'name': '严重'},
           {'id': 3, 'name': '致命'}
         ],
+        linkList: [],
         group1stList: [],
         group2ndList: [],
         groupTableDate: [],
+        group1TableDate: [],
+        group2TableDate: [],
         groupColumns: [
           {
             title: '组名',
@@ -245,6 +312,7 @@
             }
           }
         ],
+        tableSelectList: [],
         isAlarm: false,
         mode_type: 'mysql',
         editor: {
@@ -253,82 +321,15 @@
           color: 'primary'
         },
         columns: [
+          {type: 'selection', key: 'id', width: 60, align: 'center', fixed: 'left'},
+          {title: '标题', key: 'title', align: 'center', minWidth: 120},
+          {title: '更新时间', key: 'update_time', align: 'center', width: 150, sortable: true},
+          {title: '二级组名', key: 'groupName', align: 'center', width: 150,},
+          {title: '排序', key: 'group2ndSeq', align: 'center', width: 80, sortable: true},
+          // {title: '数据库源', key: 'dblinkIdNa', align: 'center', minWidth: 100},
+          {title: '支队连接', key: 'zdlink', align: 'center', minWidth: 150},
           {
-            title: '标题',
-            key: 'title',
-            align: 'center',
-            minWidth: 120
-          },
-          {
-            title: '一级分组',
-            key: 'group1stID',
-            align: 'center',
-            width: 90,
-            render: (h, params, vm) => {
-              var tt = params.row.group1stID
-              for (let i in this.group1stList) {
-                if (this.group1stList[i].id === params.row.group1stID) {
-                  tt = this.group1stList[i].name
-                  break
-                }
-              }
-              if (this.versions === '2'){
-                var tt = '-'
-              }
-              return h('div', [
-                h('span', {}, tt)
-              ])
-            }
-          },
-          {
-            title: '排序',
-            key: 'group1stSeq',
-            align: 'center',
-            width: 80,
-            sortable: true
-          },
-          {
-            title: '二级分组',
-            key: 'group2ndID',
-            align: 'center',
-            width: 90,
-            render: (h, params, vm) => {
-              var tt = params.row.group2ndID
-              for (let i in this.group2ndList) {
-                if (this.group2ndList[i].id === params.row.group2ndID) {
-                  tt = this.group2ndList[i].name
-                  break
-                }
-              }
-              return h('div', [
-                h('span', {}, tt)
-              ])
-            }
-          },
-          {
-            title: '排序',
-            key: 'group2ndSeq',
-            align: 'center',
-            width: 80,
-            sortable: true
-          },
-          {
-            title: '数据库源',
-            key: 'dblinkIdNa',
-            align: 'center',
-            minWidth: 100
-          },
-          {
-            title: '数据库名',
-            key: 'database',
-            align: 'center',
-            minWidth: 100
-          },
-          {
-            title: '轮询频率',
-            key: 'timesTy',
-            align: 'center',
-            minWidth: 100,
+            title: '轮询频率', key: 'timesTy', align: 'center', minWidth: 100,
             render: (h, params, vm) => {
               if (params.row.timesTy === 'timesTy1') {
                 var tt = '每' + params.row.timesTy1Val + '分钟'
@@ -341,10 +342,7 @@
             }
           },
           {
-            title: '状态',
-            key: 'status',
-            width: 80,
-            align: 'center',
+            title: '状态', key: 'status', width: 80, align: 'center',
             render: (h, params, vm) => {
               return h('div', [
                 h('i-switch', {
@@ -365,10 +363,7 @@
             }
           },
           {
-            title: '操作',
-            key: 'handle',
-            width: 185,
-            align: 'center',
+            title: '操作', key: 'handle', width: 185, align: 'center',
             render: (h, params) => {
               return h('div', [
                 h('Button',
@@ -419,6 +414,10 @@
         searchKey: 'title',
         searchValue: '',
         //
+        modalZd: {
+          modalVisible: false,
+          modalTitle: '添加连接'
+        },
         modalMap: {
           modalVisible: false,
           modalTitle: '添加配置'
@@ -427,11 +426,16 @@
           modalVisible: false,
           modalTitle: '添加分组'
         },
+        modalPull: {
+          modalVisible: false,
+          modalTitle: '拉取配置'
+        },
         index: 0,
         formValidate: {
           id: null,
           title: '',
           dblinkId: '',
+          linkId: '',
           user: '',
           password: '',
           database: '',
@@ -466,8 +470,8 @@
         },
         ruleValidate: {
           title: [{required: true, message: '标题不能为空', trigger: 'blur'}],
-          dblinkId: [{required: true, message: '数据库源不能为空', trigger: 'blur', type: 'number'}]
-          // database: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
+          // dblinkId: [{required: true, message: '数据库源不能为空', trigger: 'blur', type: 'number'}],
+          linkId: [{required: true, message: '支队连接不能为空', trigger: 'blur', type: 'number'}],
         },
         dbList: [],
         groupFormValidate: {
@@ -477,18 +481,72 @@
         },
         groupRuleValidate: {
           groupName: [{required: true, message: '名称不能空', trigger: 'blur'}]
-        }
+        },
+        pillFormValidate: {
+          linkId: ''
+        },
+        zdFormValidate: {
+          id: null,
+          name: '',
+          link: ''
+        },
+        zdRuleValidate: {
+          name: [{required: true, message: '名称不能空', trigger: 'blur'}],
+          link: [{required: true, message: '连接不能空', trigger: 'blur'}],
+        },
+        zdTableDate: [],
+        zdColumns: [
+          {
+            title: '名称',
+            key: 'name',
+            align: 'center',
+            width: 150,
+          },
+          {
+            title: '连接',
+            key: 'link',
+            align: 'center',
+          },
+          {
+            title: '操作',
+            key: 'handle',
+            width: 90,
+            align: 'center',
+            render: (h, params) => {
+              return h('div', [
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'text',
+                      size: 'small',
+                      icon: 'ios-trash-outline'
+                    },
+                    style: {
+                      color: '#ed4014'
+                    },
+                    on: {
+                      click: () => {
+                        this.handlerDeleteLink(params)
+                      }
+                    }
+                  }, '删除'
+                )
+              ])
+            }
+          }
+        ],
       }
     },
     methods: {
-      // 获取数据库源
-      getDBListForQry(key, value) {
-        getDBListForQry(key, value).then(res => {
-          if (res.data.code === 0) {
-            this.dbList = res.data.data
-          }
-        })
-      },
+      // // 获取数据库源
+      // getDBListForQry(key, value) {
+      //   getDBListForQry(key, value).then(res => {
+      //     if (res.data.code === 0) {
+      //       this.dbList = res.data.data
+      //     }
+      //   })
+      // },
       onSwitch(editData) {
         const EditData = {
           query_id: editData.row.id,
@@ -497,6 +555,7 @@
         patchquery(EditData).then(res => {
           if (res.data.code === 0) {
             this.$Message.success(`${res.data.msg}`)
+            this.getQueryList(this.pageNum, this.pageSize)
           } else {
             this.$Message.error(`${res.data.msg}`)
           }
@@ -506,14 +565,31 @@
       handlerAddGroup(val, meth, mtitle) {
         this.modalGroup.modalVisible = true
         this.modalGroup.modalTitle = mtitle
-        this.groupFormValidate.grouptype = val
+        this.groupFormValidate = {
+          id: null,
+          groupName: '',
+          grouptype: val
+        }
+      },
+      // 添加支队连接
+      handlerZdLink(val, meth, mtitle) {
+        this.modalZd.modalVisible = true
+        this.modalZd.modalTitle = mtitle
+        this.editModalData = meth
+        this.getZdLinkList()
+      },
+      // 拉取配置
+      handlerPullConf(val, meth, mtitle) {
+        this.modalPull.modalVisible = true
+        this.modalPull.modalTitle = mtitle
+        this.editModalData = meth
       },
       // 添加查询配置
       handlerQuery(paramsRow, meth, mtitle) {
         this.modalMap.modalVisible = true
         this.modalMap.modalTitle = mtitle
         this.editModalData = meth
-        this.getDBListForQry()
+        // this.getDBListForQry()
         this.getGroupList()
         if (paramsRow && paramsRow.id) {
           this.formValidate = {
@@ -534,13 +610,16 @@
             group1stID: paramsRow.group1stID,
             group1stSeq: paramsRow.group1stSeq,
             group2ndID: paramsRow.group2ndID,
-            group2ndSeq: paramsRow.group2ndSeq
+            group2ndSeq: paramsRow.group2ndSeq,
+            linkId: paramsRow.zdlinkID,
+            groupName: paramsRow.groupName,
           }
           if (paramsRow.colalarms.length > 0) {
             this.isAlarm = true
           } else {
             this.isAlarm = false
           }
+          this.linkchange(paramsRow.zdlinkID)
         } else {
           this.formValidate = {
             id: null,
@@ -574,7 +653,8 @@
             group1stID: 0,
             group1stSeq: 0,
             group2ndID: 0,
-            group2ndSeq: 0
+            group2ndSeq: 0,
+            groupName: '',
           }
         }
       },
@@ -621,6 +701,41 @@
           this.formValidate.colnames.splice(index, 1)
         }
       },
+      handlePull() {
+        if (this.pillFormValidate.linkId > 0) {
+          queryPullConf(this.pillFormValidate).then(res => {
+            if (res.data.code === 0) {
+              this.$Message.success(`${res.data.msg}`)
+              this.modalPull.modalVisible = false
+              this.getQueryList(this.pageNum, this.pageSize)
+            } else {
+              this.$Message.error(`${res.data.msg}`)
+            }
+          })
+        } else {
+          this.$Message.error('没有选择支队连接')
+        }
+      },
+      handleSubmitZD(value) {
+        this.$refs[value].validate((valid) => {
+          if (valid) {
+            setTimeout(() => {
+              // console.log(this.zdFormValidate)
+              operationZd(this.zdFormValidate, 'post').then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`)
+                  this.modalZd.modalVisible = false
+                  this.getZdLinkList()
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
+                }
+              })
+            }, 500)
+          } else {
+            this.$Message.error('表单校验错误')
+          }
+        })
+      },
       handleSubmitGroup(value) {
         this.$refs[value].validate((valid) => {
           if (valid) {
@@ -641,10 +756,39 @@
           }
         })
       },
+      handleSubmitZdGroup(value) {
+        this.$refs[value].validate((valid) => {
+          if (valid) {
+            setTimeout(() => {
+              var linkId = this.formValidate.linkId
+              this.groupFormValidate.linkId = linkId
+              operationZdGroup(this.groupFormValidate, 'post').then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`)
+                  this.modalGroup.modalVisible = false
+                  this.linkchange(linkId)
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
+                }
+              })
+            }, 500)
+          } else {
+            this.$Message.error('表单校验错误')
+          }
+        })
+      },
       handleSubmitQuery(value) {
         this.$refs[value].validate((valid) => {
           if (valid) {
             // console.log(this.formValidate)
+            let groupName = ''
+            for (let i in this.group2ndList) {
+              if (this.group2ndList[i].id === this.formValidate.group2ndID) {
+                groupName = this.group2ndList[i].name
+                break
+              }
+            }
+            this.formValidate.groupName = groupName
             if (this.isAlarm && this.formValidate.colalarms[0].selCol === '') {
               this.message = '请选择告警字段'
               this.$Message.error('表单校验错误')
@@ -687,25 +831,43 @@
       },
       handlerDeleteGroup(params) {
         if (confirm('确定要删除吗')) {
-          operationGroup({id: params.row.id}, 'delete').then(
-            res => {
-              if (res.data.code === 0) {
-                this.$Message.success(`${res.data.msg}`)
-                this.getGroupList()
-              } else {
-                this.$Message.error(`${res.data.msg}`)
-              }
-            })
+          if (params.row.grouptype === 1) {
+            operationGroup({id: params.row.id}, 'delete').then(
+              res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`)
+                  this.getGroupList()
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
+                }
+              })
+          }
+
+          if (params.row.grouptype === 2) {
+            var payload = {}
+            payload['id'] = params.row.id
+            payload['linkId'] = this.formValidate.linkId
+            operationZdGroup(payload, 'delete').then(
+              res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`)
+                  this.linkchange(payload['linkId'])
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
+                }
+              })
+          }
+
         }
       },
       getQueryList(page, limit, key, value, dateValue) {
         getQueryList(page, limit, key, value, dateValue).then(res => {
           if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
+            // this.$Message.success(`${res.data.msg}`)
             this.pageTotal = res.data.count
             this.tableData = res.data.data
           } else {
-            this.$Message.error(`${res.data.msg}`)
+            // this.$Message.error(`${res.data.msg}`)
           }
         })
       },
@@ -715,11 +877,80 @@
             // this.$Message.success(`${res.data.msg}`)
             this.groupTableDate = res.data.data
             this.group1stList = res.data.groupObj[1]
-            this.group2ndList = res.data.groupObj[2]
+            // this.group2ndList = res.data.groupObj[2]
+            let group1TableDate = []
+            for (let i in this.groupTableDate) {
+              if (this.groupTableDate[i].grouptype === 1) {
+                group1TableDate.push(this.groupTableDate[i])
+              }
+            }
+            this.group1TableDate = group1TableDate
           } else {
             // this.$Message.error(`${res.data.msg}`)
           }
         })
+      },
+      handlerDeleteLink(params) {
+        if (confirm('确定要删除吗')) {
+          operationZd({id: params.row.id}, 'delete').then(
+            res => {
+              if (res.data.code === 0) {
+                this.$Message.success(`${res.data.msg}`)
+                this.getZdLinkList()
+              } else {
+                this.$Message.error(`${res.data.msg}`)
+              }
+            })
+        }
+      },
+      getZdLinkList() {
+        getZdLinkList().then(res => {
+          if (res.data.code === 0) {
+            // this.$Message.success(`${res.data.msg}`)
+            this.zdTableDate = res.data.data
+            this.linkList = res.data.linkList
+          } else {
+            // this.$Message.error(`${res.data.msg}`)
+          }
+        })
+      },
+      handleSelectChange(val) {
+        this.tableSelectList = val
+      },
+      handlerPushConf() {
+        if (this.tableSelectList.length > 0) {
+          this.loading = true
+          let selectList = this.tableSelectList
+          queryPushConf(selectList).then(res => {
+            this.loading = false
+            if (res.data.code === 0) {
+              this.tableSelectList = []
+              this.$Message.success('下发完毕');
+              this.getQueryList(this.pageNum, this.pageSize)
+            } else {
+              this.$Message.error(`${res.data.msg}`);
+            }
+          })
+        } else {
+          this.$Message.info(`没有选择`)
+        }
+      },
+      linkchange(value) {
+        if (value) {
+          getZdInfo(value).then(res => {
+            this.group2ndList = res.data.groupObj
+            this.dbList = res.data.db_list
+            let group2TableDate = []
+            for (let i in this.group2ndList) {
+              let _d = {}
+              _d['id'] = this.group2ndList[i].id
+              _d['groupName'] = this.group2ndList[i].name
+              _d['grouptype'] = 2
+              group2TableDate.push(_d)
+            }
+            this.group2TableDate = group2TableDate
+          })
+        }
       },
       changeDate(value) {
         this.dateValue = value
@@ -786,7 +1017,7 @@
     },
     mounted() {
       this.getQueryList(this.pageNum, this.pageSize)
-      this.getGroupList()
+      this.getZdLinkList()
     }
   }
 </script>

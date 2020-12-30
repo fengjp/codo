@@ -2,9 +2,9 @@
   <div>
     <Row :gutter="10">
       <!--<i-col :md="24" :lg="5" style="margin-bottom: 20px;">-->
-        <!--<Card :bordered="false" dis-hover>-->
-          <!--<Tree ref="tree" :data="tagTreeData" @on-select-change="handlerTreeChange" getSelectedNodes></Tree>-->
-        <!--</Card>-->
+      <!--<Card :bordered="false" dis-hover>-->
+      <!--<Tree ref="tree" :data="tagTreeData" @on-select-change="handlerTreeChange" getSelectedNodes></Tree>-->
+      <!--</Card>-->
       <!--</i-col>-->
       <i-col :md="24" :lg="24" style="margin-bottom: 10px;">
         <Card :bordered="false" dis-hover>
@@ -114,12 +114,12 @@
                 </Select>
               </FormItem>
               <!--<FormItem label="标签" prop="tag_list">-->
-                <!--<Select class="search-input-long" v-model="formValidate.tag_list" filterable multiple-->
-                        <!--placeholder="请选择关联的标签">-->
-                  <!--<Option v-for="item in allTagList" :value="item.tag_name" :key="item.id">{{ item.tag_name-->
-                    <!--}}-->
-                  <!--</Option>-->
-                <!--</Select>-->
+              <!--<Select class="search-input-long" v-model="formValidate.tag_list" filterable multiple-->
+              <!--placeholder="请选择关联的标签">-->
+              <!--<Option v-for="item in allTagList" :value="item.tag_name" :key="item.id">{{ item.tag_name-->
+              <!--}}-->
+              <!--</Option>-->
+              <!--</Select>-->
               <!--</FormItem>-->
               <FormItem label="备注" prop="db_detail">
                 <Input v-model="formValidate.db_detail" :maxlength=200 placeholder='请输入备注'></Input>
@@ -127,28 +127,29 @@
               <FormItem>
                 <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
                 <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+                <Button type="success" style="margin-left: 8px" @click="handleTestLink('formValidate')">测试连接</Button>
               </FormItem>
             </Form>
           </Modal>
         </Card>
       </i-col>
     </Row>
-    <Drawer v-model="logModal" :closable="false" style="background-color: #f8f8f9" width="820">
-      <h2 style="color: #000000; marginLeft: 10px">错误日志：</h2>
-      <div style="padding: 10px">
-        <Row v-for="log in logInfo">
-          <Col span="24">
-            <p style="color: #000000">{{log.create_time}} ：{{log.error_log}}</p>
-          </Col>
-        </Row>
-      </div>
-    </Drawer>
+    <!--<Drawer v-model="logModal" :closable="false" style="background-color: #f8f8f9" width="820">-->
+    <!--<h2 style="color: #000000; marginLeft: 10px">错误日志：</h2>-->
+    <!--<div style="padding: 10px">-->
+    <!--<Row v-for="log in logInfo">-->
+    <!--<Col span="24">-->
+    <!--<p style="color: #000000">{{log.create_time}} ：{{log.error_log}}</p>-->
+    <!--</Col>-->
+    <!--</Row>-->
+    <!--</div>-->
+    <!--</Drawer>-->
   </div>
 </template>
 
 <script>
   import Detail from './db_detail'
-  import {getDBlist, getDBDetail, operationDB, getTagtree} from '@/api/cmdb2/db.js'
+  import {getDBlist, getDBDetail, operationDB, getTagtree, testDB} from '@/api/cmdb2/db.js'
   import {getIDClist} from '@/api/cmdb2/idc.js'
   import {getTagList} from '@/api/cmdb2/tag.js'
   import {getuserlist} from '@/api/user'
@@ -210,12 +211,12 @@
           db_region: '',
           db_instance: '',
           db_host: '',
-          db_port: '3306',
-          db_user: 'root',
+          db_port: '',
+          db_user: '',
           db_pwd: '',
           db_env: 'dev',
           proxy_host: '',
-          db_type: 'mysql',
+          db_type: '',
           db_version: '',
           db_mark: '读',
           tag_list: [],
@@ -526,7 +527,7 @@
               })
           }
         } else {
-          this.$Message.info(`你总要选中点什么吧`)
+          this.$Message.info(`没有选择`)
         }
       },
 
@@ -640,7 +641,7 @@
             db_host: '',
             db_instance: '',
             db_port: '',
-            db_user: 'root',
+            db_user: '',
             db_pwd: '',
             db_env: '',
             // proxy_host:'',
@@ -648,7 +649,7 @@
             db_version: '',
             db_mark: '读',
             tag_list: [],
-            db_detail: '介绍一下吧'
+            db_detail: '描述'
           }
         }
       },
@@ -679,6 +680,24 @@
       },
       handleReset(name) {
         this.$refs[name].resetFields()
+      },
+      // 测试连接
+      handleTestLink(value) {
+        this.$refs[value].validate((valid) => {
+          if (valid) {
+            setTimeout(() => {
+              testDB(this.formValidate).then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success(`${res.data.msg}`)
+                } else {
+                  this.$Message.error(`${res.data.msg}`)
+                }
+              })
+            }, 100)
+          } else {
+            this.$Message.error('缺少必要参数')
+          }
+        })
       },
       // 删除DB
       handlerDeleteDB(params) {
