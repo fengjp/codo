@@ -322,12 +322,25 @@
         },
         columns: [
           {type: 'selection', key: 'id', width: 60, align: 'center', fixed: 'left'},
+          {
+            title: '支队名称', key: 'zdname', align: 'center', minWidth: 140,
+            render: (h, params, vm) => {
+              var tt = ''
+              for (let i in this.linkList) {
+                if (this.linkList[i]['id'] === params.row.zdlinkID) {
+                  tt = this.linkList[i]['name']
+                }
+              }
+              return h('div', [
+                h('span', {}, tt)
+              ])
+            }
+          },
           {title: '标题', key: 'title', align: 'center', minWidth: 120},
           {title: '更新时间', key: 'update_time', align: 'center', width: 150, sortable: true},
           {title: '二级组名', key: 'groupName', align: 'center', width: 150,},
           {title: '排序', key: 'group2ndSeq', align: 'center', width: 80, sortable: true},
-          // {title: '数据库源', key: 'dblinkIdNa', align: 'center', minWidth: 100},
-          {title: '支队连接', key: 'zdlink', align: 'center', minWidth: 150},
+          // {title: '支队连接', key: 'zdlink', align: 'center', minWidth: 150},
           {
             title: '轮询频率', key: 'timesTy', align: 'center', minWidth: 100,
             render: (h, params, vm) => {
@@ -1016,8 +1029,8 @@
       }
     },
     mounted() {
-      this.getQueryList(this.pageNum, this.pageSize)
       this.getZdLinkList()
+      this.getQueryList(this.pageNum, this.pageSize)
     }
   }
 </script>
