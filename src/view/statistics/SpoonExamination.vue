@@ -19,6 +19,17 @@
               <Option :value="item.k" v-for="item in allstorageList">{{item.v}}</Option>
             </Select>
           </Col>
+          <Col span="5">
+            <DatePicker type="daterange"
+                        v-model="todate"
+                        format="yyyyMMdd"
+                        @on-change="todate=$event"
+                        placement="bottom-end"
+                        placeholder="请选择年月"
+                        style="width: 200px">
+
+            </DatePicker>
+        </Col>
           <Col span="21" style="margin-bottom: -18px;">
             <Form v-for="item in temp_parameter_list">
               <Col span="5">
@@ -200,7 +211,7 @@
 
 <script>
   import excel from '@/libs/excel'
-  import {getstoragelist, getimplement, getSpoonobjlist} from '@/api/cmdb2/asset_sql'
+  import {getstoragelist, getimplement_spoon, getSpoonobjlist} from '@/api/cmdb2/asset_sql'
   import {
     getrecordlist,
     addrecordlist,
@@ -737,7 +748,10 @@
           this.isShow6 = true
           setTimeout(() => {
             this.playTimer()// 计时器
-            this.getimplement(JSON.stringify(this.temp_parameter_list), this.storage, JSON.stringify(this.targetKeys), "2")
+            let temp_date = {}
+            temp_date["startdate"] = this.todate[0]
+            temp_date["enddate"] = this.todate[1]
+            this.getimplement_spoon(JSON.stringify(this.temp_parameter_list), this.storage, JSON.stringify(this.targetKeys),temp_date)
             this.isDisable = false
           }, 1000)
         }
@@ -774,15 +788,20 @@
           this.isShow6 = true
           setTimeout(() => {
             // this.playTimer()// 计时器
-            this.getimplement(JSON.stringify(this.temp_parameter_list), this.storage, JSON.stringify(this.targetKeys), "1")
+
+            let temp_date = {}
+            temp_date["startdate"] = this.todate[0]
+            temp_date["enddate"] = this.todate[1]
+            this.getimplement_spoon(JSON.stringify(this.temp_parameter_list), this.storage, JSON.stringify(this.targetKeys), temp_date)
             this.isDisable2 = false
           }, 1000)
         }
         // this.table_loading = false
         // this.isShow6 = false
       },
-      getimplement(date, storage, targetKeys, flag) {
-        getimplement(date, storage, targetKeys, flag).then(res => {
+      //getimplement_spoon(parameter, storage, targetKeys,date) {
+      getimplement_spoon(parameter, storage, targetKeys,todate) {
+        getimplement_spoon(parameter, storage, targetKeys,todate).then(res => {
           if (res.data.code === 0) {
             this.tableData = res.data.data  //表数据
             this.titlelist = res.data.titlelist  //excel表头数据
@@ -880,6 +899,8 @@
             if(newRoute.name != oldRoute.name){
 
                this.getSpoonobjlist(newRoute.name)
+               this.todate = []
+               this.tableData = []
             }
           }
     },
@@ -890,6 +911,7 @@
       this.tousername = loginUser
       // this.menuname = String(this.$route.name)
       this.getSpoonobjlist(this.$route.name)
+
     }
 
   }

@@ -71,7 +71,7 @@ export default {
                  option = {
                   title: {
                     text: this.text,
-                     color: '#F0F0F0',
+                     // color: '#F0F0F0',
                   },
                    tooltip: {
         trigger: 'axis',
@@ -116,7 +116,7 @@ export default {
                     axisLabel: {
                             show: true,
                             textStyle: {
-                                color: '#F0F0F0',
+                                // color: '#F0F0F0',
                             }
                         }
 
@@ -127,7 +127,7 @@ export default {
                     axisLabel : {
                             formatter: '{value}',
                             textStyle: {
-                                color: '#F0F0F0',
+                                // color: '#F0F0F0',
                             }
                         }
 

@@ -560,7 +560,6 @@ export const routerMap = [
       }
     ]
   },
-<<<<<<< HEAD
   {
     path: '/allmeter',
     name: 'allmeter',
@@ -612,9 +611,6 @@ export const routerMap = [
   //   }
   //   ]
   // }
-
-=======
->>>>>>> 3074f9f695ad90dccc70aeec78db3cfc3c5ff253
 ]
 
 export const routes = [{

@@ -94,6 +94,19 @@ export const getimplement = (parameter,storage,targetKeys,flag) => {
     }
   })
 }
+export const getimplement_spoon = (parameter,storage,targetKeys,todate) => {
+  return axios.request({
+    url: '/cmdb2/v1/sql/implement_spoon/',
+    method: 'get',
+    params: {
+      parameter,
+      storage,
+      targetKeys,
+      todate,
+    }
+  })
+}
+
 export const getimplement2 = (storage) => {
   return axios.request({
     url: '/cmdb2/v1/sql/implement2/',

@@ -7,14 +7,14 @@
        <Row>
          <div   style="margin-top: 25px;">
          <Col span="14" style=" text-align:right;">
-             <h1 style="color:#F0F0F0 ;">广东互联网平台运行概况</h1>
+             <h1 >广东互联网平台运行概况</h1>
          </Col>
          <Col span="10">
 
            <div style=" text-align:right;">
              <Row>
                <Col span="12" >
-           <h3 style="color:#F0F0F0 ;">监控范围:</h3>
+           <h3 >监控范围:</h3>
                  </Col>
                    <Col span="3">
            <DatePicker  :value="todate" @on-change="todate=$event" placeholder="请选择日期" style="width:120px;" type="date"></DatePicker>
@@ -534,6 +534,7 @@ export default {
       if (JSON.stringify(this.todate) == '""') {
         alert('请选择日期范围')
       } else {
+        console.log("333333333333")
         this.tocolor = "green"
         this.to_setname = "系统运行效率"
         this.lineData = [10,81,30,9,21,22,3,5,66,12,0,68,10,81,30,9,21,22,3,5,66,23,68,39,90]
@@ -903,7 +904,7 @@ export default {
     height: 50%;
   }
   .background{
-    background:url(meter.jpeg);
+    /*background:url(meter.jpeg);*/
     width:100%;
     height:100%;  /**宽高100%是为了图片铺满屏幕 */
     z-index:-1;
