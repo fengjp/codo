@@ -901,6 +901,9 @@
                this.getSpoonobjlist(newRoute.name)
                this.todate = []
                this.tableData = []
+               this.titlelist = []
+               this.columns = []
+               this.keylist = []
             }
           }
     },

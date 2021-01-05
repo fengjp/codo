@@ -880,6 +880,10 @@
             if(newRoute.name != oldRoute.name){
 
                this.getobjlist(newRoute.name)
+               this.tableData = []
+               this.titlelist = []
+               this.columns = []
+               this.keylist = []
             }
           }
     },
