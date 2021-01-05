@@ -685,16 +685,23 @@
       handleTestLink(value) {
         this.$refs[value].validate((valid) => {
           if (valid) {
+            this.$Message.loading({
+              content: 'Loading...',
+              duration: 0
+            })
             setTimeout(() => {
               testDB(this.formValidate).then(res => {
                 if (res.data.code === 0) {
+                  this.$Message.destroy()
                   this.$Message.success(`${res.data.msg}`)
                 } else {
+                  this.$Message.destroy()
                   this.$Message.error(`${res.data.msg}`)
                 }
               })
             }, 100)
           } else {
+            this.$Message.destroy()
             this.$Message.error('缺少必要参数')
           }
         })

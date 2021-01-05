@@ -580,37 +580,8 @@ export const routerMap = [
           import ('@/view/meter/assessment.vue')
       }
     ]
-  },
-  // {
-  //   path: '/monitor',
-  //   name: 'monitor',
-  //   meta: {
-  //     icon: 'md-paper',
-  //     title: '监控巡检'
-  //   },
-  //   component: Main,
-  //   children: [{
-  //     path: 'monitorhome_mg',
-  //     name: 'monitor_home_mg',
-  //     meta: {
-  //       icon: 'ios-paper',
-  //       title: '总览'
-  //     },
-  //     component: () =>
-  //       import ('@/view/monitor/monitorhome.vue')
-  //   },
-  //   {
-  //     path: 'monitor_mg',
-  //     name: 'monitor_mg',
-  //     meta: {
-  //       icon: 'ios-paper',
-  //       title: '监控详情'
-  //     },
-  //     component: () =>
-  //         import ('@/view/monitor/monitor.vue')
-  //   }
-  //   ]
-  // }
+  }
+
 ]
 
 export const routes = [{
