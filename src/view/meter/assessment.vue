@@ -43,7 +43,7 @@
                           </Col  >
         </Row>
 <!--            <chart-bar2 :bar_data="bar_list" :value="barData" ref="childBar" style="width: 100%;height: 340px;" text=""/>-->
-            <chart-line2 :keylist="line_list" :value="lineData" :legend="legend_list" ref="childLine" :setcolor="tocolor" :setname="to_setname" style="width: 100%;height: 340px;" text=""/>
+            <chart-line2 :keylist="line_list" :value="lineData" :legend="legend_list" ref="childLine" :setcolor="tocolor" :setname="to_setname" style="width: 100%;height: 340px;" :text="to_setname"/>
         </div>
       </Card>
   </div>
@@ -80,7 +80,7 @@ export default {
       bar_list: {},
       barData: {}, // {"在职":20,"离职":10,"总数":30},
       lineData:[{
-          data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+          data:[], // [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
           type: 'line',
           smooth:true,
           areaStyle:{},
@@ -339,6 +339,10 @@ export default {
       month: nowDate.getMonth() + 1,
       date: nowDate.getDate()
      }
+
+     date.month = date.month < 10 ? ('0' + date.month) : date.month;
+     date.date = date.date < 10 ? ('0' + date.date) : date.date;
+
      this.todate = date.year + '-' + date.month + '-' + date.date
 },
     getiddata (id) {
@@ -517,7 +521,8 @@ export default {
       })
     },
     handleSubmitTable () {
-      // console.log(JSON.stringify(this.todate))
+      console.log("2333333333333333333")
+      console.log(JSON.stringify(this.todate))
       if (JSON.stringify(this.todate) == '""') {
         alert('请选择日期范围')
       } else {
@@ -857,6 +862,7 @@ export default {
     this.getlist()
     this.toggleExpand(this.treedata, true)
     this.addDate()
+    this.handleSubmitTable()
   }
 
 }

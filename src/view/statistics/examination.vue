@@ -512,6 +512,7 @@
       tostorage(date) {
         this.Interval_flag = 2
         this.targetKeys = []
+        this.all_tablelistdata = []
         for (var i = 0; i < this.allstorageList.length; i++) {
           // if(parseInt(this.allstorageList[i].k) === parseInt(date)){
           if (JSON.stringify(this.allstorageList[i].k) === JSON.stringify(date)) {
@@ -884,6 +885,9 @@
                this.titlelist = []
                this.columns = []
                this.keylist = []
+               this.targetKeys = []
+               this.tablelistdata2 = []
+               this.storage = ''
             }
           }
     },
@@ -894,6 +898,13 @@
       this.tousername = loginUser
       // this.menuname = String(this.$route.name)
       this.getobjlist(this.$route.name)
+      this.tableData = []
+      this.titlelist = []
+      this.columns = []
+      this.keylist = []
+      this.targetKeys = []
+      this.tablelistdata2 = []
+      this.storage = ''
     }
 
   }

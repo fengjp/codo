@@ -523,6 +523,7 @@
       tostorage(date) {
         this.Interval_flag = 2
         this.targetKeys = []
+        this.all_tablelistdata = []
         for (var i = 0; i < this.allstorageList.length; i++) {
           // if(parseInt(this.allstorageList[i].k) === parseInt(date)){
           if (JSON.stringify(this.allstorageList[i].k) === JSON.stringify(date)) {
@@ -759,13 +760,14 @@
         // this.isShow6 = false
       },
       handleSubmitTable() {
+
         this.storage_iddata(this.storagename)
         let temp_flag_str = 1
         if (JSON.stringify(this.storage) === '""') {
           temp_flag_str = 0
           this.$Message.error("请选择脚本")
         } else if (JSON.stringify(this.targetKeys) == '[]') {
-          temp_flag_str = 0
+          temp_flag_str = 1
           // this.$Message.error("请选择字段或模板")
            for (let i = 0; i < this.all_tablelistdata.length; i++) {
              // var index = this.targetKeys.indexOf(this.all_tablelistdata[i].key) //查看是否存在
@@ -904,6 +906,9 @@
                this.titlelist = []
                this.columns = []
                this.keylist = []
+               this.targetKeys = []
+               this.tablelistdata2 = []
+               this.storage = ''
             }
           }
     },
@@ -914,6 +919,14 @@
       this.tousername = loginUser
       // this.menuname = String(this.$route.name)
       this.getSpoonobjlist(this.$route.name)
+      this.todate = []
+      this.tableData = []
+      this.titlelist = []
+      this.columns = []
+      this.keylist = []
+      this.targetKeys = []
+      this.tablelistdata2 = []
+      this.storage = ''
 
     }
 
