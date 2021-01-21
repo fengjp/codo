@@ -477,6 +477,10 @@
             // 组装数据
             for (let g in this.queryGroupObjList) {
               let group1st = this.queryGroupObjList[g]
+              var l1 = []
+              var l2 = []
+              var l3 = []
+              var l4 = []
               for (let gg in group1st.child) {
                 let group2nd = group1st.child[gg]
                 let showList2nd = []
@@ -486,13 +490,16 @@
                   _d2['ty'] = group2nd.child[ggg].ty
                   showList2nd.push(_d2)
                   if (_d2['ty'] === 'success') {
-                    group1st.color = '#19be6b'
+                    // group1st.color = '#19be6b'
+                    l4.push('#19be6b')
                   }
                   if (_d2['ty'] === 'yellow') {
-                    group1st.color = '#fadb14'
+                    // group1st.color = '#fadb14'
+                    l3.push('#fadb14')
                   }
                   if (_d2['ty'] === 'warning') {
-                    group1st.color = '#ff9900'
+                    // group1st.color = '#ff9900'
+                    l2.push('#ff9900')
                     if (this.choseMP3 !== '1') {
                       this.audio.src = jinggao2Mp3
                     }
@@ -500,16 +507,22 @@
                     this.choseMP3 = '2'
                   }
                   if (_d2['ty'] === 'error') {
-                    group1st.color = '#ed4014'
+                    // group1st.color = '#ed4014'
+                    l1.push('#ed4014')
                     this.audio.src = jinggao1Mp3
                     this.canPlaying = true
                     this.choseMP3 = '1'
                   }
                   if (!group1st.color) {
-                    group1st.color = '#19be6b'
+                    // group1st.color = '#19be6b'
+                    l4.push('#19be6b')
                   }
                 }
                 group2nd.showList = showList2nd
+                l1.push(...l2)
+                l1.push(...l3)
+                l1.push(...l4)
+                group1st.color = l1[0]
               }
             }
             this.checkAudioPlay()

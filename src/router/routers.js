@@ -208,25 +208,25 @@ export const routerMap = [
     }
     ]
   },
-  {
-    path: '/plan',
-    name: 'plan',
-    meta: {
-      icon: 'ios-paper',
-      title: 'PLAN'
-    },
-    component: Main,
-    children: [{
-      path: 'plan_mg',
-      name: 'plan_mg',
-      meta: {
-        icon: 'ios-document',
-        title: '计划工作'
-      },
-      component: () =>
-        import ('@/view/it-manage/plan-manager.vue')
-    }]
-  },
+  // {
+  //   path: '/plan',
+  //   name: 'plan',
+  //   meta: {
+  //     icon: 'ios-paper',
+  //     title: 'PLAN'
+  //   },
+  //   component: Main,
+  //   children: [{
+  //     path: 'plan_mg',
+  //     name: 'plan_mg',
+  //     meta: {
+  //       icon: 'ios-document',
+  //       title: '计划工作'
+  //     },
+  //     component: () =>
+  //       import ('@/view/it-manage/plan-manager.vue')
+  //   }]
+  // },
   {
     path: '/people_admin',
     name: 'people_admin',
