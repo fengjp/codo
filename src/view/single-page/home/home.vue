@@ -415,7 +415,8 @@
         let val = ''
         if (zdlink) {
           key = 'ip'
-          val = zdlink + '|' + queryObjList[index].qid
+          // val = zdlink + '|' + queryObjList[index].qid
+          val = queryObjList[index].title
         } else {
           key = 'id'
           val = query_id
@@ -455,7 +456,12 @@
               queryObjList[index].errormsg = res.data.errormsg
             }
             // this.checkqueryObjSort(queryObjList, tList)
-
+            if (queryObjList[index].count['未知'] > 0) {
+              queryObjList[index].ty = 'unknown'
+            }
+            if (queryObjList[index].count['正常'] > 0) {
+              queryObjList[index].ty = 'success'
+            }
             if (queryObjList[index].count['一般'] > 0) {
               queryObjList[index].ty = 'yellow'
             }
@@ -479,6 +485,9 @@
                   _d2['name'] = group2nd.child[ggg].title
                   _d2['ty'] = group2nd.child[ggg].ty
                   showList2nd.push(_d2)
+                  if (_d2['ty'] === 'success') {
+                    group1st.color = '#19be6b'
+                  }
                   if (_d2['ty'] === 'yellow') {
                     group1st.color = '#fadb14'
                   }
@@ -777,4 +786,15 @@
     background-color: #fff;
   }
 
+  .ivu-btn-yellow {
+    color: #fff;
+    background-color: #fadb14;
+    border-color: #fadb14;
+  }
+
+  .ivu-btn-unknown {
+    color: #fff;
+    background-color: #c5c8ce;
+    border-color: #c5c8ce;
+  }
 </style>
