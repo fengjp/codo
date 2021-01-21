@@ -30,22 +30,6 @@
           <span style="margin-left: 10px;margin-right: 10px">排序</span>
           <InputNumber v-model="formValidate.seq" style="width: 15%;" placeholder="升序"></InputNumber>
         </FormItem>
-        <FormItem label="数据库源" prop="dblinkId" style="width: 48%">
-          <!--<Input v-model="formValidate.dblinkId" :maxlength="50" placeholder="数据库源"></Input>-->
-          <Select v-model="formValidate.dblinkId" placeholder='请选择数据库源'>
-            <Option v-for="item in dbList" :value="item.id">{{ item.name }}
-            </Option>
-          </Select>
-        </FormItem>
-        <FormItem label="数据库名" prop="database" style="width: 48%">
-          <Input v-model="formValidate.database" :maxlength="50" placeholder="请输入数据库名"></Input>
-        </FormItem>
-        <FormItem label="用户名" prop="user" style="width: 48%">
-          <Input v-model="formValidate.user" placeholder="连接数据库用户名"></Input>
-        </FormItem>
-        <FormItem label="密码" prop="password" style="width: 48%">
-          <Input v-model="formValidate.password" type="password" password placeholder="连接数据库密码"></Input>
-        </FormItem>
         <FormItem label="一级分组" prop="group1stID" style="width: 100%" v-if="versions === '1'">
           <Select v-model="formValidate.group1stID" placeholder='一级分组' style="width: 48%">
             <Option v-for="item in group1stList" :value="item.id">{{ item.name }}
@@ -66,11 +50,38 @@
                        :maxlength="50" placeholder="升序"></InputNumber>
           <Button type="primary" @click="handlerAddGroup('2','post','添加二级分组')">添加分组</Button>
         </FormItem>
-        <FormItem label="SQL语句" prop="sql" style="display: block">
-          <editor v-model="formValidate.sql" @init="editorInit" :mode_type="mode_type" :read="editor.read"
-                  :editorHeight=200 :key="`${_uid}`"></editor>
+        <FormItem label="监控类型" style="display: block">
+          <RadioGroup v-model="formValidate.type">
+            <Radio label="sql">SQL</Radio>
+            <Radio label="urls">URL</Radio>
+          </RadioGroup>
         </FormItem>
-        <FormItem label="设置列名" style="width: 100%">
+        <row>
+          <FormItem label="数据库源" prop="dblinkId" style="width: 48%"
+                    v-if="formValidate.type==='sql'">
+            <!--<Input v-model="formValidate.dblinkId" :maxlength="50" placeholder="数据库源"></Input>-->
+            <Select v-model="formValidate.dblinkId" placeholder='请选择数据库源'>
+              <Option v-for="item in dbList" :value="item.id">{{ item.name }}
+              </Option>
+            </Select>
+          </FormItem>
+          <FormItem label="数据库名" prop="database" style="width: 48%" v-if="formValidate.type==='sql'">
+            <Input v-model="formValidate.database" :maxlength="50" placeholder="请输入数据库名"></Input>
+          </FormItem>
+        </row>
+        <row>
+          <FormItem label="用户名" prop="user" style="width: 48%" v-if="formValidate.type==='sql'">
+            <Input v-model="formValidate.user" placeholder="连接数据库用户名"></Input>
+          </FormItem>
+          <FormItem label="密码" prop="password" style="width: 48%" v-if="formValidate.type==='sql'">
+            <Input v-model="formValidate.password" type="password" password placeholder="连接数据库密码"></Input>
+          </FormItem>
+        </row>
+        <FormItem label="SQL语句" prop="sql" style="display: block" v-show="formValidate.type==='sql'">
+          <editor ref="editor" v-model="formValidate.sql" @init="editorInit" :mode_type="mode_type"
+                  :read="editor.read" :editorHeight=200 :key="`${_uid}`"></editor>
+        </FormItem>
+        <FormItem label="设置列名" style="width: 100%" v-if="formValidate.type==='sql'">
           <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colnames">
             <Col span="14">
               <Input style="width: 120px" v-model="item.col" :maxlength="20" placeholder="字段名"></Input> ：
@@ -81,49 +92,63 @@
             </Col>
           </Row>
         </FormItem>
-        <FormItem style="display: block">
+        <FormItem style="display: block" v-if="formValidate.type==='sql'">
           <Row>
             <Col span="12">
               <Button type="dashed" long @click="handleColAdd('colnames')" icon="md-add">增加列名</Button>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="是否配置告警" style="display: block">
+        <FormItem label="是否配置告警" style="display: block" v-if="formValidate.type==='sql'">
           <Checkbox v-model="isAlarm"></Checkbox>
         </FormItem>
-        <FormItem label="" v-if="isAlarm" style="display: block; margin-top: -30px;">
-          <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colalarms">
-            <Select id="alarmCol" size="small" style="width:120px" v-model="item.selCol">
-              <Option v-for="i in formValidate.colnames" :value="i.col">{{ i.col }}</Option>
-            </Select>
-            <p style="display: initial;color: red;margin-left: 10px;" v-text="message"></p>
-            <!--<Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colalarms',index)"></Button>-->
-            <div v-for="(subCol, subColIndex) in item.subColList">
-              <Col span="14" offset="5">
-                <Select style="width:60px" v-model="subCol.sign">
-                  <Option v-for="s in signList" :value="s.name" :key="`sign-${s.id}`">{{ s.name }}</Option>
-                </Select>
-                <InputNumber style="width: 110px; margin-left: 5px; margin-right: 5px" v-model="subCol.alarmVal"
-                             placeholder="指标值"></InputNumber>
-                <Select style="width:80px" v-model="subCol.alarmType">
-                  <Option v-for="t in typeList" :value="t.name" :key="`type-${t.id}`">{{ t.name }}</Option>
-                </Select>
-              </Col>
-              <Col span="4">
-                <Button type="text" shape="circle" icon="md-add" @click="handleColAdd('subColList',index)"></Button>
-                <Button type="text" shape="circle" icon="md-close"
-                        @click="handleColRemove('subColList',index,subColIndex)"></Button>
-              </Col>
-            </div>
+        <div v-if="formValidate.type==='sql'">
+          <FormItem label="" v-if="isAlarm" style="display: block; margin-top: -30px;">
+            <Row style="margin-bottom: 5px" v-for="(item, index) in formValidate.colalarms">
+              <Select id="alarmCol" size="small" style="width:120px" v-model="item.selCol">
+                <Option v-for="i in formValidate.colnames" :value="i.col">{{ i.col }}</Option>
+              </Select>
+              <p style="display: initial;color: red;margin-left: 10px;" v-text="message"></p>
+              <!--<Button type="text" shape="circle" icon="md-close" @click="handleColRemove('colalarms',index)"></Button>-->
+              <div v-for="(subCol, subColIndex) in item.subColList">
+                <Col span="14" offset="5">
+                  <Select style="width:60px" v-model="subCol.sign">
+                    <Option v-for="s in signList" :value="s.name" :key="`sign-${s.id}`">{{ s.name }}</Option>
+                  </Select>
+                  <InputNumber style="width: 110px; margin-left: 5px; margin-right: 5px" v-model="subCol.alarmVal"
+                               placeholder="指标值"></InputNumber>
+                  <Select style="width:80px" v-model="subCol.alarmType">
+                    <Option v-for="t in typeList" :value="t.name" :key="`type-${t.id}`">{{ t.name }}</Option>
+                  </Select>
+                </Col>
+                <Col span="4">
+                  <Button type="text" shape="circle" icon="md-add" @click="handleColAdd('subColList',index)"></Button>
+                  <Button type="text" shape="circle" icon="md-close"
+                          @click="handleColRemove('subColList',index,subColIndex)"></Button>
+                </Col>
+              </div>
+            </Row>
+          </FormItem>
+        </div>
+        <FormItem label="监控URL" style="width: 100%" v-if="formValidate.type==='urls'">
+          <Row style="margin-bottom: 5px" v-for="(val, index) in formValidate.urls">
+            <Col span="18">
+              <Input v-model="formValidate.urls[index]">
+                <span slot="prepend">http://</span>
+              </Input>
+            </Col>
+            <Col span="3">
+              <Button type="text" shape="circle" icon="md-close" @click="handleColRemove('urls',index)"></Button>
+            </Col>
           </Row>
         </FormItem>
-        <!--<FormItem>-->
-        <!--<Row>-->
-        <!--<Col span="12">-->
-        <!--<Button type="dashed" long @click="handleColAdd('colalarms')" icon="md-add">增加配置</Button>-->
-        <!--</Col>-->
-        <!--</Row>-->
-        <!--</FormItem>-->
+        <FormItem style="display: block" v-if="formValidate.type==='urls'">
+          <Row>
+            <Col span="12">
+              <Button type="dashed" long @click="handleColAdd('urls')" icon="md-add">增加</Button>
+            </Col>
+          </Row>
+        </FormItem>
         <FormItem label="轮询频率" prop="times">
           <RadioGroup v-model="formValidate.timesTy" vertical>
             <Radio label="timesTy1">
@@ -139,7 +164,7 @@
           </RadioGroup>
         </FormItem>
         <FormItem label="描述" style="width: 100%">
-          <Input v-model="formValidate.description" type="textarea" :rows="5" placeholder="描述"></Input>
+          <Input v-model="formValidate.description" type="textarea" :rows="3" placeholder="描述"></Input>
         </FormItem>
         <FormItem style="display: block">
           <Button type="primary" @click="handleSubmitQuery('formValidate')">提交</Button>
@@ -272,7 +297,7 @@
                   break
                 }
               }
-              if (this.versions === '2'){
+              if (this.versions === '2') {
                 var tt = '-'
               }
               return h('div', [
@@ -313,14 +338,14 @@
             sortable: true
           },
           {
-            title: '数据库源',
-            key: 'dblinkIdNa',
+            title: '监控方式',
+            key: 'type',
             align: 'center',
             minWidth: 100
           },
           {
-            title: '数据库名',
-            key: 'database',
+            title: '数据库源',
+            key: 'dblinkIdNa',
             align: 'center',
             minWidth: 100
           },
@@ -436,6 +461,8 @@
           password: '',
           database: '',
           sql: '',
+          urls: [],
+          type: '',
           colnames: [{
             col: '',
             name: '',
@@ -481,6 +508,11 @@
       }
     },
     methods: {
+      // editor_init(val) {
+      //   if (val === 'sql') {
+      //     console.log(this.$refs.editor.value)
+      //   }
+      // },
       // 获取数据库源
       getDBListForQry(key, value) {
         getDBListForQry(key, value).then(res => {
@@ -492,7 +524,8 @@
       onSwitch(editData) {
         const EditData = {
           query_id: editData.row.id,
-          key: editData.column.key
+          key: editData.column.key,
+          title: editData.row.title,
         }
         patchquery(EditData).then(res => {
           if (res.data.code === 0) {
@@ -522,6 +555,8 @@
             dblinkId: paramsRow.dblinkId,
             database: paramsRow.database,
             sql: paramsRow.sql,
+            urls: paramsRow.urls,
+            type: paramsRow.type,
             colnames: paramsRow.colnames,
             colalarms: paramsRow.colalarms,
             timesTy: paramsRow.timesTy,
@@ -550,6 +585,8 @@
             user: '',
             password: '',
             sql: '',
+            urls: [],
+            type: '',
             colnames: [{
               col: '',
               name: ''
@@ -605,6 +642,9 @@
             name: ''
           })
         }
+        if (val === 'urls') {
+          this.formValidate.urls.push('')
+        }
       },
       handleColRemove(val, index, subColIndex) {
         // console.log(index)
@@ -619,6 +659,9 @@
         }
         if (val === 'colnames') {
           this.formValidate.colnames.splice(index, 1)
+        }
+        if (val === 'urls') {
+          this.formValidate.urls.splice(index, 1)
         }
       },
       handleSubmitGroup(value) {
@@ -645,7 +688,7 @@
         this.$refs[value].validate((valid) => {
           if (valid) {
             // console.log(this.formValidate)
-            if (this.isAlarm && this.formValidate.colalarms[0].selCol === '') {
+            if (this.isAlarm && this.formValidate.colalarms.length > 0 && this.formValidate.colalarms[0].selCol === '') {
               this.message = '请选择告警字段'
               this.$Message.error('表单校验错误')
               return
@@ -654,6 +697,23 @@
             }
             if (!this.isAlarm) {
               this.formValidate.colalarms = []
+            }
+            if (this.formValidate.type === 'urls') {
+              this.formValidate.colnames = [
+                {'col': 'get_time', 'name': '请求时间'},
+                {'col': 'url', 'name': '请求地址'},
+                {'col': 'resp_time', 'name': '响应时间(秒)'},
+              ]
+              this.formValidate.colalarms = [
+                {
+                  selCol: "resp_time",
+                  subColList: [
+                    {sign: ">=", alarmVal: 5, alarmType: "致命"},
+                    {sign: "<", alarmVal: 0.22, alarmType: "正常"},
+                    {sign: "<", alarmVal: 5, alarmType: "一般"},
+                  ]
+                }
+              ]
             }
             setTimeout(() => {
               // console.log(this.formValidate)
@@ -674,7 +734,11 @@
       },
       handlerDeleteQuery(params) {
         if (confirm('确定要删除吗')) {
-          operationQuery({id: params.row.id}, 'delete').then(
+          let data = {
+            id: params.row.id,
+            title: params.row.title,
+          }
+          operationQuery(data, 'delete').then(
             res => {
               if (res.data.code === 0) {
                 this.$Message.success(`${res.data.msg}`)

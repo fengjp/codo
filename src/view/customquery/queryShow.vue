@@ -1,7 +1,7 @@
 <template>
   <div>
     <Row :gutter="10" style="margin-top: 10px;">
-      <CustomInfo :dataObjList="queryGroupObjList"></CustomInfo>
+      <CustomInfo ref="customInfo" :dataObjList="queryGroupObjList"></CustomInfo>
     </Row>
   </div>
 </template>
@@ -47,25 +47,16 @@
       changeShow(item) {
         item.isShow = !item.isShow
       },
-      getColor(k) {
-        if (k === '正常') {
-          return '#19be6b'
-        } else if (k === '一般') {
-          return '#fadb14'
-        } else if (k === '严重') {
-          return '#ff9900'
-        } else if (k === '致命') {
-          return '#ed4014'
-        }
-      },
       playTimer() {
         this.timer = setInterval(() => {
           for (let i in this.tList) {
             // console.log(this.countTime(this.tList[i].expireTime))
             let ret = this.countTime(this.tList[i].expireTime)
             if (ret === false) {
-              this.tList[i].expireTime = this.tList[i].expireTime + this.tList[i].interval
-              this.do_sql(i, this.queryObjList, this.tList)
+              if (this.tList[i].expireTime !== 0) {
+                this.tList[i].expireTime = this.tList[i].expireTime + this.tList[i].interval
+                this.do_sql(i, this.queryObjList, this.tList)
+              }
             } else {
               this.tList[i].xcsj = this.countTime(this.tList[i].expireTime)
               this.queryObjList[i].up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
@@ -140,25 +131,27 @@
               t_obj.tName = item.title
               if (item.timesTy === 'timesTy1') {
                 t_obj.interval = parseInt(item.timesTyVal) * 60 * 1000
-                t_obj.expireTime = now + t_obj.interval
+                t_obj.expireTime = item.next_time * 1000
+                // t_obj.expireTime = now + t_obj.interval
               } else {
-                let _date = dateFormat('YYYY-mm-dd HH:MM', date)
-                let dateStr = _date.split(' ')
-                dateStr[1] = item.timesTyVal
-                _date = dateStr.join(' ')
-                let endDate = new Date(_date)
-                t_obj.expireTime = endDate.getTime()
+                // let _date = dateFormat('YYYY-mm-dd HH:MM', date)
+                // let dateStr = _date.split(' ')
+                // dateStr[1] = item.timesTyVal
+                // _date = dateStr.join(' ')
+                // let endDate = new Date(_date)
+                // t_obj.expireTime = endDate.getTime()
+                t_obj.expireTime = item.next_time * 1000
                 t_obj.interval = 24 * 60 * 60 * 1000
               }
               this.tList.push(t_obj)
               queryObjList[i].up_tip = ''
             }
-            this.queryObjList = queryObjList
             // console.log(this.tList)
-            for (let i in this.queryObjList) {
-              this.do_sql(i, this.queryObjList, this.tList)
+            for (let i in queryObjList) {
+              this.do_sql(i, queryObjList, this.tList)
             }
-            this.createQueryObj()
+            this.createQueryObj(queryObjList)
+            this.queryObjList = queryObjList
           } else {
             this.$Message.error(`${res.data.msg}`)
           }
@@ -171,7 +164,8 @@
         let val = ''
         if (zdlink) {
           key = 'ip'
-          val = zdlink + '|' + queryObjList[index].qid
+          // val = zdlink + '|' + queryObjList[index].qid
+          val = queryObjList[index].title
         } else {
           key = 'id'
           val = query_id
@@ -211,7 +205,12 @@
               queryObjList[index].errormsg = res.data.errormsg
             }
             // this.checkqueryObjSort(queryObjList, tList)
-            // console.log(this.queryObjList[i].count)
+            if (queryObjList[index].count['未知'] > 0) {
+              queryObjList[index].ty = 'unknown'
+            }
+            if (queryObjList[index].count['正常'] > 0) {
+              queryObjList[index].ty = 'success'
+            }
             if (queryObjList[index].count['一般'] > 0) {
               queryObjList[index].ty = 'yellow'
             }
@@ -228,12 +227,15 @@
               let group1st = this.queryGroupObjList[g]
               for (let gg in group1st.child) {
                 let group2nd = group1st.child[gg]
-                let showList2nd = []
+                group2nd.showList = []
                 for (let ggg in group2nd.child) {
                   let _d2 = {}
                   _d2['name'] = group2nd.child[ggg].title
                   _d2['ty'] = group2nd.child[ggg].ty
-                  showList2nd.push(_d2)
+                  group2nd.showList.push(_d2)
+                  if (_d2['ty'] === 'success') {
+                    group1st.color = '#19be6b'
+                  }
                   if (_d2['ty'] === 'yellow') {
                     group1st.color = '#fadb14'
                   }
@@ -247,10 +249,8 @@
                     group1st.color = '#19be6b'
                   }
                 }
-                group2nd.showList = showList2nd
               }
             }
-            // console.log(this.queryGroupObjList)
           }
         )
       },
@@ -307,18 +307,18 @@
       },
 
       //
-      createQueryObj() {
+      createQueryObj(queryObjList) {
         this.queryObj = {}
         this.queryGroupObjList = []
-        for (let i in this.queryObjList) {
-          if (!this.queryObj[this.queryObjList[i]['groupID'][0]]) {
-            this.queryObj[this.queryObjList[i]['groupID'][0]] = {}
+        for (let i in queryObjList) {
+          if (!this.queryObj[queryObjList[i]['groupID'][0]]) {
+            this.queryObj[queryObjList[i]['groupID'][0]] = {}
           }
-          var _obj = this.queryObj[this.queryObjList[i]['groupID'][0]]
-          if (!_obj[this.queryObjList[i]['groupID'][1]]) {
-            _obj[this.queryObjList[i]['groupID'][1]] = []
+          var _obj = this.queryObj[queryObjList[i]['groupID'][0]]
+          if (!_obj[queryObjList[i]['groupID'][1]]) {
+            _obj[queryObjList[i]['groupID'][1]] = []
           }
-          _obj[this.queryObjList[i]['groupID'][1]].push(this.queryObjList[i])
+          _obj[queryObjList[i]['groupID'][1]].push(queryObjList[i])
         }
         // console.log(this.queryObj)
 
@@ -381,7 +381,11 @@
       if (this.timer) {
         clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
       }
-      this.playTimer()// 启用定时器
+      try {
+        this.playTimer()// 启用定时器
+      } catch (e) {
+        console.log(e)
+      }
     },
     // 组件关闭时，执行此方法来销毁定时器
     beforeRouteLeave(to, from, next) {
@@ -426,5 +430,16 @@
 
   .customtable .ivu-table-small td {
     height: 30px;
+  }
+
+  .ivu-btn-yellow {
+    color: #fff;
+    background-color: #fadb14;
+    border-color: #fadb14;
+  }
+  .ivu-btn-unknown {
+    color: #fff;
+    background-color: #c5c8ce;
+    border-color: #c5c8ce;
   }
 </style>

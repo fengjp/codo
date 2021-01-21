@@ -46,7 +46,7 @@
             vm.$emit('setCompletions', editor, session, pos, prefix, callback)
           }
         }
-        
+
         editor.completers = [staticWordCompleter]
         editor.setOptions({
           enableBasicAutocompletion: true,
@@ -56,7 +56,7 @@
         editor.setFontSize(14)
         editor.setOption('enableEmmet', true)
         editor.getSession().setMode(`ace/mode/${this.mode_type}`)
-        this.theme = this.read ? 'xcode' : 'terminal' 
+        this.theme = this.read ? 'xcode' : 'terminal'
         // https://github.com/ajaxorg/ace/tree/master/lib/ace/theme
         editor.setTheme(`ace/theme/${this.theme}`);   // 设置主题背景
 
@@ -67,7 +67,7 @@
         })
         editor.setFontSize(10); // 字体大小
         editor.setReadOnly(this.read);  // 是否只读
-      }
+      },
     },
     watch: {
       value (val) {

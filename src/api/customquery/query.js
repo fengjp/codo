@@ -71,3 +71,14 @@ export const getGroupList = (key, value) => {
     }
   })
 }
+
+export const getQueryLog = (qid, qty) => {
+  return axios.request({
+    url: '/tk/v1/getQueryLog/',
+    method: 'get',
+    params: {
+      qid,
+      qty
+    }
+  })
+}
