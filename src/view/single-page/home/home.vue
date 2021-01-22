@@ -32,7 +32,7 @@
     </Row>
 
     <Row :gutter="10" style="margin-top: 10px;">
-      <CustomInfo :dataObj="queryObj" :dataObjList="queryGroupObjList"></CustomInfo>
+      <CustomInfo ref="customInfo" :dataObj="queryObj" :dataObjList="queryGroupObjList"></CustomInfo>
     </Row>
 
     <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="540"
@@ -308,8 +308,10 @@
             // console.log(this.countTime(this.tList[i].expireTime))
             let ret = this.countTime(this.tList[i].expireTime)
             if (ret === false) {
-              this.tList[i].expireTime = this.tList[i].expireTime + this.tList[i].interval
-              this.do_sql(i, this.queryObjList, this.tList)
+              if (this.tList[i].expireTime !== 0) {
+                this.tList[i].expireTime = this.tList[i].expireTime + this.tList[i].interval
+                this.do_sql(i, this.queryObjList, this.tList)
+              }
             } else {
               this.tList[i].xcsj = this.countTime(this.tList[i].expireTime)
               this.queryObjList[i].up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
@@ -384,25 +386,27 @@
               t_obj.tName = item.title
               if (item.timesTy === 'timesTy1') {
                 t_obj.interval = parseInt(item.timesTyVal) * 60 * 1000
-                t_obj.expireTime = now + t_obj.interval
+                t_obj.expireTime = item.next_time * 1000
+                // t_obj.expireTime = now + t_obj.interval
               } else {
-                let _date = dateFormat('YYYY-mm-dd HH:MM', date)
-                let dateStr = _date.split(' ')
-                dateStr[1] = item.timesTyVal
-                _date = dateStr.join(' ')
-                let endDate = new Date(_date)
-                t_obj.expireTime = endDate.getTime()
+                // let _date = dateFormat('YYYY-mm-dd HH:MM', date)
+                // let dateStr = _date.split(' ')
+                // dateStr[1] = item.timesTyVal
+                // _date = dateStr.join(' ')
+                // let endDate = new Date(_date)
+                // t_obj.expireTime = endDate.getTime()
+                t_obj.expireTime = item.next_time * 1000
                 t_obj.interval = 24 * 60 * 60 * 1000
               }
               this.tList.push(t_obj)
               queryObjList[i].up_tip = ''
             }
-            this.queryObjList = queryObjList
             // console.log(this.tList)
-            for (let i in this.queryObjList) {
-              this.do_sql(i, this.queryObjList, this.tList)
+            for (let i in queryObjList) {
+              this.do_sql(i, queryObjList, this.tList)
             }
-            this.createQueryObj()
+            this.createQueryObj(queryObjList)
+            this.queryObjList = queryObjList
           } else {
             this.$Message.error(`${res.data.msg}`)
           }
@@ -483,12 +487,12 @@
               var l4 = []
               for (let gg in group1st.child) {
                 let group2nd = group1st.child[gg]
-                let showList2nd = []
+                group2nd.showList = []
                 for (let ggg in group2nd.child) {
                   let _d2 = {}
                   _d2['name'] = group2nd.child[ggg].title
                   _d2['ty'] = group2nd.child[ggg].ty
-                  showList2nd.push(_d2)
+                  group2nd.showList.push(_d2)
                   if (_d2['ty'] === 'success') {
                     // group1st.color = '#19be6b'
                     l4.push('#19be6b')
@@ -518,12 +522,12 @@
                     l4.push('#19be6b')
                   }
                 }
-                group2nd.showList = showList2nd
-                l1.push(...l2)
-                l1.push(...l3)
-                l1.push(...l4)
-                group1st.color = l1[0]
               }
+              l1.push(...l2)
+              l1.push(...l3)
+              l1.push(...l4)
+              group1st.color = l1[0]
+              // console.log(this.queryGroupObjList)
             }
             this.checkAudioPlay()
           }
@@ -607,18 +611,18 @@
         this.tList = new_tList
       },
 
-      createQueryObj() {
+      createQueryObj(queryObjList) {
         this.queryObj = {}
         this.queryGroupObjList = []
-        for (let i in this.queryObjList) {
-          if (!this.queryObj[this.queryObjList[i]['groupID'][0]]) {
-            this.queryObj[this.queryObjList[i]['groupID'][0]] = {}
+        for (let i in queryObjList) {
+          if (!this.queryObj[queryObjList[i]['groupID'][0]]) {
+            this.queryObj[queryObjList[i]['groupID'][0]] = {}
           }
-          var _obj = this.queryObj[this.queryObjList[i]['groupID'][0]]
-          if (!_obj[this.queryObjList[i]['groupID'][1]]) {
-            _obj[this.queryObjList[i]['groupID'][1]] = []
+          var _obj = this.queryObj[queryObjList[i]['groupID'][0]]
+          if (!_obj[queryObjList[i]['groupID'][1]]) {
+            _obj[queryObjList[i]['groupID'][1]] = []
           }
-          _obj[this.queryObjList[i]['groupID'][1]].push(this.queryObjList[i])
+          _obj[queryObjList[i]['groupID'][1]].push(queryObjList[i])
         }
         // console.log(this.queryObj)
 
