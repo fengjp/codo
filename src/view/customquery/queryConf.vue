@@ -688,12 +688,15 @@
         this.$refs[value].validate((valid) => {
           if (valid) {
             // console.log(this.formValidate)
-            if (this.isAlarm && this.formValidate.colalarms.length > 0 && this.formValidate.colalarms[0].selCol === '') {
-              this.message = '请选择告警字段'
-              this.$Message.error('表单校验错误')
-              return
-            } else {
-              this.message = ''
+            if (this.formValidate.type === 'sql') {
+              if (this.isAlarm && this.formValidate.colalarms.length > 0 && this.formValidate.colalarms[0].selCol === '') {
+                this.message = '请选择告警字段'
+                console.log(this.formValidate)
+                this.$Message.error('表单校验错误')
+                return
+              } else {
+                this.message = ''
+              }
             }
             if (!this.isAlarm) {
               this.formValidate.colalarms = []
