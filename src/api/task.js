@@ -1,11 +1,44 @@
 import axios from '@/libs/api.request'
 import config from '@/config'
+const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
+export const UploadUrl = baseUrl + '/tk/v2/accounts/ranking/upload/'
 
 export const meterList = () => {
   return axios.request({
     url: '/tk/v2/accounts/meter/',
     method: 'get'
 
+  })
+}
+
+export const rankinglist = (start_date,end_date) => {
+  return axios.request({
+    url: '/tk/v2/accounts/ranking/',
+    method: 'get',
+    params: {
+      start_date,
+      end_date
+    }
+  })
+}
+
+export const getlinedata = (name,start_date,end_date) => {
+  return axios.request({
+    url: '/tk/v2/accounts/linedata/',
+    method: 'get',
+    params: {
+      name,
+      start_date,
+      end_date
+    }
+  })
+}
+
+export const meteradd = (data) => {
+  return axios.request({
+    url: '/tk/v2/accounts/meteradd/',
+    method: 'post',
+    data
   })
 }
 
