@@ -185,6 +185,7 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/customquery/querySubConf.vue')
+<<<<<<< HEAD
       }
     ]
   },
@@ -427,6 +428,250 @@ export const routerMap = [
       }
     ]
   },
+=======
+      }
+    ]
+  },
+  {
+    path: '/itmanage',
+    name: 'itmanage',
+    meta: {
+      icon: 'md-paper',
+      title: 'ITSM'
+    },
+    component: Main,
+    children: [{
+      path: 'case_mg',
+      name: 'case_mg',
+      meta: {
+        icon: 'ios-paper',
+        title: '个案管理'
+      },
+      component: () =>
+        import ('@/view/it-manage/problem-manager.vue')
+    }
+    ]
+  },
+  // {
+  //   path: '/plan',
+  //   name: 'plan',
+  //   meta: {
+  //     icon: 'ios-paper',
+  //     title: 'PLAN'
+  //   },
+  //   component: Main,
+  //   children: [{
+  //     path: 'plan_mg',
+  //     name: 'plan_mg',
+  //     meta: {
+  //       icon: 'ios-document',
+  //       title: '计划工作'
+  //     },
+  //     component: () =>
+  //       import ('@/view/it-manage/plan-manager.vue')
+  //   }]
+  // },
+  {
+    path: '/people_admin',
+    name: 'people_admin',
+    meta: {
+      icon: 'ios-cube',
+      title: '团队管理'
+    },
+    component: Main,
+    children: [{
+      path: 'peoples',
+      name: 'peoples',
+      meta: {
+        icon: 'md-contacts',
+        title: '人员'
+      },
+      component: () =>
+        import ('@/view/user-manage/peoplesconf.vue')
+    },
+      {
+        path: 'JobPost',
+        name: 'JobPost',
+        meta: {
+          icon: 'md-desktop',
+          title: '岗位'
+        },
+        component: () =>
+          import ('@/view/user-manage/JobPost.vue')
+      },
+      {
+        path: 'meter',
+        name: 'meter',
+        meta: {
+          icon: 'ios-speedometer-outline',
+          title: '仪表'
+        },
+        component: () =>
+          import ('@/view/user-manage/meter.vue')
+      }
+    ]
+  }, {
+    path: '/SQLreport',
+    name: 'SQLreport',
+    meta: {
+      icon: 'ios-cube',
+      title: '脚本管理'
+    },
+    component: Main,
+    children: [{
+      path: 'storage_admin',
+      name: 'storage_admin',
+      meta: {
+        icon: 'ios-build-outline',
+        title: '存储过程配置'
+      },
+      component: () =>
+        import ('@/view/cmdb2/storage.vue')
+    },
+      {
+        path: 'asset_sql',
+        name: 'asset_sql',
+        meta: {
+          icon: 'ios-build-outline',
+          title: '脚本配置'
+        },
+        component: () =>
+          import ('@/view/cmdb2/asset_sql.vue')
+      },]
+  },
+
+  {
+    path: '/report',
+    name: 'report',
+    meta: {
+      icon: 'md-folder',
+      title: '报表'
+    },
+    component: Main,
+    children: [{
+      path: 'report_mg',
+      name: 'report_mg',
+      meta: {
+        icon: 'ios-cube',
+        title: '报表管理'
+      },
+      component: () =>
+        import ('@/view/it-manage/report-manager.vue')
+    }]
+  },
+  {
+    path: '/Sqlstatistics',
+    name: 'Sqlstatistics',
+    meta: {
+      icon: 'md-folder',
+      title: '报表统计'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'Sqlscience',
+        name: 'Sqlscience',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '科技科'
+        },
+        component: () =>
+          import ('@/view/statistics/Sqlexamination.vue')
+      }
+    ]
+  },
+  {
+    path: '/statistics',
+    name: 'statistics',
+    meta: {
+      icon: 'md-folder',
+      title: '需求统计'
+    },
+    component: Main,
+    children: [{
+      path: 'science',
+      name: 'science',
+      meta: {
+        icon: 'ios-list-box-outline',
+        title: '科技科'
+      },
+      component: () =>
+        import ('@/view/statistics/examination.vue')
+    }
+    ]
+  },
+  {
+    path: '/SpoonStatistics',
+    name: 'SpoonStatistics',
+    meta: {
+      icon: 'md-folder',
+      title: 'SPOON需求统计'
+    },
+    component: Main,
+    children: [{
+      path: 'Spoonscience',
+      name: 'Spoonscience',
+      meta: {
+        icon: 'ios-list-box-outline',
+        title: '科技科'
+      },
+      component: () =>
+        import ('@/view/statistics/SpoonExamination.vue')
+    }
+    ]
+  },
+  {
+    path: '/dataService',
+    name: 'dataService',
+    meta: {
+      icon: 'ios-cloudy',
+      title: '数据服务'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'certdataUp',
+        name: 'certdataUp',
+        meta: {
+          icon: 'md-cloud-upload',
+          title: '新版办件上报'
+        },
+        component: () =>
+          import ('@/view/it-manage/dataSerUp.vue')
+      },
+    ]
+  },
+  {
+    path: '/cron',
+    name: 'cron',
+    meta: {
+      icon: 'ios-alarm',
+      title: '定时任务'
+    },
+    component: Main,
+    children: [{
+      path: 'cronjobs',
+      name: 'cronjobs',
+      meta: {
+        icon: 'md-alarm',
+        title: '定时列表'
+      },
+      component: () =>
+        import ('@/view/cron/cron-jobs.vue')
+    },
+      {
+        path: 'cronlogs',
+        name: 'cronlogs',
+        meta: {
+          icon: 'ios-list-box-outline',
+          title: '任务日志'
+        },
+        component: () =>
+          import ('@/view/cron/cron-logs.vue')
+      }
+    ]
+  },
+>>>>>>> 6a59102642111c2cbc58995c57b16de11a2e3333
   {
     path: '/usermanage',
     name: 'usermanage',
@@ -529,6 +774,7 @@ export const routerMap = [
       }
     ]
   },
+<<<<<<< HEAD
   {
     path: '/repository',
     name: 'repository',
@@ -611,6 +857,70 @@ export const routerMap = [
       }
     ]
   }
+=======
+  // {
+  //   path: '/repository',
+  //   name: 'repository',
+  //   meta: {
+  //     icon: 'md-book',
+  //     title: '知识库'
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'doc',
+  //       name: 'doc',
+  //       meta: {
+  //         icon: 'ios-book',
+  //         title: '文档管理'
+  //       },
+  //       component: () =>
+  //         import ('@/view/it-manage/doc-manager.vue')
+  //     },
+  //     {
+  //       path: 'faq',
+  //       name: 'FAQ',
+  //       meta: {
+  //         icon: 'md-help-circle',
+  //         title: 'FAQ'
+  //       },
+  //       component: () =>
+  //         import ('@/view/it-manage/faq.vue')
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/allmeter',
+  //   name: 'allmeter',
+  //   meta: {
+  //     icon: 'md-book',
+  //     title: '仪表管理'
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'assessment',
+  //       name: 'assessment',
+  //       meta: {
+  //         icon: 'ios-speedometer-outline',
+  //         title: '评估仪表'
+  //       },
+  //       component: () =>
+  //         import ('@/view/meter/assessment.vue')
+  //     },
+  //     {
+  //       path: 'meterMap',
+  //       name: 'meterMap',
+  //       meta: {
+  //         icon: 'ios-speedometer-outline',
+  //         title: '评估仪表'
+  //       },
+  //       component: () =>
+  //         import ('@/view/meter/meter_map.vue')
+  //     }
+  //   ]
+  // }
+>>>>>>> 6a59102642111c2cbc58995c57b16de11a2e3333
 
 ]
 
@@ -625,102 +935,102 @@ export const routes = [{
   component: () =>
     import ('@/view/login/login.vue')
 },
-{
-  path: '/',
-  name: '_home',
-  redirect: '/home',
-  component: Main,
-  meta: {
-    hideInMenu: true,
-    notCache: true
-  },
-  children: [{
-    path: '/home',
-    name: 'home',
+  {
+    path: '/',
+    name: '_home',
+    redirect: '/home',
+    component: Main,
     meta: {
       hideInMenu: true,
-      title: '首页',
-      notCache: true,
-      icon: 'md-home'
+      notCache: true
     },
-    component: () =>
+    children: [{
+      path: '/home',
+      name: 'home',
+      meta: {
+        hideInMenu: true,
+        title: '首页',
+        notCache: true,
+        icon: 'md-home'
+      },
+      component: () =>
         import ('@/view/single-page/home')
-  }]
-},
-{
-  path: '/i18n',
-  name: 'i18n',
-  meta: {
-    hideInMenu: true
+    }]
   },
-  component: Main,
-  children: [{
-    path: 'i18n_page',
-    name: 'i18n_page',
+  {
+    path: '/i18n',
+    name: 'i18n',
     meta: {
-      icon: 'md-planet',
-      title: '国际化'
+      hideInMenu: true
+    },
+    component: Main,
+    children: [{
+      path: 'i18n_page',
+      name: 'i18n_page',
+      meta: {
+        icon: 'md-planet',
+        title: '国际化'
+      },
+      component: () =>
+        import ('@/view/i18n/i18n-page.vue')
+    }]
+  },
+  {
+    path: '/403',
+    name: 'error_403',
+    meta: {
+      hideInMenu: true
     },
     component: () =>
-        import ('@/view/i18n/i18n-page.vue')
-  }]
-},
-{
-  path: '/403',
-  name: 'error_403',
-  meta: {
-    hideInMenu: true
-  },
-  component: () =>
       import ('@/view/error-page/403.vue')
-},
-{
-  path: '/500',
-  name: 'error_500',
-  meta: {
-    hideInMenu: true
   },
-  component: () =>
+  {
+    path: '/500',
+    name: 'error_500',
+    meta: {
+      hideInMenu: true
+    },
+    component: () =>
       import ('@/view/error-page/500.vue')
-},
-{
-  path: '/loginBack',
-  name: 'loginBack',
-  meta: {
-    hideInMenu: true
   },
-  component: () =>
+  {
+    path: '/loginBack',
+    name: 'loginBack',
+    meta: {
+      hideInMenu: true
+    },
+    component: () =>
       import ('@/view/loginBack.vue')
-},
-{
-  path: '*',
-  meta: {
-    icon: 'md-home',
-    hideInMenu: true
   },
-  component: () =>
+  {
+    path: '*',
+    meta: {
+      icon: 'md-home',
+      hideInMenu: true
+    },
+    component: () =>
       import ('@/view/error-page/404.vue')
-},
-{
-  path: '/_tips',
-  name: '_tips',
-  redirect: '/tips',
-  component: Main,
-  meta: {
-    hideInMenu: true,
-    notCache: true
   },
-  children: [{
-    path: '/tips',
-    name: 'tips',
+  {
+    path: '/_tips',
+    name: '_tips',
+    redirect: '/tips',
+    component: Main,
     meta: {
       hideInMenu: true,
-      title: '首页',
-      notCache: true,
-      icon: 'md-home'
+      notCache: true
     },
-    component: () =>
+    children: [{
+      path: '/tips',
+      name: 'tips',
+      meta: {
+        hideInMenu: true,
+        title: '首页',
+        notCache: true,
+        icon: 'md-home'
+      },
+      component: () =>
         import ('@/view/single-page/home/tips.vue')
-  }]
-}
+    }]
+  }
 ]

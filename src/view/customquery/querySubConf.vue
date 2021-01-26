@@ -563,7 +563,8 @@
       onSwitch(editData) {
         const EditData = {
           query_id: editData.row.id,
-          key: editData.column.key
+          key: editData.column.key,
+          title: editData.row.title,
         }
         patchquery(EditData).then(res => {
           if (res.data.code === 0) {
@@ -831,7 +832,11 @@
       },
       handlerDeleteQuery(params) {
         if (confirm('确定要删除吗')) {
-          operationQuery({id: params.row.id}, 'delete').then(
+          let data = {
+            id: params.row.id,
+            title: params.row.title,
+          }
+          operationQuery(data, 'delete').then(
             res => {
               if (res.data.code === 0) {
                 this.$Message.success(`${res.data.msg}`)
