@@ -185,7 +185,6 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/customquery/querySubConf.vue')
-<<<<<<< HEAD
       }
     ]
   },
@@ -428,10 +427,10 @@ export const routerMap = [
       }
     ]
   },
-=======
-      }
-    ]
-  },
+
+  //     }
+  //   ]
+  // },
   {
     path: '/itmanage',
     name: 'itmanage',
@@ -671,7 +670,7 @@ export const routerMap = [
       }
     ]
   },
->>>>>>> 6a59102642111c2cbc58995c57b16de11a2e3333
+
   {
     path: '/usermanage',
     name: 'usermanage',
@@ -774,7 +773,7 @@ export const routerMap = [
       }
     ]
   },
-<<<<<<< HEAD
+
   {
     path: '/repository',
     name: 'repository',
@@ -857,7 +856,7 @@ export const routerMap = [
       }
     ]
   }
-=======
+
   // {
   //   path: '/repository',
   //   name: 'repository',
@@ -920,7 +919,7 @@ export const routerMap = [
   //     }
   //   ]
   // }
->>>>>>> 6a59102642111c2cbc58995c57b16de11a2e3333
+
 
 ]
 
