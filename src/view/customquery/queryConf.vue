@@ -712,7 +712,7 @@
                   selCol: "resp_time",
                   subColList: [
                     {sign: ">=", alarmVal: 5, alarmType: "致命"},
-                    {sign: "<", alarmVal: 0.22, alarmType: "正常"},
+                    {sign: "<", alarmVal: 3, alarmType: "正常"},
                     {sign: "<", alarmVal: 5, alarmType: "一般"},
                   ]
                 }
