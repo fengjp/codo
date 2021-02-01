@@ -163,6 +163,12 @@
             </Radio>
           </RadioGroup>
         </FormItem>
+        <FormItem label="告警声音" style="display: block">
+          <i-switch v-model="formValidate.sound" size="large">
+            <span slot="open">开启</span>
+            <span slot="close">关闭</span>
+          </i-switch>
+        </FormItem>
         <FormItem label="描述" style="width: 100%">
           <Input v-model="formValidate.description" type="textarea" :rows="3" placeholder="描述"></Input>
         </FormItem>
@@ -191,671 +197,674 @@
 </template>
 
 <script>
-  import editor from '@/components/public/editor'
-  import {
-    getQueryList,
-    operationQuery,
-    patchquery,
-    operationGroup,
-    getGroupList
-  } from '@/api/customquery/query'
-  import {getDBListForQry} from '@/api/cmdb2/db.js'
+import editor from '@/components/public/editor'
+import {
+  getQueryList,
+  operationQuery,
+  patchquery,
+  operationGroup,
+  getGroupList
+} from '@/api/customquery/query'
+import { getDBListForQry } from '@/api/cmdb2/db.js'
 
-  export default {
-    components: {editor},
-    data() {
-      return {
-        versions: this.$config.versions,
-        message: '',
-        signList: [
-          {'id': 0, 'name': '>'},
-          {'id': 1, 'name': '<'},
-          {'id': 2, 'name': '>='},
-          {'id': 3, 'name': '<='},
-          {'id': 4, 'name': '='}
-        ],
-        typeList: [
-          {'id': 0, 'name': '正常'},
-          {'id': 1, 'name': '一般'},
-          {'id': 2, 'name': '严重'},
-          {'id': 3, 'name': '致命'}
-        ],
-        group1stList: [],
-        group2ndList: [],
-        groupTableDate: [],
-        groupColumns: [
-          {
-            title: '组名',
-            key: 'groupName',
-            align: 'center'
-          },
-          {
-            title: '层级',
-            key: 'grouptype',
-            align: 'center',
-            Width: 70,
-            render: (h, params, vm) => {
-              var tt = params.row.grouptype + '级分组'
-              return h('div', [
-                h('span', {}, tt)
-              ])
-            }
-          },
-          {
-            title: '操作',
-            key: 'handle',
-            width: 90,
-            align: 'center',
-            render: (h, params) => {
-              return h('div', [
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'text',
-                      size: 'small',
-                      icon: 'ios-trash-outline'
-                    },
-                    style: {
-                      color: '#ed4014'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerDeleteGroup(params)
-                      }
-                    }
-                  }, '删除'
-                )
-              ])
-            }
-          }
-        ],
-        isAlarm: false,
-        mode_type: 'mysql',
-        editor: {
-          title: '编辑',
-          read: false,
-          color: 'primary'
+export default {
+  components: { editor },
+  data () {
+    return {
+      versions: this.$config.versions,
+      message: '',
+      signList: [
+        { 'id': 0, 'name': '>' },
+        { 'id': 1, 'name': '<' },
+        { 'id': 2, 'name': '>=' },
+        { 'id': 3, 'name': '<=' },
+        { 'id': 4, 'name': '=' }
+      ],
+      typeList: [
+        { 'id': 0, 'name': '正常' },
+        { 'id': 1, 'name': '一般' },
+        { 'id': 2, 'name': '严重' },
+        { 'id': 3, 'name': '致命' }
+      ],
+      group1stList: [],
+      group2ndList: [],
+      groupTableDate: [],
+      groupColumns: [
+        {
+          title: '组名',
+          key: 'groupName',
+          align: 'center'
         },
-        columns: [
-          {
-            title: '标题',
-            key: 'title',
-            align: 'center',
-            minWidth: 120
-          },
-          {
-            title: '一级分组',
-            key: 'group1stID',
-            align: 'center',
-            width: 90,
-            render: (h, params, vm) => {
-              var tt = params.row.group1stID
-              for (let i in this.group1stList) {
-                if (this.group1stList[i].id === params.row.group1stID) {
-                  tt = this.group1stList[i].name
-                  break
-                }
-              }
-              if (this.versions === '2') {
-                var tt = '-'
-              }
-              return h('div', [
-                h('span', {}, tt)
-              ])
-            }
-          },
-          {
-            title: '排序',
-            key: 'group1stSeq',
-            align: 'center',
-            width: 80,
-            sortable: true
-          },
-          {
-            title: '二级分组',
-            key: 'group2ndID',
-            align: 'center',
-            width: 90,
-            render: (h, params, vm) => {
-              var tt = params.row.group2ndID
-              for (let i in this.group2ndList) {
-                if (this.group2ndList[i].id === params.row.group2ndID) {
-                  tt = this.group2ndList[i].name
-                  break
-                }
-              }
-              return h('div', [
-                h('span', {}, tt)
-              ])
-            }
-          },
-          {
-            title: '排序',
-            key: 'group2ndSeq',
-            align: 'center',
-            width: 80,
-            sortable: true
-          },
-          {
-            title: '监控方式',
-            key: 'type',
-            align: 'center',
-            minWidth: 100
-          },
-          {
-            title: '数据库源',
-            key: 'dblinkIdNa',
-            align: 'center',
-            minWidth: 100
-          },
-          {
-            title: '轮询频率',
-            key: 'timesTy',
-            align: 'center',
-            minWidth: 100,
-            render: (h, params, vm) => {
-              if (params.row.timesTy === 'timesTy1') {
-                var tt = '每' + params.row.timesTy1Val + '分钟'
-              } else {
-                var tt = '每天' + params.row.timesTy2Val
-              }
-              return h('div', [
-                h('span', {}, tt)
-              ])
-            }
-          },
-          {
-            title: '状态',
-            key: 'status',
-            width: 80,
-            align: 'center',
-            render: (h, params, vm) => {
-              return h('div', [
-                h('i-switch', {
+        {
+          title: '层级',
+          key: 'grouptype',
+          align: 'center',
+          Width: 70,
+          render: (h, params, vm) => {
+            var tt = params.row.grouptype + '级分组'
+            return h('div', [
+              h('span', {}, tt)
+            ])
+          }
+        },
+        {
+          title: '操作',
+          key: 'handle',
+          width: 90,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
                   props: {
-                    // type: "primary",
-                    value: params.row.status === '1' // 控制开关的打开或关闭状态，官网文档属性是value
+                    type: 'text',
+                    size: 'small',
+                    icon: 'ios-trash-outline'
                   },
                   style: {
-                    marginRight: '5px'
+                    color: '#ed4014'
                   },
                   on: {
-                    'on-change': () => {
-                      this.onSwitch(params)
+                    click: () => {
+                      this.handlerDeleteGroup(params)
                     }
                   }
-                })
-              ])
+                }, '删除'
+              )
+            ])
+          }
+        }
+      ],
+      isAlarm: false,
+      mode_type: 'mysql',
+      editor: {
+        title: '编辑',
+        read: false,
+        color: 'primary'
+      },
+      columns: [
+        {
+          title: '标题',
+          key: 'title',
+          align: 'center',
+          minWidth: 120
+        },
+        {
+          title: '一级分组',
+          key: 'group1stID',
+          align: 'center',
+          width: 90,
+          render: (h, params, vm) => {
+            var tt = params.row.group1stID
+            for (let i in this.group1stList) {
+              if (this.group1stList[i].id === params.row.group1stID) {
+                tt = this.group1stList[i].name
+                break
+              }
             }
-          },
+            if (this.versions === '2') {
+              var tt = '-'
+            }
+            return h('div', [
+              h('span', {}, tt)
+            ])
+          }
+        },
+        {
+          title: '排序',
+          key: 'group1stSeq',
+          align: 'center',
+          width: 80,
+          sortable: true
+        },
+        {
+          title: '二级分组',
+          key: 'group2ndID',
+          align: 'center',
+          width: 90,
+          render: (h, params, vm) => {
+            var tt = params.row.group2ndID
+            for (let i in this.group2ndList) {
+              if (this.group2ndList[i].id === params.row.group2ndID) {
+                tt = this.group2ndList[i].name
+                break
+              }
+            }
+            return h('div', [
+              h('span', {}, tt)
+            ])
+          }
+        },
+        {
+          title: '排序',
+          key: 'group2ndSeq',
+          align: 'center',
+          width: 80,
+          sortable: true
+        },
+        {
+          title: '监控方式',
+          key: 'type',
+          align: 'center',
+          minWidth: 100
+        },
+        {
+          title: '数据库源',
+          key: 'dblinkIdNa',
+          align: 'center',
+          minWidth: 100
+        },
+        {
+          title: '轮询频率',
+          key: 'timesTy',
+          align: 'center',
+          minWidth: 100,
+          render: (h, params, vm) => {
+            if (params.row.timesTy === 'timesTy1') {
+              var tt = '每' + params.row.timesTy1Val + '分钟'
+            } else {
+              var tt = '每天' + params.row.timesTy2Val
+            }
+            return h('div', [
+              h('span', {}, tt)
+            ])
+          }
+        },
+        {
+          title: '状态',
+          key: 'status',
+          width: 80,
+          align: 'center',
+          render: (h, params, vm) => {
+            return h('div', [
+              h('i-switch', {
+                props: {
+                  // type: "primary",
+                  value: params.row.status === '1' // 控制开关的打开或关闭状态，官网文档属性是value
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  'on-change': () => {
+                    this.onSwitch(params)
+                  }
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '操作',
+          key: 'handle',
+          width: 185,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Button',
+                {
+                  props: {
+                    type: 'text',
+                    size: 'small',
+                    icon: 'ios-create-outline'
+                  },
+                  style: {
+                    marginRight: '2px',
+                    color: '#409eff'
+                  },
+                  on: {
+                    click: () => {
+                      this.handlerQuery(params.row, 'put', '编辑')
+                    }
+                  }
+                }, '编辑'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'text',
+                    size: 'small',
+                    icon: 'ios-trash-outline'
+                  },
+                  style: {
+                    color: '#ed4014'
+                  },
+                  on: {
+                    click: () => {
+                      this.handlerDeleteQuery(params)
+                    }
+                  }
+                }, '删除'
+              )
+            ])
+          }
+        }
+      ],
+      tableData: [],
+      pageTotal: 0, // 数据总数
+      pageNum: 1, // 当前页码
+      pageSize: 15, // 每页条数
+      //
+      searchKey: 'title',
+      searchValue: '',
+      //
+      modalMap: {
+        modalVisible: false,
+        modalTitle: '添加配置'
+      },
+      modalGroup: {
+        modalVisible: false,
+        modalTitle: '添加分组'
+      },
+      index: 0,
+      formValidate: {
+        id: null,
+        title: '',
+        dblinkId: '',
+        user: '',
+        password: '',
+        database: '',
+        sql: '',
+        urls: [],
+        type: '',
+        sound: '',
+        colnames: [{
+          col: '',
+          name: '',
+          alarm: {}
+        }],
+        colalarms: [
           {
-            title: '操作',
-            key: 'handle',
-            width: 185,
-            align: 'center',
-            render: (h, params) => {
-              return h('div', [
-                h('Button',
-                  {
-                    props: {
-                      type: 'text',
-                      size: 'small',
-                      icon: 'ios-create-outline'
-                    },
-                    style: {
-                      marginRight: '2px',
-                      color: '#409eff'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerQuery(params.row, 'put', '编辑')
-                      }
-                    }
-                  }, '编辑'
-                ),
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'text',
-                      size: 'small',
-                      icon: 'ios-trash-outline'
-                    },
-                    style: {
-                      color: '#ed4014'
-                    },
-                    on: {
-                      click: () => {
-                        this.handlerDeleteQuery(params)
-                      }
-                    }
-                  }, '删除'
-                )
-              ])
-            }
+            selCol: '',
+            subColList: [
+              {
+                sign: '',
+                alarmVal: 0,
+                alarmType: ''
+              }
+            ]
           }
         ],
-        tableData: [],
-        pageTotal: 0, // 数据总数
-        pageNum: 1, // 当前页码
-        pageSize: 15, // 每页条数
-        //
-        searchKey: 'title',
-        searchValue: '',
-        //
-        modalMap: {
-          modalVisible: false,
-          modalTitle: '添加配置'
-        },
-        modalGroup: {
-          modalVisible: false,
-          modalTitle: '添加分组'
-        },
-        index: 0,
-        formValidate: {
+        timesTy: '',
+        timesTy1Val: 1,
+        timesTy2Val: '',
+        status: '',
+        description: '',
+        seq: 0,
+        group1stID: 0,
+        group1stSeq: 0,
+        group2ndID: 0,
+        group2ndSeq: 0
+      },
+      ruleValidate: {
+        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        dblinkId: [{ required: true, message: '数据库源不能为空', trigger: 'blur', type: 'number' }]
+        // database: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
+      },
+      dbList: [],
+      groupFormValidate: {
+        id: null,
+        groupName: '',
+        grouptype: ''
+      },
+      groupRuleValidate: {
+        groupName: [{ required: true, message: '名称不能空', trigger: 'blur' }]
+      }
+    }
+  },
+  methods: {
+    // editor_init(val) {
+    //   if (val === 'sql') {
+    //     console.log(this.$refs.editor.value)
+    //   }
+    // },
+    // 获取数据库源
+    getDBListForQry (key, value) {
+      getDBListForQry(key, value).then(res => {
+        if (res.data.code === 0) {
+          this.dbList = res.data.data
+        }
+      })
+    },
+    onSwitch (editData) {
+      const EditData = {
+        query_id: editData.row.id,
+        key: editData.column.key,
+        title: editData.row.title
+      }
+      patchquery(EditData).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    //
+    handlerAddGroup (val, meth, mtitle) {
+      this.modalGroup.modalVisible = true
+      this.modalGroup.modalTitle = mtitle
+      this.groupFormValidate.grouptype = val
+    },
+    // 添加查询配置
+    handlerQuery (paramsRow, meth, mtitle) {
+      this.modalMap.modalVisible = true
+      this.modalMap.modalTitle = mtitle
+      this.editModalData = meth
+      this.getDBListForQry()
+      this.getGroupList()
+      if (paramsRow && paramsRow.id) {
+        this.formValidate = {
+          id: paramsRow.id,
+          title: paramsRow.title,
+          dblinkId: paramsRow.dblinkId,
+          database: paramsRow.database,
+          sql: paramsRow.sql,
+          urls: paramsRow.urls,
+          type: paramsRow.type,
+          colnames: paramsRow.colnames,
+          colalarms: paramsRow.colalarms,
+          timesTy: paramsRow.timesTy,
+          timesTy1Val: parseInt(paramsRow.timesTy1Val),
+          timesTy2Val: paramsRow.timesTy2Val,
+          user: paramsRow.user,
+          password: paramsRow.password,
+          description: paramsRow.description,
+          seq: paramsRow.seq,
+          group1stID: paramsRow.group1stID,
+          group1stSeq: paramsRow.group1stSeq,
+          group2ndID: paramsRow.group2ndID,
+          group2ndSeq: paramsRow.group2ndSeq,
+          sound: paramsRow.sound
+        }
+        if (paramsRow.colalarms.length > 0) {
+          this.isAlarm = true
+        } else {
+          this.isAlarm = false
+        }
+      } else {
+        this.formValidate = {
           id: null,
           title: '',
           dblinkId: '',
+          database: '',
           user: '',
           password: '',
-          database: '',
           sql: '',
           urls: [],
           type: '',
+          sound: true,
           colnames: [{
             col: '',
-            name: '',
-            alarm: {}
+            name: ''
           }],
           colalarms: [
             {
               selCol: '',
               subColList: [
                 {
-                  sign: '',
+                  sign: '>',
                   alarmVal: 0,
-                  alarmType: ''
+                  alarmType: '正常'
                 }
               ]
             }
           ],
-          timesTy: '',
+          timesTy: 'timesTy1',
           timesTy1Val: 1,
           timesTy2Val: '',
-          status: '',
           description: '',
           seq: 0,
           group1stID: 0,
           group1stSeq: 0,
           group2ndID: 0,
           group2ndSeq: 0
-        },
-        ruleValidate: {
-          title: [{required: true, message: '标题不能为空', trigger: 'blur'}],
-          dblinkId: [{required: true, message: '数据库源不能为空', trigger: 'blur', type: 'number'}]
-          // database: [{required: true, message: "数据库名不能为空", trigger: "blur"}],
-        },
-        dbList: [],
-        groupFormValidate: {
-          id: null,
-          groupName: '',
-          grouptype: ''
-        },
-        groupRuleValidate: {
-          groupName: [{required: true, message: '名称不能空', trigger: 'blur'}]
         }
       }
     },
-    methods: {
-      // editor_init(val) {
-      //   if (val === 'sql') {
-      //     console.log(this.$refs.editor.value)
-      //   }
-      // },
-      // 获取数据库源
-      getDBListForQry(key, value) {
-        getDBListForQry(key, value).then(res => {
-          if (res.data.code === 0) {
-            this.dbList = res.data.data
-          }
-        })
-      },
-      onSwitch(editData) {
-        const EditData = {
-          query_id: editData.row.id,
-          key: editData.column.key,
-          title: editData.row.title,
+    handleColAdd (val, index) {
+      if (val === 'subColList') {
+        this.formValidate.colalarms[index].subColList.push({
+          sign: '>',
+          alarmVal: 0,
+          alarmType: '正常'
         }
-        patchquery(EditData).then(res => {
-          if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      //
-      handlerAddGroup(val, meth, mtitle) {
-        this.modalGroup.modalVisible = true
-        this.modalGroup.modalTitle = mtitle
-        this.groupFormValidate.grouptype = val
-      },
-      // 添加查询配置
-      handlerQuery(paramsRow, meth, mtitle) {
-        this.modalMap.modalVisible = true
-        this.modalMap.modalTitle = mtitle
-        this.editModalData = meth
-        this.getDBListForQry()
-        this.getGroupList()
-        if (paramsRow && paramsRow.id) {
-          this.formValidate = {
-            id: paramsRow.id,
-            title: paramsRow.title,
-            dblinkId: paramsRow.dblinkId,
-            database: paramsRow.database,
-            sql: paramsRow.sql,
-            urls: paramsRow.urls,
-            type: paramsRow.type,
-            colnames: paramsRow.colnames,
-            colalarms: paramsRow.colalarms,
-            timesTy: paramsRow.timesTy,
-            timesTy1Val: parseInt(paramsRow.timesTy1Val),
-            timesTy2Val: paramsRow.timesTy2Val,
-            user: paramsRow.user,
-            password: paramsRow.password,
-            description: paramsRow.description,
-            seq: paramsRow.seq,
-            group1stID: paramsRow.group1stID,
-            group1stSeq: paramsRow.group1stSeq,
-            group2ndID: paramsRow.group2ndID,
-            group2ndSeq: paramsRow.group2ndSeq
-          }
-          if (paramsRow.colalarms.length > 0) {
-            this.isAlarm = true
-          } else {
-            this.isAlarm = false
-          }
-        } else {
-          this.formValidate = {
-            id: null,
-            title: '',
-            dblinkId: '',
-            database: '',
-            user: '',
-            password: '',
-            sql: '',
-            urls: [],
-            type: '',
-            colnames: [{
-              col: '',
-              name: ''
-            }],
-            colalarms: [
-              {
-                selCol: '',
-                subColList: [
-                  {
-                    sign: '>',
-                    alarmVal: 0,
-                    alarmType: '正常'
-                  }
-                ]
-              }
-            ],
-            timesTy: 'timesTy1',
-            timesTy1Val: 1,
-            timesTy2Val: '',
-            description: '',
-            seq: 0,
-            group1stID: 0,
-            group1stSeq: 0,
-            group2ndID: 0,
-            group2ndSeq: 0
-          }
-        }
-      },
-      handleColAdd(val, index) {
-        if (val === 'subColList') {
-          this.formValidate.colalarms[index].subColList.push({
+        )
+      }
+      if (val === 'colalarms') {
+        this.formValidate.colalarms.push({
+          selCol: '',
+          subColList: [
+            {
               sign: '>',
               alarmVal: 0,
               alarmType: '正常'
             }
-          )
-        }
-        if (val === 'colalarms') {
-          this.formValidate.colalarms.push({
-            selCol: '',
-            subColList: [
-              {
-                sign: '>',
-                alarmVal: 0,
-                alarmType: '正常'
-              }
-            ]
-          })
-        }
-        if (val === 'colnames') {
-          this.formValidate.colnames.push({
-            col: '',
-            name: ''
-          })
-        }
-        if (val === 'urls') {
-          this.formValidate.urls.push('')
-        }
-      },
-      handleColRemove(val, index, subColIndex) {
-        // console.log(index)
-        if (val === 'subColList') {
-          if (this.formValidate.colalarms[index].subColList.length === 1) {
-            return
-          }
-          this.formValidate.colalarms[index].subColList.splice(subColIndex, 1)
-        }
-        if (val === 'colalarms') {
-          this.formValidate.colalarms.splice(index, 1)
-        }
-        if (val === 'colnames') {
-          this.formValidate.colnames.splice(index, 1)
-        }
-        if (val === 'urls') {
-          this.formValidate.urls.splice(index, 1)
-        }
-      },
-      handleSubmitGroup(value) {
-        this.$refs[value].validate((valid) => {
-          if (valid) {
-            setTimeout(() => {
-              // console.log(this.formValidate)
-              operationGroup(this.groupFormValidate, 'post').then(res => {
-                if (res.data.code === 0) {
-                  this.$Message.success(`${res.data.msg}`)
-                  this.getGroupList()
-                  this.modalGroup.modalVisible = false
-                } else {
-                  this.$Message.error(`${res.data.msg}`)
-                }
-              })
-            }, 500)
-          } else {
-            this.$Message.error('表单校验错误')
-          }
+          ]
         })
-      },
-      handleSubmitQuery(value) {
-        this.$refs[value].validate((valid) => {
-          if (valid) {
+      }
+      if (val === 'colnames') {
+        this.formValidate.colnames.push({
+          col: '',
+          name: ''
+        })
+      }
+      if (val === 'urls') {
+        this.formValidate.urls.push('')
+      }
+    },
+    handleColRemove (val, index, subColIndex) {
+      // console.log(index)
+      if (val === 'subColList') {
+        if (this.formValidate.colalarms[index].subColList.length === 1) {
+          return
+        }
+        this.formValidate.colalarms[index].subColList.splice(subColIndex, 1)
+      }
+      if (val === 'colalarms') {
+        this.formValidate.colalarms.splice(index, 1)
+      }
+      if (val === 'colnames') {
+        this.formValidate.colnames.splice(index, 1)
+      }
+      if (val === 'urls') {
+        this.formValidate.urls.splice(index, 1)
+      }
+    },
+    handleSubmitGroup (value) {
+      this.$refs[value].validate((valid) => {
+        if (valid) {
+          setTimeout(() => {
             // console.log(this.formValidate)
-            if (this.formValidate.type === 'sql') {
-              if (this.isAlarm && this.formValidate.colalarms.length > 0 && this.formValidate.colalarms[0].selCol === '') {
-                this.message = '请选择告警字段'
-                console.log(this.formValidate)
-                this.$Message.error('表单校验错误')
-                return
-              } else {
-                this.message = ''
-              }
-            }
-            if (!this.isAlarm) {
-              this.formValidate.colalarms = []
-            }
-            if (this.formValidate.type === 'urls') {
-              this.formValidate.colnames = [
-                {'col': 'get_time', 'name': '请求时间'},
-                {'col': 'url', 'name': '请求地址'},
-                {'col': 'resp_time', 'name': '响应时间(秒)'},
-              ]
-              this.formValidate.colalarms = [
-                {
-                  selCol: "resp_time",
-                  subColList: [
-                    {sign: ">=", alarmVal: 5, alarmType: "致命"},
-                    {sign: "<", alarmVal: 3, alarmType: "正常"},
-                    {sign: "<", alarmVal: 5, alarmType: "一般"},
-                  ]
-                }
-              ]
-            }
-            setTimeout(() => {
-              // console.log(this.formValidate)
-              operationQuery(this.formValidate, this.editModalData).then(res => {
-                if (res.data.code === 0) {
-                  this.$Message.success(`${res.data.msg}`)
-                  this.getQueryList(this.pageNum, this.pageSize, this.searchKey, this.searchVal)
-                  this.modalMap.modalVisible = false
-                } else {
-                  this.$Message.error(`${res.data.msg}`)
-                }
-              })
-            }, 500)
-          } else {
-            this.$Message.error('表单校验错误')
-          }
-        })
-      },
-      handlerDeleteQuery(params) {
-        if (confirm('确定要删除吗')) {
-          let data = {
-            id: params.row.id,
-            title: params.row.title,
-          }
-          operationQuery(data, 'delete').then(
-            res => {
-              if (res.data.code === 0) {
-                this.$Message.success(`${res.data.msg}`)
-                this.getQueryList(this.pageNum, this.pageSize, this.searchKey, this.searchVal)
-              } else {
-                this.$Message.error(`${res.data.msg}`)
-              }
-            })
-        }
-      },
-      handlerDeleteGroup(params) {
-        if (confirm('确定要删除吗')) {
-          operationGroup({id: params.row.id}, 'delete').then(
-            res => {
+            operationGroup(this.groupFormValidate, 'post').then(res => {
               if (res.data.code === 0) {
                 this.$Message.success(`${res.data.msg}`)
                 this.getGroupList()
+                this.modalGroup.modalVisible = false
               } else {
                 this.$Message.error(`${res.data.msg}`)
               }
             })
+          }, 500)
+        } else {
+          this.$Message.error('表单校验错误')
         }
-      },
-      getQueryList(page, limit, key, value, dateValue) {
-        getQueryList(page, limit, key, value, dateValue).then(res => {
-          if (res.data.code === 0) {
-            this.$Message.success(`${res.data.msg}`)
-            this.pageTotal = res.data.count
-            this.tableData = res.data.data
-          } else {
-            this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      getGroupList(key, value) {
-        getGroupList(key, value).then(res => {
-          if (res.data.code === 0) {
-            // this.$Message.success(`${res.data.msg}`)
-            this.groupTableDate = res.data.data
-            this.group1stList = res.data.groupObj[1]
-            this.group2ndList = res.data.groupObj[2]
-          } else {
-            // this.$Message.error(`${res.data.msg}`)
-          }
-        })
-      },
-      changeDate(value) {
-        this.dateValue = value
-      },
-      changePage(value) {
-        this.pageNum = value
-        this.getQueryList(
-          this.pageNum,
-          this.pageSize,
-          this.searchKey,
-          this.searchValue
-        )
-      },
-      // 每页条数
-      handlePageSize(value) {
-        this.pageSize = value
-        this.getQueryList(
-          1,
-          this.pageSize,
-          this.searchKey,
-          this.searchValue
-        )
-      },
-      handleReset(name) {
-        this.$refs[name].resetFields()
-      },
-      handleClear(e) {
-        if (e.target.value === '') this.tableData = this.value
-      },
-      handleSearch() {
-        this.getQueryList(
-          this.pageNum,
-          this.pageSize,
-          this.searchKey,
-          this.searchValue
-        )
-      },
-      editorInit: function () {
-        require(`brace/mode/${this.mode_type}`) // language
-        require('brace/theme/terminal')
-        require('brace/theme/xcode')
-      }
+      })
     },
-    watch: {
-      isAlarm: function () {
-        if (this.isAlarm) {
+    handleSubmitQuery (value) {
+      this.$refs[value].validate((valid) => {
+        if (valid) {
           // console.log(this.formValidate)
-          if (this.formValidate.colalarms.length === 0) {
+          if (this.formValidate.type === 'sql') {
+            if (this.isAlarm && this.formValidate.colalarms.length > 0 && this.formValidate.colalarms[0].selCol === '') {
+              this.message = '请选择告警字段'
+              console.log(this.formValidate)
+              this.$Message.error('表单校验错误')
+              return
+            } else {
+              this.message = ''
+            }
+          }
+          if (!this.isAlarm) {
+            this.formValidate.colalarms = []
+          }
+          if (this.formValidate.type === 'urls') {
+            this.formValidate.colnames = [
+              { 'col': 'get_time', 'name': '请求时间' },
+              { 'col': 'url', 'name': '请求地址' },
+              { 'col': 'resp_time', 'name': '响应时间(秒)' }
+            ]
             this.formValidate.colalarms = [
               {
-                selCol: '',
+                selCol: 'resp_time',
                 subColList: [
-                  {
-                    sign: '>',
-                    alarmVal: 0,
-                    alarmType: '正常'
-                  }
+                  { sign: '>=', alarmVal: 5, alarmType: '致命' },
+                  { sign: '<', alarmVal: 3, alarmType: '正常' },
+                  { sign: '<', alarmVal: 5, alarmType: '一般' }
                 ]
               }
             ]
           }
+          setTimeout(() => {
+            // console.log(this.formValidate)
+            operationQuery(this.formValidate, this.editModalData).then(res => {
+              if (res.data.code === 0) {
+                this.$Message.success(`${res.data.msg}`)
+                this.getQueryList(this.pageNum, this.pageSize, this.searchKey, this.searchVal)
+                this.modalMap.modalVisible = false
+              } else {
+                this.$Message.error(`${res.data.msg}`)
+              }
+            })
+          }, 500)
+        } else {
+          this.$Message.error('表单校验错误')
         }
+      })
+    },
+    handlerDeleteQuery (params) {
+      if (confirm('确定要删除吗')) {
+        let data = {
+          id: params.row.id,
+          title: params.row.title
+        }
+        operationQuery(data, 'delete').then(
+          res => {
+            if (res.data.code === 0) {
+              this.$Message.success(`${res.data.msg}`)
+              this.getQueryList(this.pageNum, this.pageSize, this.searchKey, this.searchVal)
+            } else {
+              this.$Message.error(`${res.data.msg}`)
+            }
+          })
       }
     },
-    mounted() {
-      this.getQueryList(this.pageNum, this.pageSize)
-      this.getGroupList()
+    handlerDeleteGroup (params) {
+      if (confirm('确定要删除吗')) {
+        operationGroup({ id: params.row.id }, 'delete').then(
+          res => {
+            if (res.data.code === 0) {
+              this.$Message.success(`${res.data.msg}`)
+              this.getGroupList()
+            } else {
+              this.$Message.error(`${res.data.msg}`)
+            }
+          })
+      }
+    },
+    getQueryList (page, limit, key, value, dateValue) {
+      getQueryList(page, limit, key, value, dateValue).then(res => {
+        if (res.data.code === 0) {
+          this.$Message.success(`${res.data.msg}`)
+          this.pageTotal = res.data.count
+          this.tableData = res.data.data
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    getGroupList (key, value) {
+      getGroupList(key, value).then(res => {
+        if (res.data.code === 0) {
+          // this.$Message.success(`${res.data.msg}`)
+          this.groupTableDate = res.data.data
+          this.group1stList = res.data.groupObj[1]
+          this.group2ndList = res.data.groupObj[2]
+        } else {
+          // this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    changeDate (value) {
+      this.dateValue = value
+    },
+    changePage (value) {
+      this.pageNum = value
+      this.getQueryList(
+        this.pageNum,
+        this.pageSize,
+        this.searchKey,
+        this.searchValue
+      )
+    },
+    // 每页条数
+    handlePageSize (value) {
+      this.pageSize = value
+      this.getQueryList(
+        1,
+        this.pageSize,
+        this.searchKey,
+        this.searchValue
+      )
+    },
+    handleReset (name) {
+      this.$refs[name].resetFields()
+    },
+    handleClear (e) {
+      if (e.target.value === '') this.tableData = this.value
+    },
+    handleSearch () {
+      this.getQueryList(
+        this.pageNum,
+        this.pageSize,
+        this.searchKey,
+        this.searchValue
+      )
+    },
+    editorInit: function () {
+      require(`brace/mode/${this.mode_type}`) // language
+      require('brace/theme/terminal')
+      require('brace/theme/xcode')
     }
+  },
+  watch: {
+    isAlarm: function () {
+      if (this.isAlarm) {
+        // console.log(this.formValidate)
+        if (this.formValidate.colalarms.length === 0) {
+          this.formValidate.colalarms = [
+            {
+              selCol: '',
+              subColList: [
+                {
+                  sign: '>',
+                  alarmVal: 0,
+                  alarmType: '正常'
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  mounted () {
+    this.getQueryList(this.pageNum, this.pageSize)
+    this.getGroupList()
   }
+}
 </script>
 
 <style lang="less" scoped>
