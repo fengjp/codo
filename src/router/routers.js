@@ -609,6 +609,16 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/meter/meter_map.vue')
+      },
+      {
+        path: 'grafana_meter',
+        name: 'grafana_meter',
+        meta: {
+          icon: 'ios-speedometer-outline',
+          title: '评估仪表',
+        },
+        component: () =>
+          import ('@/view/meter/grafana_meter.vue')
       }
     ]
   }

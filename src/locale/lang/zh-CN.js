@@ -62,6 +62,7 @@ export default {
   assessment2: '实时运行',
   assessment3: '运行查看',
   meterMap: '综合得分图',
+  grafana_meter:'grafana仪表板',
   SpoonStatistics: 'SPOON需求统计',
   Sqldrive: '@驾驶人管理科',
   statistics: '需求统计',
