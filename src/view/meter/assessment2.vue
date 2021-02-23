@@ -3,7 +3,7 @@
          <Row>
          <div >
          <Col  style=" text-align:center;">
-             <h1 >广东建设运行情况（总分100分）</h1>
+             <h1 >广东省互联网平台建设情况自评（总分100分）</h1>
          </Col>
          </div>
          </Row>
@@ -13,11 +13,11 @@
                 <h3 >上月得分：{{benyue_defen}}分</h3>
              </Col>
              <Col  span="8">
-                <h3 >本月得分：{{shangyue_defen}}分</h3>
+                <h3 >本月自评得分：{{shangyue_defen}}分</h3>
              </Col>
-             <Col  span="8"  style=" text-align:right;">
-                <Button @click="editModaltable()" type="info">得分历史</Button>
-             </Col>
+<!--             <Col  span="8"  style=" text-align:right;">-->
+<!--                <Button @click="editModaltable()" type="info">得分历史</Button>-->
+<!--             </Col>-->
            </Card>
            </Row>
          <Row>
@@ -76,13 +76,12 @@
          </Card>
         </Col>
     </Row>
-    <Modal :footer-hide=true :loading=true :title="modalTable.tableTitle" v-model="modalTable.tableVisible"  width="1020">
-        <div >
-               <chart-line3 :keylist="line_list" :value="lineData"  ref="childLine"   style="width: 1010px;height: 500px;" />
-        </div>
-      </Modal>
-    <Modal :footer-hide=true :loading=true :title="modalTable2.tableTitle" v-model="modalTable2.tableVisible"  width="500">
-        <div >
+    <Row>
+      <Col  span="10" >
+        <Card>
+        <div style="height: 410px;">
+             <h5 style=" text-align:left;" >指标异常详细:</h5>
+             <h1 style=" text-align:center;" >{{temp_title}}</h1>
              <h3 style=" text-align:center;" v-if="isShow">{{temp_text}}</h3>
              <ul  v-for="(item,index) in temp_modaltable_date">
                <ol>
@@ -90,7 +89,31 @@
                </ol>
               </ul>
         </div>
-      </Modal>
+          </Card>
+      </Col>
+      <Col span="14" >
+        <Card>
+        <div >
+               <chart-line3 :keylist="line_list" :value="lineData"  ref="childLine"   style="width: 1010px;height: 410px;" :text="text" />
+        </div>
+          </Card>
+      </Col>
+    </Row>
+<!--    <Modal :footer-hide=true :loading=true :title="modalTable.tableTitle" v-model="modalTable.tableVisible"  width="1020">-->
+<!--        <div >-->
+<!--               <chart-line3 :keylist="line_list" :value="lineData"  ref="childLine"   style="width: 1010px;height: 500px;" text="总得分线性图"/>-->
+<!--        </div>-->
+<!--      </Modal>-->
+<!--    <Modal :footer-hide=true :loading=true :title="modalTable2.tableTitle" v-model="modalTable2.tableVisible"  width="500">-->
+<!--        <div >-->
+<!--             <h3 style=" text-align:center;" v-if="isShow">{{temp_text}}</h3>-->
+<!--             <ul  v-for="(item,index) in temp_modaltable_date">-->
+<!--               <ol>-->
+<!--               <li>时间：{{item.gettime}}      请求时长：{{item.getlongtime}}</li>-->
+<!--               </ol>-->
+<!--              </ul>-->
+<!--        </div>-->
+<!--      </Modal>-->
   </div>
 </template>
 
@@ -104,6 +127,8 @@ export default {
   },
   data () {
     return {
+      text:'总得分线性图',
+      temp_title:'',
       isShow: false,
       temp_text: '',
       temp_modaltable_date: '',
@@ -116,8 +141,8 @@ export default {
       renlian_defen: 0,
       yunxing_defen: 0,
       nwwang_defen: 0,
-      lineData: [55, 98, 39, 98, 86, 82, 90, 90, 80, 96, 93, 90],
-      line_list: ['2021-02', '2021-03', '2020-04', '2020-05', '2020-06', '2020-07', '2020-08', '2020-09', '2020-10', '2020-11', '2020-12', '2021-01'],
+      lineData: [],//[55, 98, 39, 98, 86, 82, 90, 90, 80, 96, 93, 90],
+      line_list: [],//['2021-02', '2021-03', '2020-04', '2020-05', '2020-06', '2020-07', '2020-08', '2020-09', '2020-10', '2020-11', '2020-12', '2021-01'],
       modalTable: {
         tableVisible: false,
         tableTitle: '历史得分线性图'
@@ -133,6 +158,27 @@ export default {
       this.isShow = false
       this.modalTable2.tableVisible = true
       this.modalTable2.tableTitle = '详细'
+      if(date === 'fuwu_remarks'){
+        this.temp_title = '服务稳定性'
+      }
+      if(date === 'xitong_remarks'){
+        this.temp_title = '系统运行效率'
+      }
+      if(date === 'duanxin_remarks'){
+        this.temp_title = '短信发送成功率'
+      }
+      if(date === 'yunxing_remarks'){
+        this.temp_title = '运行情况'
+      }
+      if(date === 'nwwang_remarks'){
+        this.temp_title = '内外网数据交换'
+      }
+      if(date === 'yidi_remarks'){
+        this.temp_title = '异地业务请求'
+      }
+      if(date === 'renlian_remarks'){
+        this.temp_title = '人脸识别通过率'
+      }
       this.temp_modaltable_date = eval(this.temp_date[0][date])
       if (JSON.stringify(this.temp_modaltable_date) === '[]') {
         this.temp_text = '无异常数据'

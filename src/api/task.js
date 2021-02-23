@@ -2,6 +2,8 @@ import axios from '@/libs/api.request'
 import config from '@/config'
 const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 export const UploadUrl = baseUrl + '/tk/v2/accounts/ranking/upload/'
+export const UploadUrl2 = baseUrl + '/tk/v2/accounts/ranking/upload2/'
+export const UploadUrl3 = baseUrl + '/tk/v2/accounts/business/upload3/'
 
 export const meterList = () => {
   return axios.request({
@@ -11,13 +13,53 @@ export const meterList = () => {
   })
 }
 
-export const rankinglist = (start_date,end_date) => {
+export const getbusinesslist = (start_date) => {
+  return axios.request({
+    url: '/tk/v2/accounts/business/',
+    method: 'get',
+    params: {
+      start_date,
+    }
+  })
+}
+
+export const getcitydata = (bjriqi,city) => {
+  return axios.request({
+    url: '/tk/v2/accounts/getcity/',
+    method: 'get',
+    params: {
+      bjriqi,
+      city
+    }
+  })
+}
+
+export const getcitydata2 = (data) => {
+  return axios.request({
+    url: '/tk/v2/accounts/zhibiao/',
+    method: 'post',
+    data
+  })
+}
+
+export const rankinglist = (start_date,end_date,flag) => {
   return axios.request({
     url: '/tk/v2/accounts/ranking/',
     method: 'get',
     params: {
       start_date,
-      end_date
+      end_date,
+      flag
+    }
+  })
+}
+
+export const getbjdata = (bjdata) => {
+  return axios.request({
+    url: '/tk/v2/accounts/bjdata/',
+    method: 'get',
+    params: {
+      bjdata
     }
   })
 }
@@ -225,6 +267,14 @@ export const getTaskCheckHistorylist = (page, limit, searchVal) => {
       limit,
       'search_val': searchVal
     }
+  })
+}
+
+export const businesspost = (data) => {
+  return axios.request({
+    url: '/tk/v2/accounts/businesspost/',
+    method: 'post',
+    data
   })
 }
 

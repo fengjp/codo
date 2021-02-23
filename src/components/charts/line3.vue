@@ -62,7 +62,7 @@ export default {
         } else {
           option = {
             title: {
-              text: this.text
+              text: this.text,//"得分线性图"
               // color: '#F0F0F0',
             },
             tooltip: {
@@ -95,12 +95,12 @@ export default {
 
             },
             yAxis: {
-              name: '得分',
+              name:  '得分',
               type: 'value',
               nameTextStyle: {
                 color: '#000',
                 fontSize: 16,
-                padding: 10 // 四个数字分别为上右下左与原位置距离
+                padding: 3 // 四个数字分别为上右下左与原位置距离
               },
               axisLabel: {
                 formatter: '{value}',

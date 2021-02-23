@@ -3,7 +3,7 @@
          <Row>
          <div >
          <Col  style=" text-align:center;">
-             <h1 >广东建设运行情况（总分100分）</h1>
+             <h1 >广东建设运行情况(2021版：总分100分）</h1>
 
 
          </Col>
@@ -35,6 +35,7 @@
              <Button @click="getdata()" style="margin-right:5px" type="primary">查询</Button>
 
              <Button @click="editModaltable3()" style="margin-right:5px" type="info">新增</Button>
+              <Button @click="editModaltable4()" style="margin-right:5px" type="info">编辑</Button>
 
            <Button type="success"  @click="editModal2" style="margin-right:5px">导入</Button>
 
@@ -88,6 +89,379 @@
      <Modal :footer-hide=true :loading=true :title="modalTable3.tableTitle" v-model="modalTable3.tableVisible"  width="1760" >
         <div >
              <Form :inline="true" :label-width="130" :model="formValidate"  ref="formValidate">
+            <Row >
+              <Col span="8" >
+                <Card style="width:560px;">
+                <p slot="title">系统建设运维保障</p>
+                   <Row >
+                     <Col span="12" >
+                        <FormItem label="服务稳定性" prop="fuwu" style="width:230px;">
+                          <Input
+                           :maxlength="45"
+                           placeholder="请输入得分"
+                           v-model="formValidate.fuwu"
+                          ></Input>
+                        </FormItem>
+                     </Col>
+                     <Col span="12" >
+                        <FormItem label="评分说明" prop="fuwu_remarks" style="width:260px;">
+                          <Input
+                           :maxlength="45"
+                           placeholder="稳定性评分说明"
+                           v-model="formValidate.fuwu_remarks"
+                          ></Input>
+                        </FormItem>
+                     </Col>
+                   </Row >
+                  <Row >
+                     <Col span="12" >
+                <FormItem label="系统运行效率" prop="xitong" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.xitong"
+                ></Input>
+                </FormItem>
+                        </Col>
+                    <Col span="12" >
+                <FormItem label="评分说明" prop="xitong_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="运行效率评分说明"
+                  v-model="formValidate.xitong_remarks"
+                ></Input>
+                </FormItem>
+                        </Col>
+                   </Row >
+                  <Row >
+                     <Col span="12" >
+                <FormItem label="软硬件设备配置" prop="peizhi" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.peizhi"
+                ></Input>
+                </FormItem>
+                       </Col>
+                    <Col span="12" >
+                <FormItem label="评分说明" prop="peizhi_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="设备配置评分说明"
+                  v-model="formValidate.peizhi_remarks"
+                ></Input>
+                </FormItem>
+                       </Col>
+                   </Row >
+                  <Row >
+                     <Col span="12" >
+                  <FormItem label="系统及时升级" prop="shengji" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.shengji"
+                ></Input>
+                </FormItem>
+                       </Col>
+                    <Col span="12" >
+                  <FormItem label="评分说明" prop="shengji_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="系统升级评分说明"
+                  v-model="formValidate.shengji_remarks"
+                ></Input>
+                </FormItem>
+                       </Col>
+                   </Row >
+               </Card>
+              </Col>
+              <Col span="8" >
+                <Card  style="width:560px;height:315px">
+                   <p slot="title">短信平台</p>
+                  <Row >
+                     <Col span="12" >
+                <FormItem label="跨省短信发送支持" prop="zhichi" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.zhichi"
+                ></Input>
+                </FormItem>
+                     </Col >
+                    <Col span="12" >
+                <FormItem label="评分说明" prop="zhichi_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="跨省短信评分说明"
+                  v-model="formValidate.zhichi_remarks"
+                ></Input>
+                </FormItem>
+                     </Col >
+                     </Row >
+                       <Row >
+                     <Col span="12" >
+                  <FormItem label="短信发送成功率" prop="duanxin" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.duanxin"
+                ></Input>
+                </FormItem>
+                        </Col >
+                         <Col span="12" >
+                  <FormItem label="评分说明" prop="duanxin_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="短信成功率评分说明"
+                  v-model="formValidate.duanxin_remarks"
+                ></Input>
+                </FormItem>
+                        </Col >
+                     </Row >
+                </Card>
+              </Col>
+              <Col span="8" >
+                <Card  style="width:560px;">
+                   <p slot="title">网上支付平台</p>
+                       <Row >
+                     <Col span="12" >
+                <FormItem label="支付渠道" prop="qudao" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.qudao"
+                ></Input>
+                </FormItem>
+                        </Col >
+                         <Col span="12" >
+                <FormItem label="评分说明" prop="qudao_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="支付渠道评分说明"
+                  v-model="formValidate.qudao_remarks"
+                ></Input>
+                </FormItem>
+                        </Col >
+                     </Row >
+                       <Row >
+                     <Col span="12" >
+                  <FormItem label="支付项目" prop="xiangmu" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.xiangmu"
+                ></Input>
+                </FormItem>
+                        </Col >
+                         <Col span="12" >
+                <FormItem label="评分说明" prop="xiangmu_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="支付项目评分说明"
+                  v-model="formValidate.xiangmu_remarks"
+                ></Input>
+                </FormItem>
+                        </Col >
+                     </Row >
+                       <Row >
+                     <Col span="12" >
+                   <FormItem label="退款支持" prop="tuikuan" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.tuikuan"
+                ></Input>
+                </FormItem>
+                        </Col >
+                         <Col span="12" >
+                <FormItem label="评分说明" prop="tuikuan_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="退款支持评分说明"
+                  v-model="formValidate.tuikuan_remarks"
+                ></Input>
+                </FormItem>
+                        </Col >
+                     </Row >
+                       <Row >
+                     <Col span="12" >
+                  <FormItem label="运行情况" prop="yunxing" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.yunxing"
+                ></Input>
+                </FormItem>
+                        </Col >
+                         <Col span="12" >
+                <FormItem label="评分说明" prop="yunxing_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="运行情况评分说明"
+                  v-model="formValidate.yunxing_remarks"
+                ></Input>
+                </FormItem>
+                        </Col >
+                     </Row >
+
+                </Card>
+              </Col>
+              </Row>
+              <Row>
+                <Col span="8"  >
+                <Card  style="width:560px;height:260px">
+                   <p slot="title">数据交换</p>
+
+                       <Row >
+                     <Col span="12" >
+                <FormItem label="内外网数据交换" prop="jiaohuan" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.jiaohuan"
+                ></Input>
+                </FormItem>
+                        </Col >
+                         <Col span="12" >
+                <FormItem label="评分说明" prop="jiaohuan_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="内外网交换评分说明"
+                  v-model="formValidate.jiaohuan_remarks"
+                ></Input>
+                </FormItem>
+                        </Col >
+                     </Row >
+                       <Row >
+                     <Col span="12" >
+                  <FormItem label="省际数据交换" prop="shengji_jiaohuan" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.shengji_jiaohuan"
+                ></Input>
+                </FormItem>
+                        </Col >
+                         <Col span="12" >
+                <FormItem label="评分说明" prop="shengji_jiaohuan_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="省际数据交换评分说明"
+                  v-model="formValidate.shengji_jiaohuan_remarks"
+                ></Input>
+                </FormItem>
+                        </Col >
+                     </Row >
+                       <Row >
+                     <Col span="12" >
+                  <FormItem label="异地业务请求" prop="yidi" style="width:230px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.yidi"
+                ></Input>
+                </FormItem>
+                        </Col >
+                         <Col span="12" >
+                <FormItem label="评分说明" prop="yidi_remarks" style="width:260px;">
+                  <Input
+                  :maxlength="45"
+                  placeholder="异地业务请求评分说明"
+                  v-model="formValidate.yidi_remarks"
+                ></Input>
+                </FormItem>
+                        </Col >
+                     </Row >
+
+                </Card>
+              </Col>
+               <Col span="8" >
+                <Card  style="width:560px; height:260px">
+                   <p slot="title">人脸识别</p>
+
+                <FormItem label="人脸识别通过率" prop="renlian" >
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入得分"
+                  v-model="formValidate.renlian"
+                ></Input>
+                </FormItem>
+                   <FormItem label="评分说明" prop="renlian_remarks" >
+                  <Input
+                  :maxlength="45"
+                  placeholder="人脸识别评分说明"
+                  v-model="formValidate.renlian_remarks"
+                ></Input>
+                </FormItem>
+                </Card>
+              </Col>
+
+                 <Col span="8" >
+                <Card  style="width:560px;height:260px">
+                   <p slot="title">统计</p>
+                  <FormItem label="日期" prop="riqi" style="width:250px;margin-right:50px"
+                >
+                  <DatePicker :clearable="false"
+                              :value="formValidate.riqi"
+                              @on-change="formValidate.riqi=$event"
+                              format="yyyy-MM"
+                              placeholder="请选择日期"
+                              type="month">
+
+                  </DatePicker>
+
+                </FormItem>
+                <FormItem label="排名" prop="paiming" >
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入排名次"
+                  v-model="formValidate.paiming"
+                ></Input>
+                </FormItem>
+                  <FormItem label="总分" prop="zongfen" >
+                  <Input
+                  :maxlength="45"
+                  placeholder="请输入总分"
+                  v-model="formValidate.zongfen"
+                ></Input>
+                </FormItem>
+                </Card>
+              </Col>
+            </Row>
+            <Row style=" text-align:right;">
+              <FormItem>
+                <Button
+                :disabled="isDisable"
+                @click="handleSubmit()"
+                type="primary"
+              >提交
+              </Button>
+                <Button
+                @click="handleReset('formValidate')"
+                style="margin-left: 8px"
+              >重置
+              </Button>
+              </FormItem>
+            </Row>
+        </Form>
+        </div>
+      </Modal>
+    <Modal :footer-hide=true :loading=true :title="modalTable4.tableTitle" v-model="modalTable4.tableVisible"  width="1760" >
+        <div >
+             <Form :inline="true" :label-width="130" :model="formValidate"  ref="formValidate">
+               <FormItem label="选择编辑日期" prop="riqi" style="width:250px;margin-right:50px"
+                >
+                  <DatePicker :clearable="false"
+                              :value="bjriqi"
+                              @on-change="bjriqi=$event"
+                              format="yyyy-MM"
+                              placeholder="请选择日期"
+                              type="month">
+
+                  </DatePicker>
+
+                </FormItem>
+               <Button @click="getbjdata()" style="margin-right:5px" type="info">获取数据</Button>
             <Row >
               <Col span="8" >
                 <Card style="width:560px;">
@@ -500,7 +874,7 @@
 
 <script>
 import { ChartLine3 } from '_c/charts'
-import { meterList,meteradd ,rankinglist ,UploadUrl,getlinedata} from '@/api/task'
+import { meterList,meteradd ,rankinglist ,UploadUrl,getlinedata,getbjdata} from '@/api/task'
 import FormGroup from '_c/form-group'
 import excel from '@/libs/excel'
 
@@ -561,6 +935,7 @@ export default {
       nwwang_defen: 0,
       lineData: [],
       line_list: [],
+      bjriqi:'',
       modalTable: {
         tableVisible: false,
         tableTitle: '历史得分线性图'
@@ -572,6 +947,10 @@ export default {
       modalTable3: {
         tableVisible: false,
         tableTitle: '新增'
+      },
+      modalTable4: {
+        tableVisible: false,
+        tableTitle: '编辑'
       },
        modalMap2: {
         modalVisible: false,
@@ -646,6 +1025,51 @@ export default {
     }
   },
   methods: {
+    getbjdata(){
+       getbjdata(this.bjriqi).then(res => {
+             if (res.data.code === 0) {
+                  this.formValidate = eval(res.data.data)[0]
+             }
+             else{
+                   this.formValidate = {
+        "fuwu" :"",
+         "fuwu_remarks": "",
+        "xitong": "",
+         "xitong_remarks": "",
+        "peizhi": "",
+          "peizhi_remarks": "",
+        "shengji": "",
+         "shengji_remarks": "",
+         "zhichi":"",
+         "zhichi_remarks":"",
+         "duanxin":"",
+         "duanxin_remarks":"",
+         "qudao":"",
+         "qudao_remarks":"",
+         "xiangmu":"",
+         "xiangmu_remarks":"",
+         "tuikuan":"",
+         "tuikuan_remarks":"",
+         "yunxing":"",
+          "yunxing_remarks":"",
+         "jiaohuan":"",
+         "jiaohuan_remarks":"",
+         "shengji_jiaohuan":"",
+         "shengji_jiaohuan_remarks":"",
+         "yidi":"",
+         "yidi_remarks":"",
+         "renlian":"",
+         "renlian_remarks":"",
+         "riqi":"",
+         "paiming":"",
+         "zongfen":""
+      }
+      this.$Message.error(`${res.data.msg}`)
+             }
+
+          })
+
+    },
     linedata(){
           console.log("33333333333333")
        console.log(this.temp_name)
@@ -671,18 +1095,20 @@ export default {
 
     // 查看Key详细信息
     handleDetail (params) {
-      setTimeout(() => {
-        this.modalMapShow.modalVisible = true
-        this.modalMapShow.modalTitle = params.row.name
-        this.temp_name = params.row.name
-        this.getlinedata(params.row.name,this.start_date,this.end_date)
-      }, 500)
+      if( params.row.name != "合计总分"){
+          setTimeout(() => {
+            this.modalMapShow.modalVisible = true
+            this.modalMapShow.modalTitle = params.row.name
+            this.temp_name = params.row.name
+            this.getlinedata(params.row.name,this.start_date,this.end_date)
+          }, 500)
+      }
     },
      handleSuccess (res, file) {
           // console.log(file)
           this.modalMap2.modalVisible = false
           this.$Message.success("文件上传成功")
-          this.rankinglist(this.start_date,this.end_date)
+          this.rankinglist(this.start_date,this.end_date,1)
              },
     handleError (error) {
                 // console.log(error)
@@ -736,7 +1162,7 @@ export default {
                    this.$Message.error("开始日期"+String(this.start_date)+"不能大于结束日期"+String(this.end_date))
       }
       else{
-        this.rankinglist(this.start_date,this.end_date)
+        this.rankinglist(this.start_date,this.end_date,1)
       }
     },
      handleReset (name) {
@@ -820,7 +1246,8 @@ export default {
               if (res.data.code === 0) {
                 this.$Message.success(`${res.data.msg}`)
                  this.modalTable3.tableVisible = false
-                 this.rankinglist(this.start_date,this.end_date)
+                 this.modalTable4.tableVisible = false
+                 this.rankinglist(this.start_date,this.end_date,1)
               } else {
                 this.$Message.error(`${res.data.msg}`)
               }
@@ -834,8 +1261,16 @@ export default {
       this.modalTable.tableTitle = '历史得分线性图'
     },
     editModaltable3 () {
+      this.isDisable  = false
+      this.formValidate = {}
       this.modalTable3.tableVisible = true
       this.modalTable3.tableTitle = '新增'
+    },
+    editModaltable4 () {
+      this.formValidate = {}
+      this.isDisable  = false
+      this.modalTable4.tableVisible = true
+      this.modalTable4.tableTitle = '编辑'
     },
     meterList () {
       meterList().then(res => {
@@ -860,8 +1295,8 @@ export default {
         }
       })
     },
-        rankinglist (star_date,end_date) {
-      rankinglist(star_date,end_date).then(res => {
+        rankinglist (star_date,end_date,flag) {
+      rankinglist(star_date,end_date,flag).then(res => {
         if (res.data.code === 0) {
           this.months_list = res.data.list
           this.temp_date = res.data.data
@@ -957,7 +1392,7 @@ export default {
   },
   mounted () {
     this.UploadUrl = UploadUrl
-    this.rankinglist(this.start_date,this.end_date)
+    this.rankinglist(this.start_date,this.end_date,1)
   }
 
 }

@@ -13,7 +13,9 @@ echarts.registerTheme('tdTheme', tdTheme)
 export default {
   name: 'ChartMap',
   props: {
-    // value: Array,
+    list: Array,
+    value:Array,
+    keylist:Array,
   },
   data () {
     return {
@@ -26,28 +28,19 @@ export default {
     },
     initLine () {
       this.$nextTick(() => {
-        var data = [
-          { name: '珠海市', value: 250973 },
-          { name: '广州市', value: 453088 },
-          { name: '中山市', value: 424302 },
-          { name: '佛山市', value: 1135329 },
-          { name: '揭阳市', value: 30035 },
-          { name: '梅州市', value: 47148 },
-          { name: '汕头市', value: 65920 },
-          { name: '东莞市', value: 428881 },
-          { name: '惠州市', value: 300025 },
-          { name: '汕尾市', value: 20154 },
-          { name: '江门市', value: 231140 },
-          { name: '清远市', value: 136351 },
-          { name: '肇庆市', value: 126912 },
-          { name: '河源市', value: 37704 },
-          { name: '韶关市', value: 44550 },
-          { name: '云浮市', value: 31672 },
-          { name: '潮州市', value: 26802 },
-          { name: '阳江市', value: 3114 },
-          { name: '茂名市', value: 39238 },
-          { name: '湛江市', value: 48422 }
-        ]
+
+        var temp_data = []
+        for( var i=0; i < this.keylist.length;i++){
+          temp_data.push({"name":this.keylist[i] + '市',"value":parseInt(this.value[i])})
+        }
+
+         var data = []
+        if(temp_data.length < 1){
+            data = [{name: "云浮市", value: 0}, {name: "汕尾市", value: 0}, {name: "潮州市", value: 0}, {name: "汕头市", value: 0}, {name: "清远市", value: 0}, {name: "茂名市", value: 0}, {name: "佛山", value: 0}, {name: "揭阳市", value: 0}, {name: "阳江市", value: 0}, {name: "深圳市", value: 0}, {name: "惠州市", value: 0}, {name: "广州市", value: 0}, {name: "河源市", value: 0}, {name: "韶关市", value: 0}, {name: "江门市", value: 0}, {name: "湛江市", value: 0}, {name: "肇庆市", value: 0}, {name: "东莞市", value: 0}, {name: "中山市", value: 0}, {name: "梅州市", value: 0}, {name: "珠海市", value: 0},]
+        }
+        else{
+          data = temp_data
+        }
 
         var geoCoordMap = {
           '珠海市': [113.353986, 21.924979],
@@ -92,10 +85,46 @@ export default {
         }
 
         var option = {
-          tooltip: {},
+          // tooltip: {},
+          tooltip: {
+              trigger: 'item',
+              "confine":true,
+              "formatter": (params)=>{
+                var alltitle_str =  '补换领牌证'+ '<br/>' + '申领免检标志' + '<br/>'+ '电子监控处理' + '<br/>'+ '交通事故快处' + '<br/>' + '预选机动车号牌' + '<br/>'+ '满分审检教育' + '<br/>'+ '牌证业务及时处理率' + '<br/>' + '预选号牌资料及时审核率' + '<br/>' + '退费申请及时处理率' + '<br/>' + '满分审验教育及时审核率' + '<br/>' + '用户信息及时审核率'+ '<br/>'+ '网办业务满意度' + '<br/>'  + '用户反馈满意度' + '<br/>'+ '一站式服务基础信息维护' + '<br/>' + '交通安全宣传' + '<br/>' + '总分' + '<br/>'
+                if (this.list.length < 1)
+                {
+                  return ''
+                }else{
+
+                var  temp_dict = eval('(' + this.list[0][params.data.name] + ')')
+
+                //{'city': '韶关', 'bhlpz': '15.0', 'slmjbz': '5.0', 'dzjkcl': '10.0', 'jtsgkc': '0.0', 'yxjdchp': '5.0', 'mfsjjy': '5.0', 'pzywjscl': '3.0', 'yxhpzljsshl': '5.0', 'tfsqjschl': '0.0', 'mfsjjyjsshl': '5.0', 'yhxxjsl': '5.0', 'wbywmyd': '6.0', 'yhfkmyd': '5.0', 'yzsfwjcxxwh': '0.0', 'jtaqxc': '0.0', 'defen': '69'}
+                // console.log("333333333333333333333333333")
+                //   console.log(temp_dict)
+                //   console.log("333333333333333333333333333")
+                var alltitle_str =  '补换领牌证:'+'&#12288;'+ temp_dict["bhlpz"] +  '<br/>'
+                  + '申领免检标志:' +'&#12288;'+ temp_dict["slmjbz"] + '<br/>'
+                  + '电子监控处理:'+'&#12288;'+ temp_dict["dzjkcl"] + '<br/>'
+                  + '交通事故快处:'+'&#12288;'+ temp_dict["jtsgkc"] + '<br/>'
+                  + '预选机动车号牌:'+'&#12288;'+ temp_dict["yxjdchp"] + '<br/>'
+                  + '满分审检教育:'+'&#12288;'+ temp_dict["mfsyjy"] + '<br/>'
+                  + '牌证业务及时处理率:'+'&#12288;'+ temp_dict["pzywjscl"] + '<br/>'
+                  + '预选号牌资料及时审核率:'+'&#12288;'+ temp_dict["yxhpzljsshl"] + '<br/>'
+                  + '退费申请及时处理率:'+'&#12288;'+ temp_dict["tfsqjschl"] + '<br/>'
+                  + '满分审验教育及时审核率:'+'&#12288;'+ temp_dict["mfsyjyjsshl"] + '<br/>'
+                  + '用户信息及时审核率:'+'&#12288;'+ temp_dict["yhxxjsshl"] + '<br/>'
+                  + '网办业务满意度:' +'&#12288;'+ temp_dict["wbywmyd"] + '<br/>'
+                  + '用户反馈满意度:'+'&#12288;'+ temp_dict["yhfkmyd"] + '<br/>'
+                  + '一站式服务基础信息维护:'+'&#12288;'+ temp_dict["yzsfwjcxxwh"] + '<br/>'
+                  + '交通安全宣传:'+'&#12288;'+ temp_dict["jtaqxc"] + '<br/>'
+                  + '总分:'+'&#12288;'+ temp_dict["defen"] + '<br/>'
+                 return alltitle_str
+                }
+              }
+            },
           visualMap: {
             min: 0,
-            max: 1500,
+            max: 100,
             left: 'left',
             top: 'bottom',
             text: ['高', '低'],
@@ -153,35 +182,14 @@ export default {
                 }
               },
               layoutCenter: ['50%', '50%'],
-              layoutSize: 450
+              layoutSize: 450,
             },
             {
               name: '总得分',
               type: 'map',
 
               geoIndex: 100,
-              data: [
-                { name: '珠海市', value: 250973 },
-                { name: '广州市', value: 453088 },
-                { name: '中山市', value: 424302 },
-                { name: '佛山市', value: 1135329 },
-                { name: '揭阳市', value: 30035 },
-                { name: '梅州市', value: 47148 },
-                { name: '汕头市', value: 65920 },
-                { name: '东莞市', value: 428881 },
-                { name: '惠州市', value: 300025 },
-                { name: '汕尾市', value: 20154 },
-                { name: '江门市', value: 231140 },
-                { name: '清远市', value: 136351 },
-                { name: '肇庆市', value: 126912 },
-                { name: '河源市', value: 37704 },
-                { name: '韶关市', value: 44550 },
-                { name: '云浮市', value: 31672 },
-                { name: '潮州市', value: 26802 },
-                { name: '阳江市', value: 3114 },
-                { name: '茂名市', value: 39238 },
-                { name: '湛江市', value: 48422 }
-              ]
+              data: []
             }
           ]
         }

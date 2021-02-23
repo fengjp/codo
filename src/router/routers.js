@@ -70,7 +70,7 @@ export const routerMap = [
             },
             component: () =>
               import ('@/view/cmdb/facility_report.vue')
-          },
+          }
         ]
       },
       {
@@ -245,26 +245,26 @@ export const routerMap = [
       component: () =>
         import ('@/view/user-manage/peoplesconf.vue')
     },
-      {
-        path: 'JobPost',
-        name: 'JobPost',
-        meta: {
-          icon: 'md-desktop',
-          title: '岗位'
-        },
-        component: () =>
-          import ('@/view/user-manage/JobPost.vue')
+    {
+      path: 'JobPost',
+      name: 'JobPost',
+      meta: {
+        icon: 'md-desktop',
+        title: '岗位'
       },
-      {
-        path: 'meter',
-        name: 'meter',
-        meta: {
-          icon: 'ios-speedometer-outline',
-          title: '仪表'
-        },
-        component: () =>
+      component: () =>
+          import ('@/view/user-manage/JobPost.vue')
+    },
+    {
+      path: 'meter',
+      name: 'meter',
+      meta: {
+        icon: 'ios-speedometer-outline',
+        title: '仪表'
+      },
+      component: () =>
           import ('@/view/user-manage/meter.vue')
-      }
+    }
     ]
   }, {
     path: '/SQLreport',
@@ -284,16 +284,16 @@ export const routerMap = [
       component: () =>
         import ('@/view/cmdb2/storage.vue')
     },
-      {
-        path: 'asset_sql',
-        name: 'asset_sql',
-        meta: {
-          icon: 'ios-build-outline',
-          title: '脚本配置'
-        },
-        component: () =>
+    {
+      path: 'asset_sql',
+      name: 'asset_sql',
+      meta: {
+        icon: 'ios-build-outline',
+        title: '脚本配置'
+      },
+      component: () =>
           import ('@/view/cmdb2/asset_sql.vue')
-      },]
+    }]
   },
 
   {
@@ -394,7 +394,7 @@ export const routerMap = [
         },
         component: () =>
           import ('@/view/it-manage/dataSerUp.vue')
-      },
+      }
     ]
   },
   {
@@ -415,16 +415,16 @@ export const routerMap = [
       component: () =>
         import ('@/view/cron/cron-jobs.vue')
     },
-      {
-        path: 'cronlogs',
-        name: 'cronlogs',
-        meta: {
-          icon: 'ios-list-box-outline',
-          title: '任务日志'
-        },
-        component: () =>
+    {
+      path: 'cronlogs',
+      name: 'cronlogs',
+      meta: {
+        icon: 'ios-list-box-outline',
+        title: '任务日志'
+      },
+      component: () =>
           import ('@/view/cron/cron-logs.vue')
-      }
+    }
     ]
   },
   {
@@ -577,9 +577,28 @@ export const routerMap = [
           icon: 'ios-speedometer-outline',
           title: '运行得分分析'
         },
+        component: parentView,
+        children: [
+      {
+        path: 'assessment2019',
+        name: 'assessment2019',
+        meta: {
+          icon: 'ios-book',
+          title: '2019旧版'
+        },
         component: () =>
-          import ('@/view/meter/assessment.vue')
+          import ('@/view/meter/assessment2019.vue')
       },
+      {
+        path: 'assessment2021',
+        name: 'assessment2021',
+        meta: {
+          icon: 'ios-book',
+          title: '2021新版'
+        },
+        component: () =>
+          import ('@/view/meter/assessment2021.vue')
+      },]},
       {
         path: 'assessment2',
         name: 'assessment2',
@@ -590,16 +609,16 @@ export const routerMap = [
         component: () =>
           import ('@/view/meter/assessment2.vue')
       },
-      {
-        path: 'assessment3',
-        name: 'assessment3',
-        meta: {
-          icon: 'ios-speedometer-outline',
-          title: '运行查看'
-        },
-        component: () =>
-          import ('@/view/meter/assessment3.vue')
-      },
+      // {
+      //   path: 'assessment3',
+      //   name: 'assessment3',
+      //   meta: {
+      //     icon: 'ios-speedometer-outline',
+      //     title: '运行查看'
+      //   },
+      //   component: () =>
+      //     import ('@/view/meter/assessment3.vue')
+      // },
       {
         path: 'meterMap',
         name: 'meterMap',
@@ -610,16 +629,16 @@ export const routerMap = [
         component: () =>
           import ('@/view/meter/meter_map.vue')
       },
-      {
-        path: 'grafana_meter',
-        name: 'grafana_meter',
-        meta: {
-          icon: 'ios-speedometer-outline',
-          title: '评估仪表',
-        },
-        component: () =>
-          import ('@/view/meter/grafana_meter.vue')
-      }
+      // {
+      //   path: 'grafana_meter',
+      //   name: 'grafana_meter',
+      //   meta: {
+      //     icon: 'ios-speedometer-outline',
+      //     title: '评估仪表'
+      //   },
+      //   component: () =>
+      //     import ('@/view/meter/grafana_meter.vue')
+      // }
     ]
   }
 ]
@@ -635,102 +654,102 @@ export const routes = [{
   component: () =>
     import ('@/view/login/login.vue')
 },
-  {
-    path: '/',
-    name: '_home',
-    redirect: '/home',
-    component: Main,
+{
+  path: '/',
+  name: '_home',
+  redirect: '/home',
+  component: Main,
+  meta: {
+    hideInMenu: true,
+    notCache: true
+  },
+  children: [{
+    path: '/home',
+    name: 'home',
     meta: {
       hideInMenu: true,
-      notCache: true
+      title: '首页',
+      notCache: true,
+      icon: 'md-home'
     },
-    children: [{
-      path: '/home',
-      name: 'home',
-      meta: {
-        hideInMenu: true,
-        title: '首页',
-        notCache: true,
-        icon: 'md-home'
-      },
-      component: () =>
+    component: () =>
         import ('@/view/single-page/home')
-    }]
+  }]
+},
+{
+  path: '/i18n',
+  name: 'i18n',
+  meta: {
+    hideInMenu: true
   },
-  {
-    path: '/i18n',
-    name: 'i18n',
+  component: Main,
+  children: [{
+    path: 'i18n_page',
+    name: 'i18n_page',
     meta: {
-      hideInMenu: true
+      icon: 'md-planet',
+      title: '国际化'
     },
-    component: Main,
-    children: [{
-      path: 'i18n_page',
-      name: 'i18n_page',
-      meta: {
-        icon: 'md-planet',
-        title: '国际化'
-      },
-      component: () =>
+    component: () =>
         import ('@/view/i18n/i18n-page.vue')
-    }]
+  }]
+},
+{
+  path: '/403',
+  name: 'error_403',
+  meta: {
+    hideInMenu: true
   },
-  {
-    path: '/403',
-    name: 'error_403',
-    meta: {
-      hideInMenu: true
-    },
-    component: () =>
+  component: () =>
       import ('@/view/error-page/403.vue')
+},
+{
+  path: '/500',
+  name: 'error_500',
+  meta: {
+    hideInMenu: true
   },
-  {
-    path: '/500',
-    name: 'error_500',
-    meta: {
-      hideInMenu: true
-    },
-    component: () =>
+  component: () =>
       import ('@/view/error-page/500.vue')
+},
+{
+  path: '/loginBack',
+  name: 'loginBack',
+  meta: {
+    hideInMenu: true
   },
-  {
-    path: '/loginBack',
-    name: 'loginBack',
-    meta: {
-      hideInMenu: true
-    },
-    component: () =>
+  component: () =>
       import ('@/view/loginBack.vue')
+},
+{
+  path: '*',
+  meta: {
+    icon: 'md-home',
+    hideInMenu: true
   },
-  {
-    path: '*',
-    meta: {
-      icon: 'md-home',
-      hideInMenu: true
-    },
-    component: () =>
+  component: () =>
       import ('@/view/error-page/404.vue')
+},
+{
+  path: '/_tips',
+  name: '_tips',
+  redirect: '/tips',
+  component: Main,
+  meta: {
+    hideInMenu: true,
+    notCache: true
   },
-  {
-    path: '/_tips',
-    name: '_tips',
-    redirect: '/tips',
-    component: Main,
+  children: [{
+    path: '/tips',
+    name: 'tips',
     meta: {
       hideInMenu: true,
-      notCache: true
+      title: '首页',
+      notCache: true,
+      icon: 'md-home'
     },
-    children: [{
-      path: '/tips',
-      name: 'tips',
-      meta: {
-        hideInMenu: true,
-        title: '首页',
-        notCache: true,
-        icon: 'md-home'
-      },
-      component: () =>
+    component: () =>
         import ('@/view/single-page/home/tips.vue')
-    }]
-  }
+  }]
+}
 ]
