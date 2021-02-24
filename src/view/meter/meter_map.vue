@@ -512,6 +512,10 @@ export default {
          this.$Message.error("开始日期不能大于结束日期。")
          temp_flag = 0
       }
+      this.line_list = []
+      this.lineData = []
+      this.lineData5 = []
+      this.legendlist = []
       if (temp_flag === 1) {
 
             getcitydata2(this.formValidate3).then(res => {
@@ -521,13 +525,11 @@ export default {
                      console.log(res.data.months)
 
                      this.line_list = res.data.months
-                     this.lineData = res.data.data
                      this.lineData5 = res.data.data
                      this.legendlist = res.data.legendlist
 
           } else {
                   this.line_list = []
-                     this.lineData = []
                      this.lineData5 = []
                      this.legendlist = []
              this.$Message.error(`${res.data.msg}`)

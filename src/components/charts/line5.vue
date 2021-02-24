@@ -27,13 +27,13 @@ export default {
     },
     initLine () {
       this.$nextTick(() => {
-        let seriesData = this.value
+        let seriesData = []
+        seriesData  = this.value
         let xAxisData = this.keylist
         let legend_list = this.legend
         let text = this.text
         let temp = {}
         let option = {}
-
         temp = JSON.stringify(this.value)
         if (temp == '[]') {
           option = {
@@ -91,12 +91,13 @@ export default {
     yAxis: {
         type: 'value'
     },
-            series: seriesData,
+            series: eval(seriesData),
 }
         }
 
         this.dom = echarts.init(this.$refs.dom, 'tdTheme')
-        this.dom.setOption(option)
+        this.dom.setOption(option,true)
+
         on(window, 'resize', this.resize)
       })
     }
