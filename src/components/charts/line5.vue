@@ -11,6 +11,8 @@ export default {
   name: 'ChartLine5',
   props: {
     value: Array,
+    keylist:Array,
+    legend:Array,
     text: String,
     subtext: String,
   },
@@ -23,9 +25,11 @@ export default {
     resize () {
       this.dom.resize()
     },
-    initLine5 () {
+    initLine () {
       this.$nextTick(() => {
         let seriesData = this.value
+        let xAxisData = this.keylist
+        let legend_list = this.legend
         let text = this.text
         let temp = {}
         let option = {}
@@ -59,41 +63,36 @@ export default {
           }
         } else {
           option = {
-            title: {
-              text: text
-            },
-            dataset: [{
-                 dimensions: ['name', 'age', 'profession', 'score', 'date'],
-                 source: seriesData,
-            },
-              {
-                 transform: {
-                              type: 'sort',
-                              config: { dimension: 'score', order: 'asc' }
-                }
-            }],
-
-    yAxis: {
-        type: "category",
+    title: {
+        text: '趋势图'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        data: eval(legend_list)
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
     },
     xAxis: {
-        type: "value",
-        inverse: 1,
+        type: 'category',
+        boundaryGap: false,
+        data: eval(xAxisData)
     },
-            series: [
-              {
-                type: 'bar',
-                encode: { x: 'name', y: 'score' },
-
-                label: {
-                      show: true,
-                      position: 'right',
-                      valueAnimation: true
-                }
-              },
-            ],
-
-          }
+    yAxis: {
+        type: 'value'
+    },
+            series: seriesData,
+}
         }
 
         this.dom = echarts.init(this.$refs.dom, 'tdTheme')
@@ -103,7 +102,7 @@ export default {
     }
   },
   mounted () {
-    this.initLine5()
+    this.initLine()
   },
   beforeDestroy () {
     off(window, 'resize', this.resize)
