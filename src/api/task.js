@@ -54,6 +54,13 @@ export const rankinglist = (start_date,end_date,flag) => {
   })
 }
 
+export const getshangyue = () => {
+  return axios.request({
+    url: '/tk/v2/accounts/ranking/shangyue/',
+    method: 'get',
+  })
+}
+
 export const getbjdata = (bjdata) => {
   return axios.request({
     url: '/tk/v2/accounts/bjdata/',
