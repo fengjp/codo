@@ -32,7 +32,8 @@
     </Row>
 
     <Row :gutter="10" style="margin-top: 10px;">
-      <CustomInfo ref="customInfo" :dataObj="queryObj" :dataObjList="queryGroupObjList"></CustomInfo>
+      <CustomInfo_rn ref="customInfo_rn" :topObjList="topObjList"></CustomInfo_rn>
+      <CustomInfo ref="customInfo" :dataObjList="queryGroupObjList"></CustomInfo>
     </Row>
 
     <Modal v-model="modalMap.modalVisible" :title="modalMap.modalTitle" :loading=true :footer-hide=true width="540"
@@ -62,10 +63,12 @@
 import { ChartPie, ChartBar, ChartLine } from '_c/charts'
 import { operationTmp, getTmpList } from '@/api/dashboard/home.js'
 import CustomInfo from '_c/custom-card'
+import CustomInfo_rn from '_c/custom-rn'
 import {
   getQueryListForshow,
   do_sql,
-  getQueryList
+  getQueryList,
+  getFaceRecognition
 } from '@/api/customquery/query'
 import { dateFormat, getToken, setTitle, setToken } from '@/libs/util'
 import { swapArr, toFirst } from '@/libs/tools'
@@ -77,10 +80,8 @@ import jinggao2Mp3 from '@/assets/mp3/jinggao2.mp3'
 export default {
   name: 'home',
   components: {
-    // ChartPie,
-    // ChartBar,
-    // ChartLine,
-    CustomInfo
+    CustomInfo,
+    CustomInfo_rn
   },
   data () {
     return {
@@ -94,9 +95,10 @@ export default {
       tmpData: [],
       up_tip: '',
       queryObjList: [],
-      queryObj: {},
+      topObjList: [],
       queryGroupObjList: [],
       timer: null, // 保存定时器，用于销毁
+      timer_rn: null, // 保存定时器，用于销毁
       tList: [
         {
           tName: '',
@@ -208,6 +210,7 @@ export default {
             }
           }
           this.getQueryListForshow()
+          this.getFaceRecognition()
         } else {
           this.$Message.error('模版列表' + `${res.data.msg}`)
         }
@@ -215,8 +218,6 @@ export default {
     },
     // 选择模版
     selectTmp (val) {
-      // console.log(val)
-      // console.log(this.tmpData)
       let loginUser = JSON.parse(sessionStorage.vuex).user.userName
       for (let i in this.tmpData) {
         if (loginUser === i) {
@@ -235,6 +236,7 @@ export default {
         }
       }
       this.getQueryListForshow()
+      this.getFaceRecognition()
     },
     // 添加/修改模版
     handlerTmp (paramsRow, meth, mtitle) {
@@ -303,9 +305,9 @@ export default {
       })
     },
     playTimer () {
+      // 查询项计时器
       this.timer = setInterval(() => {
         for (let i in this.tList) {
-          // console.log(this.countTime(this.tList[i].expireTime))
           let ret = this.countTime(this.tList[i].expireTime)
           if (ret === false) {
             if (this.tList[i].expireTime !== 0) {
@@ -315,6 +317,20 @@ export default {
           } else {
             this.tList[i].xcsj = this.countTime(this.tList[i].expireTime)
             this.queryObjList[i].up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
+          }
+        }
+      }, 1000)
+
+      // 人脸识别计时器
+      this.timer_rn = setInterval(() => {
+        let expireTime = this.topObjList[0].next_time * 1000
+        let ret = this.countTime(expireTime)
+        if (ret === false) {
+          this.getFaceRecognition()
+        } else {
+          let up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
+          for (let i in this.topObjList[0].child) {
+            this.topObjList[0].child[i].up_tip = up_tip
           }
         }
       }, 1000)
@@ -341,9 +357,8 @@ export default {
       }
       return newTimes
     },
+    // 获取查询项
     getQueryListForshow (key, value) {
-      // console.log(this.tid)
-      // console.log(this.selectionAll.length)
       if (this.tid > 0 && this.selectionAll.length > 0) {
         key = 'tid'
         value = JSON.stringify(this.selectionAll)
@@ -401,12 +416,22 @@ export default {
             this.tList.push(t_obj)
             queryObjList[i].up_tip = ''
           }
-          // console.log(this.tList)
           for (let i in queryObjList) {
             this.do_sql(i, queryObjList, this.tList)
           }
           this.createQueryObj(queryObjList)
           this.queryObjList = queryObjList
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
+    // 获取人脸识别检测结果
+    getFaceRecognition (key, value) {
+      getFaceRecognition(key, value).then(res => {
+        if (res.data.code === 0) {
+          // this.$Message.success(`${res.data.msg}`)
+          this.topObjList = res.data.data
         } else {
           this.$Message.error(`${res.data.msg}`)
         }
@@ -453,7 +478,6 @@ export default {
                 }
               }
             }
-            // console.log(tableData)
             queryObjList[index].tableData = tableData
             queryObjList[index].count = res.data.count
           } else {
@@ -531,7 +555,6 @@ export default {
             l1.push(...l3)
             l1.push(...l4)
             group1st.color = l1[0]
-            // console.log(this.queryGroupObjList)
           }
           this.checkAudioPlay()
         }
@@ -599,8 +622,6 @@ export default {
       l1.push(...l3)
       l1.push(...l4)
       l1.push(...l5)
-      // console.log(queryObjList)
-      // console.log(l1)
       let new_tList = []
       for (let i in l1) {
         for (let j in tList) {
@@ -609,8 +630,6 @@ export default {
           }
         }
       }
-      // console.log(this.tList)
-      // console.log(new_tList)
       this.queryObjList = l1
       this.tList = new_tList
     },
@@ -628,7 +647,6 @@ export default {
         }
         _obj[queryObjList[i]['groupID'][1]].push(queryObjList[i])
       }
-      // console.log(this.queryObj)
 
       for (let i in this.queryObj) {
         var _queryObj = {}
@@ -653,12 +671,10 @@ export default {
         // 排序
         child.sort(this.compareFunction('seq'))
         _queryObj['child'] = child
-        // console.log(_queryObj)
         this.queryGroupObjList.push(_queryObj)
       }
       // 排序
       this.queryGroupObjList.sort(this.compareFunction('seq'))
-      // console.log(this.queryGroupObjList)
     },
     // 排序函数
     compareFunction (propertyName) {
@@ -688,10 +704,8 @@ export default {
     },
     reAuthorization () {
       store.dispatch('authorization').then(rules => {
-        // console.log(rules)
         store.dispatch('concatRoutes', rules).then(routers => {
           this.$router.addRoutes(routers)
-          // console.log(routers)
         }).catch((err) => {
           console.log(err)
           setToken('')
@@ -744,6 +758,7 @@ export default {
     this.getQueryList('isTmp', 1)
     if (this.timer) {
       clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
+      clearInterval(this.timer_rn)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
     }
     this.playTimer()// 启用定时器
   },
@@ -759,10 +774,12 @@ export default {
     this.audio.pause()
     this.isPlaying = false
     clearInterval(this.timer)
+    clearInterval(this.timer_rn)
     next()
   },
   beforeDestroy () {
     clearInterval(this.timer)
+    clearInterval(this.timer_rn)
     this.audio.pause()
     this.isPlaying = false
   }

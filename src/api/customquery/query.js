@@ -41,7 +41,7 @@ export const do_sql = (key, value) => {
     params: {
       key,
       value
-    },
+    }
   })
 }
 
@@ -79,6 +79,17 @@ export const getQueryLog = (qid, qty) => {
     params: {
       qid,
       qty
+    }
+  })
+}
+
+export const getFaceRecognition = (key, value) => {
+  return axios.request({
+    url: '/tk/v1/getFaceRecognition/',
+    method: 'get',
+    params: {
+      key,
+      value
     }
   })
 }
