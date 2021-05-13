@@ -283,7 +283,7 @@
         </div>
       </Modal>
 
-     <Modal :footer-hide=true :loading=true :title="modalTable5.tableTitle" v-model="modalTable5.tableVisible"  width="820" >
+     <Modal :footer-hide=true :loading=true :title="modalTable5.tableTitle" v-model="modalTable5.tableVisible"  width="860" >
         <div >
              <Form :inline="true" :label-width="90" :model="formValidate3"  ref="formValidate">
                <FormItem label="开始日期" prop="startdate" style="width:300px;"
@@ -298,6 +298,12 @@
                   </DatePicker>
 
                 </FormItem>
+                <FormItem label="地级市" prop="city" style="width:400px;">
+               <Select placeholder="请选择地级市" v-model="formValidate3.city">
+                    <Option  :value="item.k" v-for="item in allTypeList">{{item.v}}
+                    </Option>
+                  </Select>
+                 </FormItem>
                <FormItem label="结束日期" prop="enddate" style="width:300px;"
                 >
                   <DatePicker :clearable="false"
@@ -310,21 +316,18 @@
                   </DatePicker>
 
                 </FormItem>
-               <FormItem label="选择指标" prop="zhibiao" style="width:300px;">
-               <Select placeholder="请选择指标" v-model="formValidate3.zhibiao">
+
+               <FormItem label="选择指标" prop="zhibiao" style="width:400px;">
+               <Select placeholder="请选择指标" v-model="formValidate3.zhibiao" multiple :max-tag-count="2">
                     <Option  :value="item.k" v-for="item in allzhibiaoList">{{item.v}}
                     </Option>
                   </Select>
                  </FormItem>
-               <FormItem label="地级市" prop="city" style="width:300px;">
-               <Select placeholder="请选择地级市" v-model="formValidate3.city">
-                    <Option  :value="item.k" v-for="item in allTypeList">{{item.v}}
-                    </Option>
-                  </Select>
-                 </FormItem>
+
                <Button @click="getcitydata2()"  type="info">获取数据</Button>
         </Form>
-          <chart-line3 :keylist="line_list" :value="lineData"  ref="childLine3" style="width: 800px;height: 340px;" :text="text" />
+<!--          <chart-line3 :keylist="line_list" :value="lineData"  ref="childLine3" style="width: 800px;height: 340px;" :text="text" />-->
+          <chart-line5  :legend="legendlist" :keylist="line_list" :value="lineData5"  ref="childLine5" style="width: 830px;height: 420px;"  />
         </div>
       </Modal>
   </div>
@@ -333,7 +336,7 @@
 
 <script>
   import {  ChartMap } from '_c/charts'
-  import { ChartLine3} from '_c/charts'
+  import { ChartLine3,ChartLine5} from '_c/charts'
   import  echarts  from  'echarts'
   import { UploadUrl3} from '@/api/task'
   import { getbusinesslist,getcitydata,getcitydata2,businesspost} from '@/api/task'
@@ -341,13 +344,17 @@ export default {
     components: {
     ChartMap,
       ChartLine3,
+      ChartLine5,
   },
   name: 'hello',
   data () {
     return {
+      legendlist:[],//['补换领牌证','申领免检标志','电子监控处理','交通事故快处','预选机动车号牌'],
       text:'',
       lineData:[],
+      lineData5:[],
       line_list:[],
+      line_list5:[],
       temp_id:'',
       bjriqi:'',
       isDisable:false,
@@ -505,20 +512,31 @@ export default {
          this.$Message.error("开始日期不能大于结束日期。")
          temp_flag = 0
       }
+      this.line_list = []
+      this.lineData = []
+      this.lineData5 = []
+      this.legendlist = []
       if (temp_flag === 1) {
-        getcitydata2(this.formValidate3).then(res => {
-          if (res.data.code === 0) {
 
-            console.log(res.data.data)
-            console.log(res.data.months)
+            getcitydata2(this.formValidate3).then(res => {
+                if (res.data.code === 0) {
 
-            this.line_list = res.data.months
-            this.lineData = res.data.data
+                     console.log(res.data.data)
+                     console.log(res.data.months)
+
+                     this.line_list = res.data.months
+                     this.lineData5 = res.data.data
+                     this.legendlist = res.data.legendlist
 
           } else {
+                  this.line_list = []
+                     this.lineData5 = []
+                     this.legendlist = []
              this.$Message.error(`${res.data.msg}`)
           }
         })
+
+
       }
       },
       editModaltable4 () {
@@ -598,8 +616,8 @@ export default {
     velue_list2: function () {
       this.$refs.childLine.initLine()
     },
-    lineData: function () {
-      this.$refs.childLine3.initLine()
+    lineData5: function () {
+      this.$refs.childLine5.initLine()
     }
   },
 }

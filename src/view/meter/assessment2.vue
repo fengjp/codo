@@ -10,10 +10,10 @@
          <Row>
            <Card style="height:60px;margin-top: 5px;">
              <Col  span="8">
-                <h3 >上月得分：{{benyue_defen}}分</h3>
+                <h3 >上月得分：{{shangyue_defen}}分</h3>
              </Col>
              <Col  span="8">
-                <h3 >本月自评得分：{{shangyue_defen}}分</h3>
+                <h3 >本月自评得分：{{benyue_defen}}分</h3>
              </Col>
 <!--             <Col  span="8"  style=" text-align:right;">-->
 <!--                <Button @click="editModaltable()" type="info">得分历史</Button>-->
@@ -119,7 +119,7 @@
 
 <script>
 import { ChartLine3 } from '_c/charts'
-import { meterList } from '@/api/task'
+import { meterList,getshangyue } from '@/api/task'
 import FormGroup from '_c/form-group'
 export default {
   components: {
@@ -154,6 +154,19 @@ export default {
     }
   },
   methods: {
+    getshangyue(){
+
+      getshangyue().then(res => {
+        if (res.data.code === 0) {
+          this.shangyue_defen = ''
+          this.shangyue_defen = res.data.data[0]["zongfen"]
+        } else {
+
+          this.shangyue_defen = ''
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
     handleSubmitTable (date) {
       this.isShow = false
       this.modalTable2.tableVisible = true
@@ -231,6 +244,7 @@ export default {
   },
   mounted () {
     this.meterList()
+    this.getshangyue()
   }
 }
 </script>
