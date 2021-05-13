@@ -1,6 +1,7 @@
 <template>
   <div>
     <Row :gutter="10" style="margin-top: 10px;">
+      <CustomInfo_rn ref="customInfo_rn" :topObjList="topObjList"></CustomInfo_rn>
       <CustomInfo ref="customInfo" :dataObjList="queryGroupObjList"></CustomInfo>
     </Row>
   </div>
@@ -8,15 +9,18 @@
 
 <script>
   import CustomInfo from '_c/custom-card'
+  import CustomInfo_rn from '_c/custom-rn'
   import {
     getQueryListForshow,
-    do_sql
+    do_sql,
+    getFaceRecognition
   } from '@/api/customquery/query'
   import {dateFormat} from '@/libs/util'
 
   export default {
     components: {
-      CustomInfo
+      CustomInfo,
+      CustomInfo_rn
     },
     data() {
       return {
@@ -27,7 +31,9 @@
         queryObjList: [],
         queryObj: {},
         queryGroupObjList: [],
+        topObjList: [],
         timer: null, // 保存定时器，用于销毁
+        timer_rn: null, // 保存定时器，用于销毁
         tList: [
           {
             tName: '',
@@ -60,6 +66,19 @@
             } else {
               this.tList[i].xcsj = this.countTime(this.tList[i].expireTime)
               this.queryObjList[i].up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
+            }
+          }
+        }, 1000)
+        // 人脸识别计时器
+        this.timer_rn = setInterval(() => {
+          let expireTime = this.topObjList[0].next_time * 1000
+          let ret = this.countTime(expireTime)
+          if (ret === false) {
+            this.getFaceRecognition()
+          } else {
+            let up_tip = ret.hh + '时' + ret.mm + '分' + ret.ss + '秒后更新'
+            for (let i in this.topObjList[0].child) {
+              this.topObjList[0].child[i].up_tip = up_tip
             }
           }
         }, 1000)
@@ -267,6 +286,17 @@
           }
         )
       },
+      // 获取人脸识别检测结果
+      getFaceRecognition (key, value) {
+      getFaceRecognition(key, value).then(res => {
+        if (res.data.code === 0) {
+          // this.$Message.success(`${res.data.msg}`)
+          this.topObjList = res.data.data
+        } else {
+          this.$Message.error(`${res.data.msg}`)
+        }
+      })
+    },
       // 按指标高低排序
       checkqueryObjSort(queryObjList, tList) {
         let l1 = []
@@ -390,9 +420,13 @@
     },
     mounted() {
       this.getQueryListForshow()
+      this.getFaceRecognition()
       // 该组件渲染时，判断定时器是否已开启
       if (this.timer) {
         clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
+      }
+      if (this.timer_rn) {
+        clearInterval(this.timer_rn)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
       }
       try {
         this.playTimer()// 启用定时器
@@ -403,10 +437,12 @@
     // 组件关闭时，执行此方法来销毁定时器
     beforeRouteLeave(to, from, next) {
       clearInterval(this.timer)
+      clearInterval(this.timer_rn)
       next()
     },
     beforeDestroy() {
       clearInterval(this.timer)
+      clearInterval(this.timer_rn)
     }
   }
 </script>

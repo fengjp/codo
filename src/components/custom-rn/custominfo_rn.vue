@@ -2,16 +2,16 @@
   <div>
     <Row :gutter="10" style="margin-top: 10px;">
       <Card :bordered="false" dis-hover style="margin-bottom: 10px;" v-for="item in topObjList">
-        <p slot="title" @click="changeShow(item)">
-          <Icon type="ios-arrow-down" size="18" v-if="item.isShow"></Icon>
-          <Icon type="ios-arrow-forward" size="18" v-else></Icon>
-          <Tooltip content="收起" transfer placement="top" v-if="item.isShow">
-            <span style="margin-left: 5px">{{item.name}}</span>
-          </Tooltip>
-          <Tooltip content="展开" transfer placement="top" v-else>
-            <span style="margin-left: 5px">{{item.name}}</span>
-          </Tooltip>
-        </p>
+        <!--<p slot="title" @click="changeShow(item)">-->
+          <!--<Icon type="ios-arrow-down" size="18" v-if="item.isShow"></Icon>-->
+          <!--<Icon type="ios-arrow-forward" size="18" v-else></Icon>-->
+          <!--<Tooltip content="收起" transfer placement="top" v-if="item.isShow">-->
+            <!--<span style="margin-left: 5px">{{item.name}}</span>-->
+          <!--</Tooltip>-->
+          <!--<Tooltip content="展开" transfer placement="top" v-else>-->
+            <!--<span style="margin-left: 5px">{{item.name}}</span>-->
+          <!--</Tooltip>-->
+        <!--</p>-->
         <Row :gutter="10">
           <Col span="12" v-for="item2 in item.child">
             <Card :bordered="false" dis-hover style="margin-bottom: 10px;">

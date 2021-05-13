@@ -758,6 +758,8 @@ export default {
     this.getQueryList('isTmp', 1)
     if (this.timer) {
       clearInterval(this.timer)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
+    }
+    if (this.timer) {
       clearInterval(this.timer_rn)// 销毁定时器 建议该在组件关闭时，再执行此方法来销毁定时器，否则定时器会一直跑下去，造成内存泄漏！！！！
     }
     this.playTimer()// 启用定时器
